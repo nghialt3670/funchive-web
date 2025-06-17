@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.headerInfo h1 {
+  margin: 0;
+}
+
+.headerInfo p {
+  margin: 8px 0 0 0;
+  color: #666;
+}
+
+.filtersSection {
+  margin-bottom: 24px;
+}
+
+.filterSelect {
+  width: 100%;
+}
+
+.filterCount {
+  text-align: right;
+  color: #666;
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 50px;
+}
+
+.functionsGrid {
+  margin-bottom: 24px;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 50px;
+  color: #666;
+}
+
+.emptyState h3 {
+  color: #999;
+}

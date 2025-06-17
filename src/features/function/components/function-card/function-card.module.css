@@ -1,0 +1,118 @@
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.functionName {
+  font-size: 16px;
+}
+
+.card {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.cardContent {
+  width: 100%;
+}
+
+.description {
+  margin: 0;
+  color: #666;
+}
+
+.typeSection {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.inputTypeTag {
+  font-size: 11px;
+  cursor: help;
+}
+
+.outputTypeTag {
+  font-size: 11px;
+  cursor: help;
+}
+
+.compilationSection {
+  margin-bottom: 8px;
+}
+
+.compilationLabel {
+  font-size: 12px;
+}
+
+.compilationTag {
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.executeButton {
+  color: #52c41a;
+}
+
+.compileButton {
+  color: #1890ff;
+}
+
+.tooltipContent {
+  max-width: 350px;
+}
+
+.tooltipFields {
+  font-size: 12px;
+}
+
+.tooltipField {
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltipFieldHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tooltipFieldName {
+  font-weight: 500;
+  color: #87ceeb;
+}
+
+.tooltipInputTag {
+  background: #1890ff;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.tooltipOutputTag {
+  background: #52c41a;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.tooltipFieldDescription {
+  font-size: 10px;
+  color: #ddd;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.tooltipOutputFieldName {
+  font-weight: 500;
+  color: #98fb98;
+}

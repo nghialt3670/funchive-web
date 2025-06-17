@@ -1,0 +1,297 @@
+.pipelineEditor {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backButton {
+  border: none;
+  box-shadow: none;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+}
+
+.pipelineNameInput {
+  border: none;
+  box-shadow: none;
+  font-size: 20px;
+  font-weight: 600;
+  width: 300px;
+}
+
+.pipelineNameInput:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.canvasContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.reactFlowWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.reactFlow {
+  background: #f9f9f9;
+}
+
+/* Node Styles */
+.functionNode {
+  background: white;
+  border: 2px solid #1890ff;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.functionNode:hover {
+  border-color: #40a9ff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.inputNode {
+  background: #f6ffed;
+  border: 2px solid #52c41a;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.outputNode {
+  background: #fff2e8;
+  border: 2px solid #fa8c16;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nodeHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.nodeTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: #262626;
+}
+
+.nodeDescription {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.nodeLanguage {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inputTypeInfo,
+.outputTypeInfo {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* Node Handles */
+.nodeHandle {
+  width: 12px !important;
+  height: 12px !important;
+  background: #1890ff !important;
+  border: 2px solid white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.functionNode .nodeHandle[data-handlepos="left"] {
+  background: #52c41a !important;
+}
+
+.functionNode .nodeHandle[data-handlepos="right"] {
+  background: #fa8c16 !important;
+}
+
+.inputNode .nodeHandle {
+  background: #52c41a !important;
+}
+
+.outputNode .nodeHandle {
+  background: #fa8c16 !important;
+}
+
+/* Functions Panel */
+.functionsPanel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.instructionText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-radius: 6px;
+  border: 1px solid #bae0ff;
+}
+
+.functionListItem {
+  padding: 8px 0;
+  border: none;
+}
+
+.draggableFunctionCard {
+  cursor: grab;
+  transition: all 0.2s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.draggableFunctionCard:hover {
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.draggableFunctionCard:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.functionCardContent {
+  padding: 4px;
+}
+
+.functionName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #262626;
+}
+
+.functionDescription {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.functionMeta {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.toggleFunctionsButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* React Flow Overrides */
+.react-flow__controls {
+  bottom: 30px;
+  left: 30px;
+}
+
+.react-flow__minimap {
+  bottom: 30px;
+  right: 30px;
+}
+
+.react-flow__edge.animated path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+
+.react-flow__edge.selected path {
+  stroke: #ff6b6b !important;
+  stroke-width: 3px !important;
+}
+
+.react-flow__edge:hover path {
+  stroke-width: 3px !important;
+}
+
+/* Connection Line Styling */
+.react-flow__connectionline {
+  stroke: #1890ff;
+  stroke-width: 2px;
+  stroke-dasharray: 5;
+}
+
+/* Handle hover effects */
+.react-flow__handle:hover {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+
+.react-flow__handle.connecting {
+  background: #ff6b6b !important;
+  transform: scale(1.3);
+}
+
+@keyframes dashdraw {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .headerLeft {
+    justify-content: space-between;
+  }
+  
+  .pipelineNameInput {
+    width: 100%;
+  }
+  
+  .toggleFunctionsButton {
+    top: 10px;
+    right: 10px;
+  }
+} 
