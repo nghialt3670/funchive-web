@@ -1,0 +1,90 @@
+.themeToggle {
+  position: relative;
+  display: inline-block;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  min-width: 2.5rem;
+  justify-content: center;
+}
+
+.toggleButton:hover {
+  background: var(--color-background-hover);
+  border-color: var(--color-border-hover);
+}
+
+.toggleButton:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-dropdown);
+  z-index: 1000;
+  min-width: 8rem;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.dropdownItem:hover {
+  background: var(--color-background-hover);
+}
+
+.dropdownItem:focus {
+  background: var(--color-background-hover);
+  outline: none;
+}
+
+.dropdownItem.active {
+  background: var(--color-background-selected);
+  color: var(--color-primary);
+}
+
+.dropdownItem.active .iconWrapper {
+  color: var(--color-primary);
+}
+
+.checkmark {
+  margin-left: auto;
+  color: var(--color-primary);
+  font-weight: 600;
+}

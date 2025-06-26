@@ -1,24 +1,24 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
-import { functionApi } from "./function-api";
-import type { PageRequest } from "@/types/api";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { message } from 'antd';
+import { functionApi } from './function-api';
+import type { PageRequest } from '@/types/api';
 import type {
   ExecutionTriggerDto,
   FunctionCreateDto,
   FunctionFilter,
   FunctionUpdateDto,
-} from "@/features/function/function-types";
+} from '@/features/function/function-types';
 
 export const functionQueryKeys = {
-  all: ["functions"] as const,
-  lists: () => [...functionQueryKeys.all, "list"] as const,
+  all: ['functions'] as const,
+  lists: () => [...functionQueryKeys.all, 'list'] as const,
   list: (filter: FunctionFilter, pageRequest: PageRequest) =>
     [...functionQueryKeys.lists(), filter, pageRequest] as const,
-  details: () => [...functionQueryKeys.all, "detail"] as const,
+  details: () => [...functionQueryKeys.all, 'detail'] as const,
   detail: (id: string) => [...functionQueryKeys.details(), id] as const,
 };
 
-export const useFunctionDetail = (
+export const useFunctionDetailQuery = (
   functionId: string,
   enabled: boolean = true,
 ) => {
@@ -26,12 +26,12 @@ export const useFunctionDetail = (
     queryKey: functionQueryKeys.detail(functionId),
     queryFn: () => functionApi.getFunctionDetail(functionId),
     enabled: enabled && !!functionId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
   });
 };
 
-export const useFunctionPage = (
+export const useFunctionPageQuery = (
   filter: FunctionFilter = {},
   pageRequest: PageRequest = {},
 ) => {
@@ -43,7 +43,7 @@ export const useFunctionPage = (
   });
 };
 
-export const useCreateFunction = () => {
+export const useCreateFunctionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -55,14 +55,16 @@ export const useCreateFunction = () => {
       compile?: boolean;
     }) => functionApi.createFunction(data, compile),
     onSuccess: (newFunction) => {
-      queryClient.invalidateQueries({ queryKey: functionQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: functionQueryKeys.lists(),
+      });
 
       queryClient.setQueryData(
         functionQueryKeys.detail(newFunction.id),
         newFunction,
       );
 
-      message.success("Function created successfully!");
+      message.success('Function created successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -72,7 +74,7 @@ export const useCreateFunction = () => {
   });
 };
 
-export const useUpdateFunction = () => {
+export const useUpdateFunctionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -91,9 +93,11 @@ export const useUpdateFunction = () => {
         updatedFunction,
       );
 
-      queryClient.invalidateQueries({ queryKey: functionQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: functionQueryKeys.lists(),
+      });
 
-      message.success("Function updated successfully!");
+      message.success('Function updated successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -103,7 +107,7 @@ export const useUpdateFunction = () => {
   });
 };
 
-export const useDeleteFunction = () => {
+export const useDeleteFunctionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -113,9 +117,11 @@ export const useDeleteFunction = () => {
         queryKey: functionQueryKeys.detail(functionId),
       });
 
-      queryClient.invalidateQueries({ queryKey: functionQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: functionQueryKeys.lists(),
+      });
 
-      message.success("Function deleted successfully!");
+      message.success('Function deleted successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -125,7 +131,7 @@ export const useDeleteFunction = () => {
   });
 };
 
-export const useCompileFunction = () => {
+export const useCompileFunctionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -135,9 +141,11 @@ export const useCompileFunction = () => {
         queryKey: functionQueryKeys.detail(functionId),
       });
 
-      queryClient.invalidateQueries({ queryKey: functionQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: functionQueryKeys.lists(),
+      });
 
-      message.success("Function compilation started successfully!");
+      message.success('Function compilation started successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -147,7 +155,7 @@ export const useCompileFunction = () => {
   });
 };
 
-export const useExecuteFunction = () => {
+export const useExecuteFunctionMutation = () => {
   return useMutation({
     mutationFn: ({
       functionId,
@@ -157,7 +165,7 @@ export const useExecuteFunction = () => {
       executionData: ExecutionTriggerDto;
     }) => functionApi.executeFunction(functionId, executionData),
     onSuccess: () => {
-      message.success("Function executed successfully!");
+      message.success('Function executed successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -168,10 +176,10 @@ export const useExecuteFunction = () => {
 };
 
 export const useFunctionOperations = () => {
-  const updateMutation = useUpdateFunction();
-  const deleteMutation = useDeleteFunction();
-  const compileMutation = useCompileFunction();
-  const executeMutation = useExecuteFunction();
+  const updateMutation = useUpdateFunctionMutation();
+  const deleteMutation = useDeleteFunctionMutation();
+  const compileMutation = useCompileFunctionMutation();
+  const executeMutation = useExecuteFunctionMutation();
 
   return {
     update: updateMutation.mutate,
@@ -190,7 +198,7 @@ export const useFunctionOptimisticUpdate = () => {
 
   const updateCompilationStatus = (
     functionId: string,
-    status: "IN_PROGRESS" | "SUCCESS" | "FAILED",
+    status: 'IN_PROGRESS' | 'SUCCESS' | 'FAILED',
   ) => {
     queryClient.setQueryData(
       functionQueryKeys.detail(functionId),

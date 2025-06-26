@@ -1,6 +1,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem;
 }
 
 .header {
@@ -44,22 +45,24 @@
 }
 
 .functionSignature {
-  background: #f5f5f5;
+  background: var(--color-background-secondary);
   padding: 12px;
   font-family: monospace;
   font-size: 14px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-border);
   border-bottom: none;
-  border-radius: 6px 6px 0 0;
-  color: #666;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  color: var(--color-text-secondary);
 }
 
 .functionBody {
   font-family: monospace;
   font-size: 14px;
-  border: 1px solid #d9d9d9;
-  border-radius: 0 0 6px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
   resize: vertical;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
 }
 
 .metadataCard {

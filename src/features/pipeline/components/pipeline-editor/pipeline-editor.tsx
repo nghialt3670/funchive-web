@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useRef, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+  useEffect,
+} from 'react';
 import {
   Typography,
   Button,
@@ -10,14 +16,14 @@ import {
   Tag,
   Divider,
   message,
-} from "antd";
+} from 'antd';
 import {
   SaveOutlined,
   ArrowLeftOutlined,
   PlayCircleOutlined,
   FunctionOutlined,
   DragOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -34,24 +40,24 @@ import ReactFlow, {
   type Node,
   type Edge,
   type Connection,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import { useFunctionPage } from "@/features/function/function-hooks";
-import { 
-  usePipelineDetail, 
-  useUpdatePipeline, 
-  useExecutePipeline 
-} from "../../pipeline-hooks";
-import type { FunctionDetailDto } from "@/features/function/function-types";
-import type { 
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import { useFunctionPageQuery } from '@/features/function/function-hooks';
+import {
+  usePipelineDetail,
+  useUpdatePipeline,
+  useExecutePipeline,
+} from '../../pipeline-hooks';
+import type { FunctionDetailDto } from '@/features/function/function-types';
+import type {
   PipelineDetailDto,
   Node as PipelineNode,
   ValueNode,
   FunctionNode,
   Connection as PipelineConnection,
   Value,
-} from "../../pipeline-types";
-import styles from "./pipeline-editor.module.css";
+} from '../../pipeline-types';
+import styles from './pipeline-editor.module.css';
 
 const { Title, Text } = Typography;
 
@@ -67,7 +73,9 @@ const FunctionNodeComponent = ({ data }: { data: any }) => {
       />
       <div className={styles.nodeHeader}>
         <FunctionOutlined />
-        <span className={styles.nodeTitle}>{data.functionDetail?.definition.name}</span>
+        <span className={styles.nodeTitle}>
+          {data.functionDetail?.definition.name}
+        </span>
       </div>
       <div className={styles.nodeDescription}>
         {data.functionDetail?.definition.description}
@@ -91,11 +99,9 @@ const ValueNodeComponent = ({ data }: { data: any }) => {
       <div className={styles.nodeHeader}>
         <span className={styles.nodeTitle}>{data.name}</span>
       </div>
-      <div className={styles.nodeDescription}>
-        {data.valueType || "Value"}
-      </div>
+      <div className={styles.nodeDescription}>{data.valueType || 'Value'}</div>
       <div className={styles.valueTypeInfo}>
-        <Tag color="green">{data.valueType || "ANY"}</Tag>
+        <Tag color="green">{data.valueType || 'ANY'}</Tag>
       </div>
       <Handle
         type="source"
@@ -114,10 +120,10 @@ const InputNodeComponent = ({ data }: { data: any }) => {
         <span className={styles.nodeTitle}>Input</span>
       </div>
       <div className={styles.nodeDescription}>
-        {data.label || "Pipeline Input"}
+        {data.label || 'Pipeline Input'}
       </div>
       <div className={styles.inputTypeInfo}>
-        <Tag color="green">{data.inputType || "ANY"}</Tag>
+        <Tag color="green">{data.inputType || 'ANY'}</Tag>
       </div>
       <Handle
         type="source"
@@ -142,10 +148,10 @@ const OutputNodeComponent = ({ data }: { data: any }) => {
         <span className={styles.nodeTitle}>Output</span>
       </div>
       <div className={styles.nodeDescription}>
-        {data.label || "Pipeline Output"}
+        {data.label || 'Pipeline Output'}
       </div>
       <div className={styles.outputTypeInfo}>
-        <Tag color="orange">{data.outputType || "ANY"}</Tag>
+        <Tag color="orange">{data.outputType || 'ANY'}</Tag>
       </div>
     </div>
   );
@@ -170,14 +176,14 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [pipelineName, setPipelineName] = useState("Untitled Pipeline");
+  const [pipelineName, setPipelineName] = useState('Untitled Pipeline');
   const [functionsDrawerOpen, setFunctionsDrawerOpen] = useState(true);
   const { screenToFlowPosition } = useReactFlow();
 
   // Hooks for API operations
   const { data: pipeline, isLoading: pipelineLoading } = usePipelineDetail(
-    pipelineId || "",
-    !!pipelineId
+    pipelineId || '',
+    !!pipelineId,
   );
   const updatePipeline = useUpdatePipeline();
   const executePipeline = useExecutePipeline();
@@ -186,16 +192,16 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
   useEffect(() => {
     if (pipeline) {
       setPipelineName(pipeline.name);
-      
+
       // Convert pipeline nodes to ReactFlow nodes
       const reactFlowNodes: Node[] = pipeline.nodes.map((node) => {
-        if (node.nodeType === "FUNCTION") {
+        if (node.nodeType === 'FUNCTION') {
           const funcNode = node as FunctionNode;
           return {
             id: node.id,
-            type: "function",
+            type: 'function',
             position: node.position,
-            data: { 
+            data: {
               functionId: funcNode.functionId,
               // TODO: Load function details
             },
@@ -204,7 +210,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
           const valueNode = node as ValueNode;
           return {
             id: node.id,
-            type: "value",
+            type: 'value',
             position: node.position,
             data: {
               name: node.name,
@@ -220,13 +226,13 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         id: connection.id,
         source: connection.sourceNodeId,
         target: connection.targetNodeId,
-        sourceHandle: connection.sourcePort || "output",
-        targetHandle: connection.targetPort || "input",
+        sourceHandle: connection.sourcePort || 'output',
+        targetHandle: connection.targetPort || 'input',
         animated: true,
-        style: { stroke: "#1890ff", strokeWidth: 2 },
+        style: { stroke: '#1890ff', strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#1890ff",
+          color: '#1890ff',
         },
       }));
 
@@ -238,45 +244,55 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
   // Handle edge deletion
   const onEdgesDelete = useCallback(
     (edgesToDelete: Edge[]) => {
-      setEdges((eds) => eds.filter((edge) => !edgesToDelete.some((e) => e.id === edge.id)));
+      setEdges((eds) =>
+        eds.filter((edge) => !edgesToDelete.some((e) => e.id === edge.id)),
+      );
       message.info(`Deleted ${edgesToDelete.length} connection(s)`);
     },
-    [setEdges]
+    [setEdges],
   );
 
   // Validate connections to prevent invalid connections
-  const isValidConnection = useCallback((connection: Connection) => {
-    // Prevent connecting to the same node
-    if (connection.source === connection.target) {
-      message.warning("Cannot connect a node to itself");
-      return false;
-    }
+  const isValidConnection = useCallback(
+    (connection: Connection) => {
+      // Prevent connecting to the same node
+      if (connection.source === connection.target) {
+        message.warning('Cannot connect a node to itself');
+        return false;
+      }
 
-    // Prevent duplicate connections
-    const existingConnection = edges.find(
-      (edge) =>
-        edge.source === connection.source &&
-        edge.target === connection.target &&
-        edge.sourceHandle === connection.sourceHandle &&
-        edge.targetHandle === connection.targetHandle
-    );
+      // Prevent duplicate connections
+      const existingConnection = edges.find(
+        (edge) =>
+          edge.source === connection.source &&
+          edge.target === connection.target &&
+          edge.sourceHandle === connection.sourceHandle &&
+          edge.targetHandle === connection.targetHandle,
+      );
 
-    if (existingConnection) {
-      message.warning("Connection already exists");
-      return false;
-    }
+      if (existingConnection) {
+        message.warning('Connection already exists');
+        return false;
+      }
 
-    return true;
-  }, [edges]);
+      return true;
+    },
+    [edges],
+  );
 
   // Fetch available functions
-  const {
-    data: functionsPage,
-    isLoading: functionsLoading,
-  } = useFunctionPage({}, { page: 0, size: 100, sort: "definition.name,asc" });
+  const { data: functionsPage, isLoading: functionsLoading } =
+    useFunctionPageQuery(
+      {},
+      { page: 0, size: 100, sort: 'definition.name,asc' },
+    );
 
   const availableFunctions = useMemo(() => {
-    return functionsPage?.items.filter(func => func.compilationStatus === "SUCCESS") || [];
+    return (
+      functionsPage?.items.filter(
+        (func) => func.compilationStatus === 'SUCCESS',
+      ) || []
+    );
   }, [functionsPage]);
 
   const onConnect = useCallback(
@@ -285,7 +301,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
       if (!params.source || !params.target) {
         return;
       }
-      
+
       // Create a styled edge with proper arrow markers
       const newEdge: Edge = {
         id: `${params.source}-${params.sourceHandle || ''}-to-${params.target}-${params.targetHandle || ''}`,
@@ -294,38 +310,38 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         sourceHandle: params.sourceHandle,
         targetHandle: params.targetHandle,
         animated: true,
-        style: { 
-          stroke: "#1890ff", 
+        style: {
+          stroke: '#1890ff',
           strokeWidth: 2,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#1890ff",
+          color: '#1890ff',
         },
       };
-      
+
       setEdges((eds) => addEdge(newEdge, eds));
-      message.success("Connection created successfully!");
+      message.success('Connection created successfully!');
     },
     [setEdges],
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+    event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      const functionData = event.dataTransfer.getData("application/json");
+      const functionData = event.dataTransfer.getData('application/json');
       if (!functionData) {
         return;
       }
 
       const func: FunctionDetailDto = JSON.parse(functionData);
-      
+
       if (!reactFlowWrapper.current) {
         return;
       }
@@ -342,7 +358,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
       // Create function node
       const functionNode: Node = {
         id: functionNodeId,
-        type: "function",
+        type: 'function',
         position,
         data: { functionDetail: func, functionId: func.id },
       };
@@ -350,9 +366,9 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
       // Create input node (connected to function)
       const inputNode: Node = {
         id: inputNodeId,
-        type: "input",
+        type: 'input',
         position: { x: position.x - 200, y: position.y },
-        data: { 
+        data: {
           label: `Input for ${func.definition.name}`,
           connectedFunction: functionNodeId,
           inputType: func.definition.inputType.name,
@@ -363,9 +379,9 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
       // Create output node (connected from function)
       const outputNode: Node = {
         id: outputNodeId,
-        type: "output", 
+        type: 'output',
         position: { x: position.x + 200, y: position.y },
-        data: { 
+        data: {
           label: `Output from ${func.definition.name}`,
           connectedFunction: functionNodeId,
           outputType: func.definition.outputType.name,
@@ -377,28 +393,28 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
       const inputEdge: Edge = {
         id: `${inputNodeId}-to-${functionNodeId}`,
         source: inputNodeId,
-        sourceHandle: "output",
+        sourceHandle: 'output',
         target: functionNodeId,
-        targetHandle: "input",
+        targetHandle: 'input',
         animated: true,
-        style: { stroke: "#52c41a", strokeWidth: 2 },
+        style: { stroke: '#52c41a', strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#52c41a",
+          color: '#52c41a',
         },
       };
 
       const outputEdge: Edge = {
         id: `${functionNodeId}-to-${outputNodeId}`,
         source: functionNodeId,
-        sourceHandle: "output",
+        sourceHandle: 'output',
         target: outputNodeId,
-        targetHandle: "input",
+        targetHandle: 'input',
         animated: true,
-        style: { stroke: "#fa8c16", strokeWidth: 2 },
+        style: { stroke: '#fa8c16', strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#fa8c16",
+          color: '#fa8c16',
         },
       };
 
@@ -411,34 +427,34 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
   );
 
   const onDragStart = (event: React.DragEvent, func: FunctionDetailDto) => {
-    event.dataTransfer.setData("application/json", JSON.stringify(func));
-    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData('application/json', JSON.stringify(func));
+    event.dataTransfer.effectAllowed = 'move';
   };
 
   const handleSave = useCallback(async () => {
     if (!pipeline) {
-      message.error("No pipeline to save");
+      message.error('No pipeline to save');
       return;
     }
 
     try {
       // Convert ReactFlow nodes back to pipeline nodes
       const pipelineNodes: PipelineNode[] = nodes.map((node) => {
-        if (node.type === "function") {
+        if (node.type === 'function') {
           return {
             id: node.id,
-            nodeType: "FUNCTION" as const,
-            name: node.data.functionDetail?.definition.name || "Function",
+            nodeType: 'FUNCTION' as const,
+            name: node.data.functionDetail?.definition.name || 'Function',
             position: node.position,
             functionId: node.data.functionId,
           } as FunctionNode;
         } else {
           return {
             id: node.id,
-            nodeType: "VALUE" as const,
-            name: node.data.name || "Value",
+            nodeType: 'VALUE' as const,
+            name: node.data.name || 'Value',
             position: node.position,
-            value: node.data.value || { type: "STRING", data: "" },
+            value: node.data.value || { type: 'STRING', data: '' },
           } as ValueNode;
         }
       });
@@ -462,15 +478,15 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         },
       });
 
-      message.success("Pipeline saved successfully!");
+      message.success('Pipeline saved successfully!');
     } catch (error) {
-      console.error("Save error:", error);
+      console.error('Save error:', error);
     }
   }, [pipeline, nodes, edges, pipelineName, updatePipeline]);
 
   const handleRun = useCallback(async () => {
     if (!pipeline) {
-      message.error("No pipeline to execute");
+      message.error('No pipeline to execute');
       return;
     }
 
@@ -480,12 +496,12 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         executionData: { inputs: {} }, // TODO: Collect proper inputs
       });
     } catch (error) {
-      console.error("Execution error:", error);
+      console.error('Execution error:', error);
     }
   }, [pipeline, executePipeline]);
 
   if (pipelineLoading) {
-    return <Card loading style={{ height: "100vh" }} />;
+    return <Card loading style={{ height: '100vh' }} />;
   }
 
   return (
@@ -498,8 +514,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
               icon={<ArrowLeftOutlined />}
               onClick={onBack}
               className={styles.backButton}
-            >
-            </Button>
+            ></Button>
           )}
           <div className={styles.titleSection}>
             <Input
@@ -546,7 +561,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
             isValidConnection={isValidConnection}
             nodeTypes={nodeTypes}
             fitView
-            deleteKeyCode={["Backspace", "Delete"]}
+            deleteKeyCode={['Backspace', 'Delete']}
             className={styles.reactFlow}
           >
             <Controls />
@@ -568,10 +583,11 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         >
           <div className={styles.functionsPanel}>
             <Text type="secondary" className={styles.instructionText}>
-              <DragOutlined /> Drag functions to the canvas to add them to your pipeline
+              <DragOutlined /> Drag functions to the canvas to add them to your
+              pipeline
             </Text>
             <Divider />
-            
+
             <List
               loading={functionsLoading}
               dataSource={availableFunctions}
@@ -599,7 +615,9 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
                   </Card>
                 </List.Item>
               )}
-              locale={{ emptyText: "No compiled functions available" }}
+              locale={{
+                emptyText: 'No compiled functions available',
+              }}
             />
           </div>
         </Drawer>
@@ -625,4 +643,4 @@ export const PipelineEditor: React.FC<PipelineEditorProps> = (props) => {
       <PipelineEditorComponent {...props} />
     </ReactFlowProvider>
   );
-}; 
+};

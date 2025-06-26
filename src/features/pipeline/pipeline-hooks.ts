@@ -1,20 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
-import { pipelineApi } from "./pipeline-api";
-import type { PageRequest } from "@/types/api";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { message } from 'antd';
+import { pipelineApi } from './pipeline-api';
+import type { PageRequest } from '@/types/api';
 import type {
   PipelineCreateDto,
   PipelineExecutionTriggerDto,
   PipelineFilter,
   PipelineUpdateDto,
-} from "@/features/pipeline/pipeline-types";
+} from '@/features/pipeline/pipeline-types';
 
 export const pipelineQueryKeys = {
-  all: ["pipelines"] as const,
-  lists: () => [...pipelineQueryKeys.all, "list"] as const,
+  all: ['pipelines'] as const,
+  lists: () => [...pipelineQueryKeys.all, 'list'] as const,
   list: (filter: PipelineFilter, pageRequest: PageRequest) =>
     [...pipelineQueryKeys.lists(), filter, pageRequest] as const,
-  details: () => [...pipelineQueryKeys.all, "detail"] as const,
+  details: () => [...pipelineQueryKeys.all, 'detail'] as const,
   detail: (id: string) => [...pipelineQueryKeys.details(), id] as const,
 };
 
@@ -47,11 +47,12 @@ export const useCreatePipeline = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: PipelineCreateDto) =>
-      pipelineApi.createPipeline(data),
+    mutationFn: (data: PipelineCreateDto) => pipelineApi.createPipeline(data),
     onSuccess: (newPipeline) => {
       // Invalidate list queries to refresh the pipeline list
-      queryClient.invalidateQueries({ queryKey: pipelineQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: pipelineQueryKeys.lists(),
+      });
 
       // Cache the new pipeline detail
       queryClient.setQueryData(
@@ -59,7 +60,7 @@ export const useCreatePipeline = () => {
         newPipeline,
       );
 
-      message.success("Pipeline created successfully!");
+      message.success('Pipeline created successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -88,9 +89,11 @@ export const useUpdatePipeline = () => {
       );
 
       // Invalidate list queries to refresh the pipeline list
-      queryClient.invalidateQueries({ queryKey: pipelineQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: pipelineQueryKeys.lists(),
+      });
 
-      message.success("Pipeline updated successfully!");
+      message.success('Pipeline updated successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -104,8 +107,7 @@ export const useDeletePipeline = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (pipelineId: string) =>
-      pipelineApi.deletePipeline(pipelineId),
+    mutationFn: (pipelineId: string) => pipelineApi.deletePipeline(pipelineId),
     onSuccess: (_, pipelineId) => {
       // Remove the cached pipeline detail
       queryClient.removeQueries({
@@ -113,9 +115,11 @@ export const useDeletePipeline = () => {
       });
 
       // Invalidate list queries to refresh the pipeline list
-      queryClient.invalidateQueries({ queryKey: pipelineQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: pipelineQueryKeys.lists(),
+      });
 
-      message.success("Pipeline deleted successfully!");
+      message.success('Pipeline deleted successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -135,7 +139,7 @@ export const useExecutePipeline = () => {
       executionData: PipelineExecutionTriggerDto;
     }) => pipelineApi.executePipeline(pipelineId, executionData),
     onSuccess: () => {
-      message.success("Pipeline execution started successfully!");
+      message.success('Pipeline execution started successfully!');
     },
     onError: (error: any) => {
       message.error(
@@ -193,7 +197,11 @@ export const usePipelineOptimisticUpdate = () => {
     }));
   };
 
-  const updateNodeInCache = (pipelineId: string, nodeId: string, updates: any) => {
+  const updateNodeInCache = (
+    pipelineId: string,
+    nodeId: string,
+    updates: any,
+  ) => {
     updatePipelineCache(pipelineId, (old) => ({
       ...old,
       nodes: old.nodes.map((node: any) =>
@@ -209,10 +217,15 @@ export const usePipelineOptimisticUpdate = () => {
     }));
   };
 
-  const removeConnectionFromCache = (pipelineId: string, connectionId: string) => {
+  const removeConnectionFromCache = (
+    pipelineId: string,
+    connectionId: string,
+  ) => {
     updatePipelineCache(pipelineId, (old) => ({
       ...old,
-      connections: old.connections.filter((conn: any) => conn.id !== connectionId),
+      connections: old.connections.filter(
+        (conn: any) => conn.id !== connectionId,
+      ),
     }));
   };
 
@@ -263,7 +276,7 @@ export const usePipelineValidation = () => {
 
     for (const node of nodes) {
       if (hasCircularDependency(node.id, visited, recursionStack)) {
-        errors.push("Circular dependency detected in pipeline");
+        errors.push('Circular dependency detected in pipeline');
         break;
       }
     }
@@ -274,11 +287,15 @@ export const usePipelineValidation = () => {
       const targetNode = nodes.find((n) => n.id === connection.targetNodeId);
 
       if (!sourceNode) {
-        errors.push(`Connection references non-existent source node: ${connection.sourceNodeId}`);
+        errors.push(
+          `Connection references non-existent source node: ${connection.sourceNodeId}`,
+        );
       }
 
       if (!targetNode) {
-        errors.push(`Connection references non-existent target node: ${connection.targetNodeId}`);
+        errors.push(
+          `Connection references non-existent target node: ${connection.targetNodeId}`,
+        );
       }
     }
 
@@ -289,4 +306,4 @@ export const usePipelineValidation = () => {
   };
 
   return { validatePipeline };
-}; 
+};

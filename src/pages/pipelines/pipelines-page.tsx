@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Row,
   Col,
@@ -9,12 +9,19 @@ import {
   Alert,
   Pagination,
   Card,
-} from "antd";
-import { PlusOutlined, PlayCircleOutlined, EditOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { usePipelinePage, useCreatePipeline } from "@/features/pipeline/pipeline-hooks";
-import type { PipelineFilter } from "@/features/pipeline/pipeline-types";
-import styles from "./pipelines-page.module.css";
+} from 'antd';
+import {
+  PlusOutlined,
+  PlayCircleOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import {
+  usePipelinePage,
+  useCreatePipeline,
+} from '@/features/pipeline/pipeline-hooks';
+import type { PipelineFilter } from '@/features/pipeline/pipeline-types';
+import styles from './pipelines-page.module.css';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -28,10 +35,14 @@ export const PipelinesPage = () => {
   const createPipeline = useCreatePipeline();
 
   // Fetch pipelines using the new API
-  const { data: pipelinePage, isLoading, error } = usePipelinePage(filter, {
+  const {
+    data: pipelinePage,
+    isLoading,
+    error,
+  } = usePipelinePage(filter, {
     page: currentPage - 1, // Convert to 0-based index
     size: pageSize,
-    sort: "createdAt,desc",
+    sort: 'createdAt,desc',
   });
 
   const handleSearch = (keyword: string) => {
@@ -54,16 +65,16 @@ export const PipelinesPage = () => {
   const handleCreatePipeline = async () => {
     try {
       const newPipeline = await createPipeline.mutateAsync({
-        name: "New Pipeline",
-        description: "A new pipeline workflow",
+        name: 'New Pipeline',
+        description: 'A new pipeline workflow',
         nodes: [],
         connections: [],
       });
-      
+
       // Navigate to the new pipeline editor
       navigate(`/pipelines/${newPipeline.id}/edit`);
     } catch (error) {
-      console.error("Failed to create pipeline:", error);
+      console.error('Failed to create pipeline:', error);
     }
   };
 
@@ -121,7 +132,7 @@ export const PipelinesPage = () => {
           <Col span={11}>
             <div className={styles.filterCount}>
               <span>
-                {total} pipeline{total !== 1 ? "s" : ""} found
+                {total} pipeline{total !== 1 ? 's' : ''} found
               </span>
             </div>
           </Col>
@@ -130,7 +141,7 @@ export const PipelinesPage = () => {
 
       {/* Loading State */}
       {isLoading && (
-        <div style={{ textAlign: "center", padding: "50px" }}>
+        <div style={{ textAlign: 'center', padding: '50px' }}>
           <Spin size="large" />
         </div>
       )}
@@ -143,19 +154,19 @@ export const PipelinesPage = () => {
               <Card
                 className={styles.pipelineCard}
                 actions={[
-                  <EditOutlined 
-                    key="edit" 
+                  <EditOutlined
+                    key="edit"
                     onClick={() => navigate(`/pipelines/${pipeline.id}/edit`)}
                   />,
-                  <PlayCircleOutlined 
-                    key="run" 
+                  <PlayCircleOutlined
+                    key="run"
                     onClick={() => navigate(`/pipelines/${pipeline.id}/run`)}
                   />,
                 ]}
               >
                 <Card.Meta
                   title={
-                    <div 
+                    <div
                       className={styles.cardTitle}
                       onClick={() => navigate(`/pipelines/${pipeline.id}`)}
                     >
@@ -173,7 +184,9 @@ export const PipelinesPage = () => {
                   </div>
                 </div>
                 <div className={styles.cardFooter}>
-                  <span>Updated {new Date(pipeline.updatedAt).toLocaleDateString()}</span>
+                  <span>
+                    Updated {new Date(pipeline.updatedAt).toLocaleDateString()}
+                  </span>
                 </div>
               </Card>
             </Col>
@@ -193,7 +206,7 @@ export const PipelinesPage = () => {
             showTotal={(total, range) =>
               `${range[0]}-${range[1]} of ${total} pipelines`
             }
-            pageSizeOptions={["10", "20", "50", "100"]}
+            pageSizeOptions={['10', '20', '50', '100']}
             onChange={handlePageChange}
             size="default"
           />
@@ -217,4 +230,4 @@ export const PipelinesPage = () => {
       )}
     </div>
   );
-}; 
+};

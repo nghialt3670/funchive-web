@@ -2,7 +2,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f5f5;
+  background: var(--color-background-tertiary);
 }
 
 .header {
@@ -10,9 +10,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background: white;
-  border-bottom: 1px solid #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: var(--color-background-primary);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .headerLeft {
@@ -40,8 +40,8 @@
 }
 
 .pipelineNameInput:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-background-selected);
 }
 
 .canvasContainer {
@@ -56,41 +56,41 @@
 }
 
 .reactFlow {
-  background: #f9f9f9;
+  background: var(--color-background-secondary);
 }
 
 /* Node Styles */
 .functionNode {
-  background: white;
-  border: 2px solid #1890ff;
-  border-radius: 8px;
+  background: var(--color-background-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius-lg);
   padding: 12px;
   min-width: 200px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
 }
 
 .functionNode:hover {
-  border-color: #40a9ff;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-lg);
 }
 
 .inputNode {
-  background: #f6ffed;
-  border: 2px solid #52c41a;
-  border-radius: 8px;
+  background: var(--color-background-selected);
+  border: 2px solid var(--color-success);
+  border-radius: var(--border-radius-lg);
   padding: 12px;
   min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .outputNode {
-  background: #fff2e8;
-  border: 2px solid #fa8c16;
-  border-radius: 8px;
+  background: var(--color-background-secondary);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--border-radius-lg);
   padding: 12px;
   min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .nodeHeader {
@@ -103,12 +103,12 @@
 .nodeTitle {
   font-weight: 600;
   font-size: 14px;
-  color: #262626;
+  color: var(--color-text-primary);
 }
 
 .nodeDescription {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 8px;
   line-height: 1.4;
 }
@@ -129,25 +129,25 @@
 .nodeHandle {
   width: 12px !important;
   height: 12px !important;
-  background: #1890ff !important;
-  border: 2px solid white !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  background: var(--color-primary) !important;
+  border: 2px solid var(--color-background-primary) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
-.functionNode .nodeHandle[data-handlepos="left"] {
-  background: #52c41a !important;
+.functionNode .nodeHandle[data-handlepos='left'] {
+  background: var(--color-success) !important;
 }
 
-.functionNode .nodeHandle[data-handlepos="right"] {
-  background: #fa8c16 !important;
+.functionNode .nodeHandle[data-handlepos='right'] {
+  background: var(--color-warning) !important;
 }
 
 .inputNode .nodeHandle {
-  background: #52c41a !important;
+  background: var(--color-success) !important;
 }
 
 .outputNode .nodeHandle {
-  background: #fa8c16 !important;
+  background: var(--color-warning) !important;
 }
 
 /* Functions Panel */
@@ -281,17 +281,17 @@
     gap: 16px;
     align-items: stretch;
   }
-  
+
   .headerLeft {
     justify-content: space-between;
   }
-  
+
   .pipelineNameInput {
     width: 100%;
   }
-  
+
   .toggleFunctionsButton {
     top: 10px;
     right: 10px;
   }
-} 
+}

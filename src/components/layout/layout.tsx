@@ -1,5 +1,6 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import styles from "./layout.module.css";
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { ThemeToggle } from '@/components/theme-toggle';
+import styles from './layout.module.css';
 
 export const Layout = () => {
   const location = useLocation();
@@ -13,23 +14,24 @@ export const Layout = () => {
           <nav className={styles.navMenu}>
             <Link
               to="/"
-              className={`${styles.navLink} ${location.pathname === "/" ? styles.active : ""}`}
+              className={`${styles.navLink} ${location.pathname === '/' ? styles.active : ''}`}
             >
               Home
             </Link>
             <Link
               to="/functions"
-              className={`${styles.navLink} ${location.pathname === "/functions" ? styles.active : ""}`}
+              className={`${styles.navLink} ${location.pathname === '/functions' ? styles.active : ''}`}
             >
               Functions
             </Link>
             <Link
               to="/pipelines"
-              className={`${styles.navLink} ${location.pathname.startsWith("/pipelines") ? styles.active : ""}`}
+              className={`${styles.navLink} ${location.pathname.startsWith('/pipelines') ? styles.active : ''}`}
             >
               Pipelines
             </Link>
           </nav>
+          <ThemeToggle />
         </div>
       </header>
 

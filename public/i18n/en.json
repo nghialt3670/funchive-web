@@ -1,0 +1,19 @@
+{
+    "functions-page": {
+        "title": "Functions",
+        "description": "Manage and deploy your serverless functions",
+        "create-function": "Create Function",
+        "search-functions": "Search functions...",
+        "filter-by-language": "Filter by language",
+        "sort-by": "Sort by",
+        "name": "Name",
+        "language": "Language"
+    },
+    
+    "function-card": {
+        "compile-function": "Compile Function",
+        "execute-function": "Execute Function",
+        "compile": "Compile",
+        "execute": "Execute"
+    }
+}

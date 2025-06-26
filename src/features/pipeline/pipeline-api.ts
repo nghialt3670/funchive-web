@@ -1,20 +1,20 @@
-import axios from "axios";
-import type { PageRequest, ResponseBody, ResponsePage } from "@/types/api";
+import axios from 'axios';
+import type { PageRequest, ResponseBody, ResponsePage } from '@/types/api';
 import type {
   PipelineCreateDto,
   PipelineDetailDto,
   PipelineExecutionTriggerDto,
   PipelineFilter,
   PipelineUpdateDto,
-} from "@/features/pipeline/pipeline-types";
+} from '@/features/pipeline/pipeline-types';
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 const pipelineAxios = axios.create({
-  baseURL: API_BASE_URL + "/funchive-function-service",
+  baseURL: API_BASE_URL + '/funchive-function-service',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -23,7 +23,7 @@ export const pipelineApi = {
     data: PipelineCreateDto,
   ): Promise<PipelineDetailDto> => {
     const response = await pipelineAxios.post<ResponseBody<PipelineDetailDto>>(
-      "/pipelines",
+      '/pipelines',
       data,
     );
     return response.data.data;
@@ -41,8 +41,8 @@ export const pipelineApi = {
     pageRequest: PageRequest = {},
   ): Promise<ResponsePage<PipelineDetailDto>> => {
     const params = {
-      keyword: filter.keyword || "",
-      createdBy: filter.createdBy || "",
+      keyword: filter.keyword || '',
+      createdBy: filter.createdBy || '',
       page: pageRequest.page || 0,
       size: pageRequest.size || 20,
       ...(pageRequest.sort && { sort: pageRequest.sort }),
@@ -50,7 +50,7 @@ export const pipelineApi = {
 
     const response = await pipelineAxios.get<
       ResponseBody<ResponsePage<PipelineDetailDto>>
-    >("/pipelines", { params });
+    >('/pipelines', { params });
     return response.data.data;
   },
 
@@ -86,7 +86,7 @@ export const pipelineApi = {
 // Add request interceptor for authentication
 pipelineAxios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -102,9 +102,9 @@ pipelineAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("authToken");
-      window.location.href = "/login";
+      localStorage.removeItem('authToken');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   },
-); 
+);

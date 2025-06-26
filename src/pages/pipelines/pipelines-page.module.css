@@ -1,11 +1,15 @@
 .container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 1rem;
+  padding-bottom: 2rem;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 1rem;
 }
 
 .headerInfo h1 {
@@ -13,7 +17,7 @@
 }
 
 .headerInfo p {
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
   font-size: 16px;
 }
@@ -21,8 +25,8 @@
 .filtersSection {
   margin-bottom: 24px;
   padding: 20px;
-  background: #fafafa;
-  border-radius: 8px;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
 }
 
 .filterSelect {
@@ -34,7 +38,7 @@
   align-items: center;
   justify-content: flex-end;
   height: 32px;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
@@ -50,12 +54,12 @@
 }
 
 .pipelineCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
 
 .cardTitle {
-  color: #1890ff;
+  color: var(--color-primary);
   font-weight: 600;
   cursor: pointer;
 }
@@ -70,42 +74,42 @@
   align-items: center;
   margin: 16px 0 8px 0;
   padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .nodeCount {
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
 .status {
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
 }
 
 .status.active {
-  background: #f6ffed;
-  color: #52c41a;
-  border: 1px solid #b7eb8f;
+  background: var(--color-background-selected);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
 }
 
 .status.draft {
-  background: #fff7e6;
-  color: #fa8c16;
-  border: 1px solid #ffd591;
+  background: var(--color-background-secondary);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
 }
 
 .status.paused {
-  background: #f0f0f0;
-  color: #666;
-  border: 1px solid #d9d9d9;
+  background: var(--color-background-tertiary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
 }
 
 .cardFooter {
-  color: #999;
+  color: var(--color-text-tertiary);
   font-size: 12px;
   margin-top: 8px;
 }
@@ -115,23 +119,23 @@
   justify-content: center;
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .emptyState {
   text-align: center;
   padding: 64px 32px;
-  background: #fafafa;
-  border-radius: 8px;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
   margin-top: 32px;
 }
 
 .emptyState h3 {
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 16px;
 }
 
 .emptyState p {
-  color: #999;
+  color: var(--color-text-tertiary);
   margin-bottom: 24px;
-} 
+}

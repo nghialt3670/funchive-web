@@ -1,7 +1,21 @@
-import React from "react";
-import type { MenuProps } from "antd";
-import { Button, Card, Dropdown, Space, Tag, Tooltip, Typography } from "antd";
+import type { MenuProps } from 'antd';
 import {
+  useContext,
+  type FC,
+  type MouseEvent,
+  type PropsWithChildren,
+} from 'react';
+import {
+  Button,
+  Card,
+  Dropdown,
+  message,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
+import {
+  ArrowRightOutlined,
   BugOutlined,
   CheckCircleOutlined,
   CopyOutlined,
@@ -14,35 +28,242 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
   RocketOutlined,
-} from "@ant-design/icons";
-
-import styles from "./function-card.module.css";
+} from '@ant-design/icons';
+import styles from './function-card.module.css';
 import type {
   CompilationStatus,
   FunctionDetailDto,
-} from "@/features/function/function-types";
-import { useNavigate } from "react-router-dom";
-import { getLanguageIcon } from "@/utils/icon-utils";
-import { useDeleteFunction, useCompileFunction } from "@/features/function/function-hooks";
+} from '@/features/function/function-types';
+import { useNavigate } from 'react-router-dom';
+import { getLanguageIcon } from '@/features/function/utils/icon-utils';
+import {
+  useDeleteFunctionMutation,
+  useCompileFunctionMutation,
+} from '@/features/function/function-hooks';
+import {
+  FunctionDetailContext,
+  FunctionDetailContextProvider,
+  useFunctionDetailContext,
+} from '../../contexts/function-detail-context';
+import { TypeTooltip } from '../type-tooltip';
+import {
+  getCompilationStatusColor,
+  getTypeColor,
+} from '../../utils/color-utils';
+import { getCompilationStatusIcon } from '../../utils/icon-utils';
+import { getCompilationStatusLabel } from '../../utils/label-utils';
+import { NamespaceProvider } from '@/contexts/namespace-context';
+import { useNamespace } from '@/hooks/use-namespace';
+import { useTranslation } from 'react-i18next';
+import { useNamespacedTranslation } from '@/hooks/use-namespaced-translation';
 
 const { Text, Paragraph } = Typography;
 
-export interface FunctionCardProps {
+export interface FunctionCardProps extends PropsWithChildren {
   functionDetail: FunctionDetailDto;
+  onCardClick?: (e: MouseEvent) => void;
 }
 
-export const FunctionCard: React.FC<FunctionCardProps> = ({
+export const FunctionCard: FC<FunctionCardProps> = ({
   functionDetail,
+  children,
+  onCardClick,
 }) => {
-  const { id, definition, implementation, compilationStatus } = functionDetail;
   const navigate = useNavigate();
-  
-  const deleteMutation = useDeleteFunction();
-  const compileMutation = useCompileFunction();
+  const namespace = 'function';
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (onCardClick) {
+      onCardClick(e);
+      return;
+    }
+    // Don't navigate if clicking on buttons or dropdowns
+    if ((e.target as HTMLElement).closest('button, .ant-dropdown')) {
+      return;
+    }
+    navigate(`/functions/${functionDetail.id}`);
+  };
+
+  return (
+    <NamespaceProvider namespace={namespace}>
+      <FunctionDetailContextProvider functionDetail={functionDetail}>
+        <Card
+          className={styles.functionCard}
+          hoverable
+          onClick={handleCardClick}
+          bodyStyle={{
+            padding: '1rem',
+          }}
+        >
+          {children}
+        </Card>
+      </FunctionDetailContextProvider>
+    </NamespaceProvider>
+  );
+};
+
+export const FunctionCardHeader: FC<PropsWithChildren> = ({ children }) => {
+  return <div className={styles.functionCardHeader}>{children}</div>;
+};
+
+export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
+  return <div className={styles.functionCardBody}>{children}</div>;
+};
+
+export const FunctionCardFooter: FC<PropsWithChildren> = ({ children }) => {
+  return <div className={styles.functionCardFooter}>{children}</div>;
+};
+
+export const FunctionLanguageIcon: FC = () => {
+  const { implementation } = useFunctionDetailContext();
+  return getLanguageIcon(implementation.language);
+};
+
+export const FunctionName: FC = () => {
+  const { t } = useTranslation();
+  const { definition } = useFunctionDetailContext();
+
+  return (
+    <Paragraph
+      ellipsis={{ rows: 3, expandable: true, symbol: t('show-more') }}
+      strong
+      className={styles.functionName}
+    >
+      {definition.name}
+    </Paragraph>
+  );
+};
+
+export const FunctionDescription: FC = () => {
+  const { t } = useTranslation();
+  const { definition } = useFunctionDetailContext();
+
+  return (
+    <Paragraph
+      ellipsis={{ rows: 5, expandable: true, symbol: t('show-more') }}
+      className={styles.functionDescription}
+    >
+      {definition.description}
+    </Paragraph>
+  );
+};
+
+export const FunctionInputOutputTypes: FC = () => {
+  const { definition } = useFunctionDetailContext();
+  const inputTypeColor = getTypeColor(definition.inputType);
+  const outputTypeColor = getTypeColor(definition.outputType);
+
+  return (
+    <div className={styles.functionInputOutputTypes}>
+      <TypeTooltip
+        type={definition.inputType}
+      >
+        <Tag color={inputTypeColor} className={styles.inputTypeTag}>
+          {definition.inputType.name}
+        </Tag>
+      </TypeTooltip>
+      <ArrowRightOutlined />
+      <TypeTooltip
+        type={definition.outputType}
+      >
+        <Tag color={outputTypeColor} className={styles.outputTypeTag}>
+          {definition.outputType.name}
+        </Tag>
+      </TypeTooltip>
+    </div>
+  );
+};
+
+export const FunctionCompilationStatus: FC = () => {
+  const { compilationStatus } = useFunctionDetailContext();
+  const compilationStatusColor = getCompilationStatusColor(compilationStatus);
+  const compilationStatusIcon = getCompilationStatusIcon(compilationStatus);
+  const compilationStatusLabel = getCompilationStatusLabel(compilationStatus);
+
+  return (
+    <div className={styles.compilationSection}>
+      <Text type="secondary" className={styles.compilationLabel}>
+        Compilation:
+      </Text>
+      <Tag
+        color={compilationStatusColor}
+        className={styles.compilationTag}
+        icon={compilationStatusIcon}
+      >
+        {compilationStatusLabel}
+      </Tag>
+    </div>
+  );
+};
+
+export const FunctionCompileOrExecuteButton: FC = () => {
+  const { compilationStatus } = useFunctionDetailContext();
+  const canRun = compilationStatus === 'SUCCESS';
+  const needsCompilation = ['NOT_STARTED', 'OUTDATED', 'FAILED'].includes(
+    compilationStatus,
+  );
+
+  if (canRun) {
+    return <FunctionExecuteButton />;
+  }
+
+  if (needsCompilation) {
+    return <FunctionCompileButton />;
+  }
+
+  return <FunctionCompileButton />;
+};
+
+export const FunctionCompileButton: FC = () => {
+  const { t } = useNamespacedTranslation();
+  const { id } = useFunctionDetailContext();
+  const compileMutation = useCompileFunctionMutation();
 
   const handleCompile = () => {
     compileMutation.mutate(id);
   };
+
+  return (
+    <Tooltip title={t('compile-function')} key="compile">
+      <Button
+        type="text"
+        icon={<RocketOutlined />}
+        onClick={handleCompile}
+        className={styles.functionCompileButton}
+      >
+        {t('compile')}
+      </Button>
+    </Tooltip>
+  );
+};
+
+export const FunctionExecuteButton: FC = () => {
+  const navigate = useNavigate();
+  const { t } = useNamespacedTranslation();
+  const { id } = useFunctionDetailContext();
+
+  const handleExecute = () => {
+    navigate(`/pipelines/new?functionId=${id}`);
+  };
+
+  return (
+    <Tooltip title={t('execute-function')} key="execute">
+      <Button
+        type="text"
+        icon={<PlayCircleOutlined />}
+        onClick={handleExecute}
+        className={styles.functionExecuteButton}
+      >
+        {t('execute')}
+      </Button>
+    </Tooltip>
+  );
+};
+
+export const FunctionOptions: FC = () => {
+  const { id } = useFunctionDetailContext();
+  const navigate = useNavigate();
+  const deleteMutation = useDeleteFunctionMutation();
 
   const handleEdit = () => {
     navigate(`/functions/${id}/edit`);
@@ -55,10 +276,6 @@ export const FunctionCard: React.FC<FunctionCardProps> = ({
   const handleClone = () => {
     // TODO: Implement clone functionality
     console.log("Cloning function:", id);
-  };
-
-  const handleExecute = () => {
-    navigate(`/pipelines/new?functionId=${id}`);
   };
 
   const dropdownItems: MenuProps["items"] = [
@@ -92,223 +309,16 @@ export const FunctionCard: React.FC<FunctionCardProps> = ({
     },
   ];
 
-  const getStatusColor = (status: CompilationStatus) => {
-    switch (status) {
-      case "SUCCESS":
-        return "success";
-      case "FAILED":
-        return "error";
-      case "IN_PROGRESS":
-        return "processing";
-      case "OUTDATED":
-        return "warning";
-      case "NOT_STARTED":
-        return "default";
-      default:
-        return "default";
-    }
-  };
-
-  const getStatusIcon = (status: CompilationStatus) => {
-    switch (status) {
-      case "SUCCESS":
-        return <CheckCircleOutlined />;
-      case "FAILED":
-        return <BugOutlined />;
-      case "IN_PROGRESS":
-        return <LoadingOutlined spin />;
-      case "OUTDATED":
-        return <ExclamationCircleOutlined />;
-      case "NOT_STARTED":
-        return <PauseCircleOutlined />;
-      default:
-        return <PauseCircleOutlined />;
-    }
-  };
-
-  const getStatusText = (status: CompilationStatus) => {
-    switch (status) {
-      case "SUCCESS":
-        return "SUCCESS";
-      case "FAILED":
-        return "FAILED";
-      case "IN_PROGRESS":
-        return "IN PROGRESS";
-      case "OUTDATED":
-        return "OUTDATED";
-      case "NOT_STARTED":
-        return "NOT STARTED";
-      default:
-        return status;
-    }
-  };
-
-  const canRun = compilationStatus === "SUCCESS";
-  const needsCompilation = ["NOT_STARTED", "OUTDATED", "FAILED"].includes(
-    compilationStatus,
-  );
-
-  const cardActions = [
-    canRun ? (
-      <Tooltip title="Execute Function">
-        <Button
-          type="text"
-          icon={<PlayCircleOutlined />}
-          onClick={handleExecute}
-          className={styles.executeButton}
-        >
-          Execute
-        </Button>
-      </Tooltip>
-    ) : needsCompilation ? (
-      <Tooltip title="Compile Function">
-        <Button
-          type="text"
-          icon={<RocketOutlined />}
-          onClick={handleCompile}
-          className={styles.compileButton}
-          loading={compilationStatus === "IN_PROGRESS"}
-        >
-          Compile
-        </Button>
-      </Tooltip>
-    ) : (
-      <Tooltip title="Compiling...">
-        <Button type="text" icon={<LoadingOutlined spin />} disabled>
-          Compiling
-        </Button>
-      </Tooltip>
-    ),
-    <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
-      <Button type="text" icon={<MoreOutlined />} />
-    </Dropdown>,
-  ];
-
   return (
-    <Card
-      title={
-        <div className={styles.cardTitle}>
-          <Text strong className={styles.functionName}>
-            {definition.name}
-          </Text>
-          {getLanguageIcon(implementation.language)}
-        </div>
-      }
-      actions={cardActions}
-      className={styles.card}
-      hoverable
+    <Dropdown
+      menu={{ items: dropdownItems }}
+      trigger={["hover"]}
     >
-      <Space direction="vertical" className={styles.cardContent}>
-        <Paragraph
-          ellipsis={{ rows: 2, expandable: true }}
-          className={styles.description}
-        >
-          {definition.description}
-        </Paragraph>
-
-        <div className={styles.typeSection}>
-          <div>
-            <Text type="secondary">Input: </Text>
-            {definition.inputType?.name === "OBJECT" &&
-            (definition.inputType as any)?.schema ? (
-              <Tooltip
-                title={
-                  <div className={styles.tooltipContent}>
-                    <div className={styles.tooltipFields}>
-                      {Object.entries((definition.inputType as any).schema).map(
-                        ([fieldName, fieldType]: [string, any]) => (
-                          <div key={fieldName} className={styles.tooltipField}>
-                            <div className={styles.tooltipFieldHeader}>
-                              <span className={styles.tooltipFieldName}>
-                                {fieldName}
-                              </span>
-                              <span className={styles.tooltipInputTag}>
-                                {fieldType.name}
-                              </span>
-                            </div>
-                            {fieldType.description && (
-                              <div className={styles.tooltipFieldDescription}>
-                                {fieldType.description}
-                              </div>
-                            )}
-                          </div>
-                        ),
-                      )}
-                    </div>
-                  </div>
-                }
-                placement="top"
-                overlayStyle={{ zIndex: 9999 }}
-              >
-                <Tag color="geekblue" className={styles.inputTypeTag}>
-                  {definition.inputType?.name || "Any"}
-                </Tag>
-              </Tooltip>
-            ) : (
-              <Tag color="geekblue" className={styles.inputTypeTag}>
-                {definition.inputType?.name || "Any"}
-              </Tag>
-            )}
-          </div>
-          <div>
-            <Text type="secondary">Output: </Text>
-            {definition.outputType?.name === "OBJECT" &&
-            (definition.outputType as any)?.schema ? (
-              <Tooltip
-                title={
-                  <div className={styles.tooltipContent}>
-                    <div className={styles.tooltipFields}>
-                      {Object.entries(
-                        (definition.outputType as any).schema,
-                      ).map(([fieldName, fieldType]: [string, any]) => (
-                        <div key={fieldName} className={styles.tooltipField}>
-                          <div className={styles.tooltipFieldHeader}>
-                            <span className={styles.tooltipOutputFieldName}>
-                              {fieldName}
-                            </span>
-                            <span className={styles.tooltipOutputTag}>
-                              {fieldType.name}
-                            </span>
-                          </div>
-                          {fieldType.description && (
-                            <div className={styles.tooltipFieldDescription}>
-                              {fieldType.description}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                }
-                placement="top"
-                overlayStyle={{ zIndex: 9999 }}
-              >
-                <Tag color="green" className={styles.outputTypeTag}>
-                  {definition.outputType?.name || "Any"}
-                </Tag>
-              </Tooltip>
-            ) : (
-              <Tag color="green" className={styles.outputTypeTag}>
-                {definition.outputType?.name || "Any"}
-              </Tag>
-            )}
-          </div>
-        </div>
-
-        {/* Compilation Status */}
-        <div className={styles.compilationSection}>
-          <Text type="secondary" className={styles.compilationLabel}>
-            Compilation:
-          </Text>
-          <Tag
-            color={getStatusColor(compilationStatus)}
-            className={styles.compilationTag}
-            icon={getStatusIcon(compilationStatus)}
-          >
-            {getStatusText(compilationStatus)}
-          </Tag>
-        </div>
-      </Space>
-    </Card>
+      <Button
+        type="text"
+        onClick={(e) => e.stopPropagation()}
+        icon={<MoreOutlined />}
+      />
+    </Dropdown>
   );
 };

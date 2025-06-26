@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   Card,
   Form,
@@ -16,7 +16,7 @@ import {
   Modal,
   Spin,
   Alert,
-} from "antd";
+} from 'antd';
 import {
   SaveOutlined,
   PlayCircleOutlined,
@@ -25,41 +25,41 @@ import {
   CodeOutlined,
   RocketOutlined,
   DeleteOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 import {
-  useFunctionDetail,
-  useCreateFunction,
-  useUpdateFunction,
-  useDeleteFunction,
-  useCompileFunction,
-  useExecuteFunction,
-} from "@/features/function/function-hooks";
+  useFunctionDetailQuery,
+  useCreateFunctionMutation,
+  useUpdateFunctionMutation,
+  useDeleteFunctionMutation,
+  useCompileFunctionMutation,
+  useExecuteFunctionMutation,
+} from '@/features/function/function-hooks';
 import type {
   CompilationStatus,
   FunctionCreateDto,
   FunctionUpdateDto,
-} from "@/features/function/function-types";
-import styles from "./function-page.module.css";
-import { TypeBuilder } from "@/features/function/components/type-builder";
-import { toSnakeCase } from "@/utils/code-utils";
+} from '@/features/function/function-types';
+import styles from './function-page.module.css';
+import { TypeBuilder } from '@/features/function/components/type-builder';
+import { toSnakeCase } from '@/utils/code-utils';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
-type PageMode = "create" | "view" | "edit";
+type PageMode = 'create' | 'view' | 'edit';
 
 export const FunctionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [mode, setMode] = useState<PageMode>("create");
+  const [mode, setMode] = useState<PageMode>('create');
   const [form] = Form.useForm();
   const [functionBody, setFunctionBody] = useState(
     '    """\n    Main function entry point\n    \n    Args:\n        input_data: The input data to process\n        \n    Returns:\n        The processed result\n    """\n    # Your code here\n    return input_data',
   );
-  const [functionName, setFunctionName] = useState("");
+  const [functionName, setFunctionName] = useState('');
 
   // React Query hooks
   const {
@@ -67,32 +67,32 @@ export const FunctionPage: React.FC = () => {
     isLoading,
     error,
     refetch,
-  } = useFunctionDetail(id!, !!id);
+  } = useFunctionDetailQuery(id!, !!id);
 
-  const createMutation = useCreateFunction();
-  const updateMutation = useUpdateFunction();
-  const deleteMutation = useDeleteFunction();
-  const compileMutation = useCompileFunction();
-  const executeMutation = useExecuteFunction();
+  const createMutation = useCreateFunctionMutation();
+  const updateMutation = useUpdateFunctionMutation();
+  const deleteMutation = useDeleteFunctionMutation();
+  const compileMutation = useCompileFunctionMutation();
+  const executeMutation = useExecuteFunctionMutation();
 
   useEffect(() => {
     if (id) {
-      if (location.pathname.includes("/edit")) {
-        setMode("edit");
+      if (location.pathname.includes('/edit')) {
+        setMode('edit');
       } else {
-        setMode("view");
+        setMode('view');
       }
     } else {
-      setMode("create");
+      setMode('create');
       // Set default values for create mode
       form.setFieldsValue({
-        "definition.name": "",
-        "definition.description": "",
-        "definition.inputType": { name: "STRING" },
-        "definition.outputType": { name: "STRING" },
-        "implementation.language": "python",
+        'definition.name': '',
+        'definition.description': '',
+        'definition.inputType': { name: 'STRING' },
+        'definition.outputType': { name: 'STRING' },
+        'implementation.language': 'python',
       });
-      setFunctionName("");
+      setFunctionName('');
       setFunctionBody(
         '    """\n    Main function entry point\n    \n    Args:\n        input_data: The input data to process\n        \n    Returns:\n        The processed result\n    """\n    # Your code here\n    return input_data',
       );
@@ -100,13 +100,13 @@ export const FunctionPage: React.FC = () => {
   }, [id, location.pathname, form]);
 
   useEffect(() => {
-    if (functionData && mode !== "create") {
+    if (functionData && mode !== 'create') {
       form.setFieldsValue({
-        "definition.name": functionData.definition.name,
-        "definition.description": functionData.definition.description,
-        "definition.inputType": functionData.definition.inputType,
-        "definition.outputType": functionData.definition.outputType,
-        "implementation.language": functionData.implementation.language,
+        'definition.name': functionData.definition.name,
+        'definition.description': functionData.definition.description,
+        'definition.inputType': functionData.definition.inputType,
+        'definition.outputType': functionData.definition.outputType,
+        'implementation.language': functionData.implementation.language,
       });
       setFunctionName(functionData.definition.name);
 
@@ -115,7 +115,7 @@ export const FunctionPage: React.FC = () => {
       const bodyStartIndex =
         fullCode.indexOf(funcSignature) + funcSignature.length;
       if (bodyStartIndex > funcSignature.length) {
-        const body = fullCode.substring(bodyStartIndex).replace(/^\n/, "");
+        const body = fullCode.substring(bodyStartIndex).replace(/^\n/, '');
         setFunctionBody(body);
       } else {
         setFunctionBody(fullCode);
@@ -123,40 +123,40 @@ export const FunctionPage: React.FC = () => {
     }
   }, [functionData, form, mode]);
 
-  const watchedFunctionName = Form.useWatch("definition.name", form);
+  const watchedFunctionName = Form.useWatch('definition.name', form);
 
   useEffect(() => {
     if (watchedFunctionName !== functionName) {
-      setFunctionName(watchedFunctionName || "");
+      setFunctionName(watchedFunctionName || '');
     }
-  }, [watchedFunctionName, functionName]);
+  }, [watchedFunctionName]);
 
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
 
-      const funcName = toSnakeCase(values["definition.name"] || "");
+      const funcName = toSnakeCase(values['definition.name'] || '');
       const fullCode = `def ${funcName}(input_data):\n${functionBody}`;
 
       const payload: FunctionCreateDto | FunctionUpdateDto = {
         definition: {
-          name: values["definition.name"],
-          description: values["definition.description"],
-          inputType: values["definition.inputType"],
-          outputType: values["definition.outputType"],
+          name: values['definition.name'],
+          description: values['definition.description'],
+          inputType: values['definition.inputType'],
+          outputType: values['definition.outputType'],
         },
         implementation: {
-          language: values["implementation.language"],
+          language: values['implementation.language'],
           code: fullCode,
         },
       };
 
-      if (mode === "create") {
+      if (mode === 'create') {
         createMutation.mutate(
           { data: payload as FunctionCreateDto, compile: false },
           {
             onSuccess: () => {
-              navigate("/functions");
+              navigate('/functions');
             },
           },
         );
@@ -169,14 +169,14 @@ export const FunctionPage: React.FC = () => {
           },
           {
             onSuccess: () => {
-              setMode("view");
+              setMode('view');
               refetch();
             },
           },
         );
       }
     } catch (error) {
-      console.error("Form validation failed:", error);
+      console.error('Form validation failed:', error);
     }
   };
 
@@ -198,16 +198,16 @@ export const FunctionPage: React.FC = () => {
 
   const handleDelete = () => {
     Modal.confirm({
-      title: "Delete Function",
+      title: 'Delete Function',
       content:
-        "Are you sure you want to delete this function? This action cannot be undone.",
-      okText: "Delete",
-      okType: "danger",
+        'Are you sure you want to delete this function? This action cannot be undone.',
+      okText: 'Delete',
+      okType: 'danger',
       onOk: () => {
         if (id) {
           deleteMutation.mutate(id, {
             onSuccess: () => {
-              navigate("/functions");
+              navigate('/functions');
             },
           });
         }
@@ -219,11 +219,11 @@ export const FunctionPage: React.FC = () => {
     if (!status) return null;
 
     const statusConfig = {
-      SUCCESS: { color: "success", text: "Compiled" },
-      FAILED: { color: "error", text: "Failed" },
-      IN_PROGRESS: { color: "processing", text: "Compiling" },
-      OUTDATED: { color: "warning", text: "Outdated" },
-      NOT_STARTED: { color: "default", text: "Not Compiled" },
+      SUCCESS: { color: 'success', text: 'Compiled' },
+      FAILED: { color: 'error', text: 'Failed' },
+      IN_PROGRESS: { color: 'processing', text: 'Compiling' },
+      OUTDATED: { color: 'warning', text: 'Outdated' },
+      NOT_STARTED: { color: 'default', text: 'Not Compiled' },
     };
 
     const config = statusConfig[status];
@@ -232,32 +232,32 @@ export const FunctionPage: React.FC = () => {
 
   const getPageTitle = () => {
     switch (mode) {
-      case "create":
-        return "Create Function";
-      case "edit":
-        return `Edit Function: ${functionData?.definition.name || ""}`;
-      case "view":
-        return functionData?.definition.name || "Function";
+      case 'create':
+        return 'Create Function';
+      case 'edit':
+        return `Edit Function: ${functionData?.definition.name || ''}`;
+      case 'view':
+        return functionData?.definition.name || 'Function';
       default:
-        return "Function";
+        return 'Function';
     }
   };
 
   const getHeaderActions = () => {
     const actions = [];
 
-    if (mode === "view") {
+    if (mode === 'view') {
       actions.push(
         <Button
           key="edit"
           icon={<EditOutlined />}
-          onClick={() => setMode("edit")}
+          onClick={() => setMode('edit')}
         >
           Edit
         </Button>,
       );
 
-      if (functionData?.compilationStatus === "SUCCESS") {
+      if (functionData?.compilationStatus === 'SUCCESS') {
         actions.push(
           <Button
             key="run"
@@ -296,9 +296,9 @@ export const FunctionPage: React.FC = () => {
       );
     }
 
-    if (mode === "edit") {
+    if (mode === 'edit') {
       actions.push(
-        <Button key="cancel" onClick={() => setMode("view")}>
+        <Button key="cancel" onClick={() => setMode('view')}>
           Cancel
         </Button>,
       );
@@ -315,7 +315,7 @@ export const FunctionPage: React.FC = () => {
       );
     }
 
-    if (mode === "create") {
+    if (mode === 'create') {
       actions.push(
         <Button
           key="save"
@@ -333,7 +333,7 @@ export const FunctionPage: React.FC = () => {
   };
 
   // Handle loading state
-  if (isLoading && mode !== "create") {
+  if (isLoading && mode !== 'create') {
     return (
       <div className={styles.loadingContainer}>
         <Spin size="large" />
@@ -342,12 +342,12 @@ export const FunctionPage: React.FC = () => {
   }
 
   // Handle error state
-  if (error && mode !== "create") {
+  if (error && mode !== 'create') {
     return (
       <div className={styles.container}>
         <Button
           icon={<ArrowLeftOutlined />}
-          onClick={() => navigate("/functions")}
+          onClick={() => navigate('/functions')}
           className={styles.backButton}
         >
           Back to Functions
@@ -373,7 +373,7 @@ export const FunctionPage: React.FC = () => {
       <div className={styles.header}>
         <Button
           icon={<ArrowLeftOutlined />}
-          onClick={() => navigate("/functions")}
+          onClick={() => navigate('/functions')}
           className={styles.backButton}
         >
           Back to Functions
@@ -382,7 +382,7 @@ export const FunctionPage: React.FC = () => {
         <div className={styles.headerContent}>
           <div className={styles.headerInfo}>
             <Title level={1}>{getPageTitle()}</Title>
-            {mode !== "create" && functionData && (
+            {mode !== 'create' && functionData && (
               <Space className={styles.headerMeta}>
                 {getStatusBadge(functionData.compilationStatus)}
                 <Tag icon={<CodeOutlined />} color="blue">
@@ -396,7 +396,7 @@ export const FunctionPage: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <Form form={form} layout="vertical" disabled={mode === "view"}>
+      <Form form={form} layout="vertical" disabled={mode === 'view'}>
         <Row gutter={24}>
           <Col span={24}>
             <Card title="Definition" className={styles.card}>
@@ -406,40 +406,42 @@ export const FunctionPage: React.FC = () => {
                     label="Function Name"
                     name="definition.name"
                     rules={[
-                      { required: true, message: "Function name is required" },
+                      {
+                        required: true,
+                        message: 'Function name is required',
+                      },
                     ]}
                   >
                     <Input placeholder="Enter function name" />
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Row gutter={16}>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Input Type"
-                        name="definition.inputType"
-                        rules={[
-                          { required: true, message: "Input type is required" },
-                        ]}
-                      >
-                        <TypeBuilder disabled={mode === "view"} />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Output Type"
-                        name="definition.outputType"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Output type is required",
-                          },
-                        ]}
-                      >
-                        <TypeBuilder disabled={mode === "view"} />
-                      </Form.Item>
-                    </Col>
-                  </Row>
+                  <Form.Item
+                    label="Input Type"
+                    name="definition.inputType"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Input type is required',
+                      },
+                    ]}
+                  >
+                    <TypeBuilder disabled={mode === 'view'} />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    label="Output Type"
+                    name="definition.outputType"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Output type is required',
+                      },
+                    ]}
+                  >
+                    <TypeBuilder disabled={mode === 'view'} />
+                  </Form.Item>
                 </Col>
               </Row>
 
@@ -473,15 +475,18 @@ export const FunctionPage: React.FC = () => {
               <Form.Item
                 label="Function Code"
                 rules={[
-                  { required: true, message: "Function code is required" },
+                  {
+                    required: true,
+                    message: 'Function code is required',
+                  },
                 ]}
                 className={styles.codeContainer}
               >
                 <div>
                   {/* Fixed function signature */}
                   <div className={styles.functionSignature}>
-                    def{" "}
-                    {functionName ? toSnakeCase(functionName) : "function_name"}
+                    def{' '}
+                    {functionName ? toSnakeCase(functionName) : 'function_name'}
                     (input_data):
                   </div>
 
@@ -492,14 +497,14 @@ export const FunctionPage: React.FC = () => {
                     rows={18}
                     className={styles.functionBody}
                     placeholder="    # Write your function body here...\n    return input_data"
-                    disabled={mode === "view"}
+                    disabled={mode === 'view'}
                   />
                 </div>
               </Form.Item>
 
-              {mode === "view" &&
+              {mode === 'view' &&
                 functionData &&
-                functionData.implementation.language === "python" &&
+                functionData.implementation.language === 'python' &&
                 (functionData.implementation as any).packages?.length > 0 && (
                   <div>
                     <Divider orientation="left">Dependencies</Divider>
@@ -520,7 +525,7 @@ export const FunctionPage: React.FC = () => {
       </Form>
 
       {/* Metadata (View mode only) */}
-      {mode === "view" && functionData?.createdAt && (
+      {mode === 'view' && functionData?.createdAt && (
         <Card title="Metadata" className={styles.metadataCard}>
           <Row gutter={16}>
             <Col span={12}>

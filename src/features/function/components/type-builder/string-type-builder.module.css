@@ -1,0 +1,9 @@
+.stringTypeBuilder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formItem {
+  margin-bottom: 0;
+}
