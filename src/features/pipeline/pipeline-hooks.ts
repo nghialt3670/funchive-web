@@ -1,20 +1,21 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { message } from 'antd';
-import { pipelineApi } from './pipeline-api';
-import type { PageRequest } from '@/types/api';
 import type {
   PipelineCreateDto,
   PipelineExecutionTriggerDto,
   PipelineFilter,
   PipelineUpdateDto,
-} from '@/features/pipeline/pipeline-types';
+} from "@/features/pipeline/pipeline-types";
+import type { PageRequest } from "@/types/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { message } from "antd";
+
+import { pipelineApi } from "./pipeline-api";
 
 export const pipelineQueryKeys = {
-  all: ['pipelines'] as const,
-  lists: () => [...pipelineQueryKeys.all, 'list'] as const,
+  all: ["pipelines"] as const,
+  lists: () => [...pipelineQueryKeys.all, "list"] as const,
   list: (filter: PipelineFilter, pageRequest: PageRequest) =>
     [...pipelineQueryKeys.lists(), filter, pageRequest] as const,
-  details: () => [...pipelineQueryKeys.all, 'detail'] as const,
+  details: () => [...pipelineQueryKeys.all, "detail"] as const,
   detail: (id: string) => [...pipelineQueryKeys.details(), id] as const,
 };
 
@@ -60,7 +61,7 @@ export const useCreatePipeline = () => {
         newPipeline,
       );
 
-      message.success('Pipeline created successfully!');
+      message.success("Pipeline created successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -93,7 +94,7 @@ export const useUpdatePipeline = () => {
         queryKey: pipelineQueryKeys.lists(),
       });
 
-      message.success('Pipeline updated successfully!');
+      message.success("Pipeline updated successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -119,7 +120,7 @@ export const useDeletePipeline = () => {
         queryKey: pipelineQueryKeys.lists(),
       });
 
-      message.success('Pipeline deleted successfully!');
+      message.success("Pipeline deleted successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -139,7 +140,7 @@ export const useExecutePipeline = () => {
       executionData: PipelineExecutionTriggerDto;
     }) => pipelineApi.executePipeline(pipelineId, executionData),
     onSuccess: () => {
-      message.success('Pipeline execution started successfully!');
+      message.success("Pipeline execution started successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -276,7 +277,7 @@ export const usePipelineValidation = () => {
 
     for (const node of nodes) {
       if (hasCircularDependency(node.id, visited, recursionStack)) {
-        errors.push('Circular dependency detected in pipeline');
+        errors.push("Circular dependency detected in pipeline");
         break;
       }
     }

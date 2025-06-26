@@ -1,8 +1,11 @@
-import './app.css';
-import { FunctionsPage, FunctionPage } from '@/pages/functions';
-import { PipelinesPage, PipelinePage } from '@/pages/pipelines';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { Layout } from '@/components/layout';
+import { Layout } from "@/components/layout";
+import { FunctionPage } from "@/pages/function";
+import { FunctionsPage } from "@/pages/functions";
+import { PipelinePage } from "@/pages/pipeline";
+import { PipelinesPage } from "@/pages/pipelines";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import "./app.css";
 
 function App() {
   return (

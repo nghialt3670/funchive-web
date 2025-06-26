@@ -5,29 +5,29 @@ export interface BaseType {
 }
 
 export interface StringType extends BaseType {
-  name: 'STRING';
+  name: "STRING";
 }
 
 export interface NumberType extends BaseType {
-  name: 'NUMBER';
+  name: "NUMBER";
 }
 
 export interface BooleanType extends BaseType {
-  name: 'BOOLEAN';
+  name: "BOOLEAN";
 }
 
 export interface FileType extends BaseType {
-  name: 'FILE';
+  name: "FILE";
   extension?: string;
 }
 
 export interface ArrayType extends BaseType {
-  name: 'ARRAY';
+  name: "ARRAY";
   elementType: Type;
 }
 
 export interface ObjectType extends BaseType {
-  name: 'OBJECT';
+  name: "OBJECT";
   schema: Record<string, Type>;
 }
 
@@ -40,22 +40,22 @@ export type Type =
   | ObjectType;
 
 export const TYPE_NAMES = {
-  STRING: 'STRING',
-  NUMBER: 'NUMBER',
-  BOOLEAN: 'BOOLEAN',
-  FILE: 'FILE',
-  ARRAY: 'ARRAY',
-  OBJECT: 'OBJECT',
+  STRING: "STRING",
+  NUMBER: "NUMBER",
+  BOOLEAN: "BOOLEAN",
+  FILE: "FILE",
+  ARRAY: "ARRAY",
+  OBJECT: "OBJECT",
 } as const;
 
 export type TypeName = keyof typeof TYPE_NAMES;
 
 export type CompilationStatus =
-  | 'OUTDATED'
-  | 'NOT_STARTED'
-  | 'IN_PROGRESS'
-  | 'SUCCESS'
-  | 'FAILED';
+  | "OUTDATED"
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "SUCCESS"
+  | "FAILED";
 
 export interface Definition {
   name: string;
@@ -70,7 +70,7 @@ export interface Implementation {
 }
 
 export interface PythonImplementation extends Implementation {
-  language: 'PYTHON';
+  language: "PYTHON";
   version: string;
   imports: Array<{ source: string; target: string }>;
   packages: Array<{ name: string; version: string }>;
@@ -110,16 +110,16 @@ export interface SortOption {
 }
 
 export const SORT_OPTIONS: SortOption[] = [
-  { value: 'createdAt,desc', label: 'Newest First' },
-  { value: 'createdAt,asc', label: 'Oldest First' },
-  { value: 'updatedAt,desc', label: 'Recently Updated' },
-  { value: 'updatedAt,asc', label: 'Least Recently Updated' },
-  { value: 'definition.name,asc', label: 'Name (A-Z)' },
-  { value: 'definition.name,desc', label: 'Name (Z-A)' },
+  { value: "createdAt,desc", label: "newest-first" },
+  { value: "createdAt,asc", label: "oldest-first" },
+  { value: "updatedAt,desc", label: "recently-updated" },
+  { value: "updatedAt,asc", label: "least-recently-updated" },
+  { value: "definition.name,asc", label: "name-a-z" },
+  { value: "definition.name,desc", label: "name-z-a" },
 ];
 
 export interface ExecutionTriggerDto {
   inputData: any;
 }
 
-export type Language = 'PYTHON' | 'C#' | 'JAVA' | 'GO';
+export type Language = "PYTHON" | "C#" | "JAVA" | "GO";

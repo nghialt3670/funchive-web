@@ -68,7 +68,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-sm);
   padding: 8px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 12px;
   max-height: 150px;
   overflow-y: auto;

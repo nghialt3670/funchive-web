@@ -1,20 +1,21 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { message } from 'antd';
-import { functionApi } from './function-api';
-import type { PageRequest } from '@/types/api';
 import type {
   ExecutionTriggerDto,
   FunctionCreateDto,
   FunctionFilter,
   FunctionUpdateDto,
-} from '@/features/function/function-types';
+} from "@/features/function/function-types";
+import type { PageRequest } from "@/types/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { message } from "antd";
+
+import { functionApi } from "./function-api";
 
 export const functionQueryKeys = {
-  all: ['functions'] as const,
-  lists: () => [...functionQueryKeys.all, 'list'] as const,
+  all: ["functions"] as const,
+  lists: () => [...functionQueryKeys.all, "list"] as const,
   list: (filter: FunctionFilter, pageRequest: PageRequest) =>
     [...functionQueryKeys.lists(), filter, pageRequest] as const,
-  details: () => [...functionQueryKeys.all, 'detail'] as const,
+  details: () => [...functionQueryKeys.all, "detail"] as const,
   detail: (id: string) => [...functionQueryKeys.details(), id] as const,
 };
 
@@ -64,7 +65,7 @@ export const useCreateFunctionMutation = () => {
         newFunction,
       );
 
-      message.success('Function created successfully!');
+      message.success("Function created successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -97,7 +98,7 @@ export const useUpdateFunctionMutation = () => {
         queryKey: functionQueryKeys.lists(),
       });
 
-      message.success('Function updated successfully!');
+      message.success("Function updated successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -121,7 +122,7 @@ export const useDeleteFunctionMutation = () => {
         queryKey: functionQueryKeys.lists(),
       });
 
-      message.success('Function deleted successfully!');
+      message.success("Function deleted successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -145,7 +146,7 @@ export const useCompileFunctionMutation = () => {
         queryKey: functionQueryKeys.lists(),
       });
 
-      message.success('Function compilation started successfully!');
+      message.success("Function compilation started successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -165,7 +166,7 @@ export const useExecuteFunctionMutation = () => {
       executionData: ExecutionTriggerDto;
     }) => functionApi.executeFunction(functionId, executionData),
     onSuccess: () => {
-      message.success('Function executed successfully!');
+      message.success("Function executed successfully!");
     },
     onError: (error: any) => {
       message.error(
@@ -198,7 +199,7 @@ export const useFunctionOptimisticUpdate = () => {
 
   const updateCompilationStatus = (
     functionId: string,
-    status: 'IN_PROGRESS' | 'SUCCESS' | 'FAILED',
+    status: "IN_PROGRESS" | "SUCCESS" | "FAILED",
   ) => {
     queryClient.setQueryData(
       functionQueryKeys.detail(functionId),

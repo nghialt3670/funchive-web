@@ -13,20 +13,20 @@ export interface Position {
 // Base Node interface
 export interface Node {
   id: string;
-  nodeType: 'VALUE' | 'FUNCTION';
+  nodeType: "VALUE" | "FUNCTION";
   name: string;
   position: Position;
 }
 
 // Value Node - contains static data
 export interface ValueNode extends Node {
-  nodeType: 'VALUE';
+  nodeType: "VALUE";
   value: Value<any>;
 }
 
 // Function Node - references an existing function
 export interface FunctionNode extends Node {
-  nodeType: 'FUNCTION';
+  nodeType: "FUNCTION";
   functionId: string;
 }
 
@@ -95,18 +95,18 @@ export interface SortOption {
 }
 
 export const PIPELINE_SORT_OPTIONS: SortOption[] = [
-  { value: 'createdAt,desc', label: 'Newest First' },
-  { value: 'createdAt,asc', label: 'Oldest First' },
-  { value: 'updatedAt,desc', label: 'Recently Updated' },
-  { value: 'updatedAt,asc', label: 'Least Recently Updated' },
-  { value: 'name,asc', label: 'Name (A-Z)' },
-  { value: 'name,desc', label: 'Name (Z-A)' },
+  { value: "createdAt,desc", label: "Newest First" },
+  { value: "createdAt,asc", label: "Oldest First" },
+  { value: "updatedAt,desc", label: "Recently Updated" },
+  { value: "updatedAt,asc", label: "Least Recently Updated" },
+  { value: "name,asc", label: "Name (A-Z)" },
+  { value: "name,desc", label: "Name (Z-A)" },
 ];
 
 // UI State interfaces for pipeline editor
 export interface DragState {
   isDragging: boolean;
-  dragType: 'node' | 'connection' | null;
+  dragType: "node" | "connection" | null;
   dragData: any;
   startPosition: Position;
   currentPosition: Position;
@@ -121,7 +121,7 @@ export interface ConnectionDragState {
 
 export interface ConnectionPoint {
   nodeId: string;
-  type: 'input' | 'output';
+  type: "input" | "output";
   key: string; // The key in the function's input/output type schema
   dataType: string; // Type name like "STRING", "NUMBER", etc.
 }
@@ -135,11 +135,11 @@ export interface PipelineUINode extends Node {
 
 // Execution status for pipeline runs
 export type PipelineExecutionStatus =
-  | 'NOT_STARTED'
-  | 'IN_PROGRESS'
-  | 'SUCCESS'
-  | 'FAILED'
-  | 'CANCELLED';
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "SUCCESS"
+  | "FAILED"
+  | "CANCELLED";
 
 export interface PipelineExecution {
   id: string;

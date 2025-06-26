@@ -1,5 +1,17 @@
 {
-    "show-more": "Xem thêm",
-    "show-less": "Thu gọn",
-    "options": "Tùy chọn"
+  "show-more": "Xem thêm",
+  "show-less": "Thu gọn",
+  "options": "Tùy chọn",
+  "reset-filters": "Đặt lại bộ lọc",
+  "newest-first": "Mới nhất",
+  "oldest-first": "Cũ nhất",
+  "recently-updated": "Cập nhật gần nhất",
+  "least-recently-updated": "Cập nhật cũ nhất",
+  "name-a-z": "Tên (A-Z)",
+  "name-z-a": "Tên (Z-A)",
+  "page-size": "Số mục trên trang",
+  "go-to": "Đến trang",
+  "page": "Trang",
+  "items-per-page": "mục trên trang",
+  "jump-to-page": "Nhảy đến trang"
 }

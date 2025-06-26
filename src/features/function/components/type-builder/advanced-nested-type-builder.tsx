@@ -1,34 +1,35 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Card,
-  Form,
-  Select,
-  Space,
-  Button,
-  Row,
-  Col,
-  Alert,
-  Upload,
-  message,
-  Input,
-} from 'antd';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
 import type {
-  Type,
-  TypeName,
   ArrayType,
   ObjectType,
-} from '@/features/function/function-types';
-import { TYPE_NAMES } from '@/features/function/function-types';
-import { StringTypeBuilder } from './string-type-builder';
-import { NumberTypeBuilder } from './number-type-builder';
-import { BooleanTypeBuilder } from './boolean-type-builder';
-import { FileTypeBuilder } from './file-type-builder';
-import styles from './advanced-nested-type-builder.module.css';
+  Type,
+  TypeName,
+} from "@/features/function/function-types";
+import { TYPE_NAMES } from "@/features/function/function-types";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Upload,
+  message,
+} from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+
+import styles from "./advanced-nested-type-builder.module.css";
+import { BooleanTypeBuilder } from "./boolean-type-builder";
+import { FileTypeBuilder } from "./file-type-builder";
+import { NumberTypeBuilder } from "./number-type-builder";
+import { StringTypeBuilder } from "./string-type-builder";
 
 const { Option } = Select;
 
@@ -107,7 +108,7 @@ const ObjectField: React.FC<ObjectFieldProps> = ({
 export const AdvancedNestedTypeBuilder: React.FC<
   AdvancedNestedTypeBuilderProps
 > = ({ value, onChange, disabled = false, depth = 0, maxDepth = 3 }) => {
-  const [typeName, setTypeName] = useState<TypeName>(value?.name || 'STRING');
+  const [typeName, setTypeName] = useState<TypeName>(value?.name || "STRING");
 
   useEffect(() => {
     if (value) {
@@ -120,35 +121,35 @@ export const AdvancedNestedTypeBuilder: React.FC<
     let newType: Type;
 
     switch (newTypeName) {
-      case 'STRING':
-        newType = { name: 'STRING' };
+      case "STRING":
+        newType = { name: "STRING" };
         break;
-      case 'NUMBER':
-        newType = { name: 'NUMBER' };
+      case "NUMBER":
+        newType = { name: "NUMBER" };
         break;
-      case 'BOOLEAN':
-        newType = { name: 'BOOLEAN' };
+      case "BOOLEAN":
+        newType = { name: "BOOLEAN" };
         break;
-      case 'FILE':
-        newType = { name: 'FILE' };
+      case "FILE":
+        newType = { name: "FILE" };
         break;
-      case 'ARRAY':
-        newType = { name: 'ARRAY', elementType: { name: 'STRING' } };
+      case "ARRAY":
+        newType = { name: "ARRAY", elementType: { name: "STRING" } };
         break;
-      case 'OBJECT':
-        newType = { name: 'OBJECT', schema: {} };
+      case "OBJECT":
+        newType = { name: "OBJECT", schema: {} };
         break;
       default:
-        newType = { name: 'STRING' };
+        newType = { name: "STRING" };
     }
 
     onChange?.(newType);
   };
 
   const handleElementTypeChange = (newElementType: Type) => {
-    if (value?.name === 'ARRAY') {
+    if (value?.name === "ARRAY") {
       onChange?.({
-        name: 'ARRAY',
+        name: "ARRAY",
         description: value.description,
         elementType: newElementType,
         defaultValue: value.defaultValue,
@@ -157,15 +158,15 @@ export const AdvancedNestedTypeBuilder: React.FC<
   };
 
   const addObjectField = useCallback(() => {
-    if (value?.name === 'OBJECT') {
+    if (value?.name === "OBJECT") {
       const schema = (value as ObjectType).schema || {};
       const fieldName = `field${Object.keys(schema).length + 1}`;
       const newSchema = {
         ...schema,
-        [fieldName]: { name: 'STRING' } as Type,
+        [fieldName]: { name: "STRING" } as Type,
       };
       onChange?.({
-        name: 'OBJECT',
+        name: "OBJECT",
         description: value.description,
         schema: newSchema,
         defaultValue: value.defaultValue,
@@ -175,7 +176,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
 
   const updateObjectField = useCallback(
     (oldName: string, newName: string, type: Type) => {
-      if (value?.name === 'OBJECT') {
+      if (value?.name === "OBJECT") {
         const schema = (value as ObjectType).schema || {};
         const newSchema = { ...schema };
         if (oldName !== newName) {
@@ -183,7 +184,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
         }
         newSchema[newName] = type;
         onChange?.({
-          name: 'OBJECT',
+          name: "OBJECT",
           description: value.description,
           schema: newSchema,
           defaultValue: value.defaultValue,
@@ -195,12 +196,12 @@ export const AdvancedNestedTypeBuilder: React.FC<
 
   const deleteObjectField = useCallback(
     (fieldName: string) => {
-      if (value?.name === 'OBJECT') {
+      if (value?.name === "OBJECT") {
         const schema = (value as ObjectType).schema || {};
         const newSchema = { ...schema };
         delete newSchema[fieldName];
         onChange?.({
-          name: 'OBJECT',
+          name: "OBJECT",
           description: value.description,
           schema: newSchema,
           defaultValue: value.defaultValue,
@@ -210,34 +211,34 @@ export const AdvancedNestedTypeBuilder: React.FC<
     [value, onChange],
   );
 
-  const handleFileUpload = (file: File, expectedType: 'array' | 'object') => {
+  const handleFileUpload = (file: File, expectedType: "array" | "object") => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
         const jsonData = JSON.parse(content);
 
-        if (expectedType === 'array' && Array.isArray(jsonData)) {
+        if (expectedType === "array" && Array.isArray(jsonData)) {
           onChange?.({
             ...value,
             defaultValue: jsonData,
           } as Type);
-          message.success('JSON array uploaded successfully');
+          message.success("JSON array uploaded successfully");
         } else if (
-          expectedType === 'object' &&
-          typeof jsonData === 'object' &&
+          expectedType === "object" &&
+          typeof jsonData === "object" &&
           !Array.isArray(jsonData)
         ) {
           onChange?.({
             ...value,
             defaultValue: jsonData,
           } as Type);
-          message.success('JSON object uploaded successfully');
+          message.success("JSON object uploaded successfully");
         } else {
           message.error(`File must contain a valid JSON ${expectedType}`);
         }
       } catch (error) {
-        message.error('Invalid JSON file');
+        message.error("Invalid JSON file");
       }
     };
     reader.readAsText(file);
@@ -254,7 +255,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
     }
 
     switch (typeName) {
-      case 'STRING':
+      case "STRING":
         return (
           <StringTypeBuilder
             value={value as any}
@@ -262,7 +263,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
             disabled={disabled}
           />
         );
-      case 'NUMBER':
+      case "NUMBER":
         return (
           <NumberTypeBuilder
             value={value as any}
@@ -270,7 +271,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
             disabled={disabled}
           />
         );
-      case 'BOOLEAN':
+      case "BOOLEAN":
         return (
           <BooleanTypeBuilder
             value={value as any}
@@ -278,7 +279,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
             disabled={disabled}
           />
         );
-      case 'FILE':
+      case "FILE":
         return (
           <FileTypeBuilder
             value={value as any}
@@ -286,14 +287,14 @@ export const AdvancedNestedTypeBuilder: React.FC<
             disabled={disabled}
           />
         );
-      case 'ARRAY':
-        const arrayDescription = value?.description || '';
+      case "ARRAY":
+        const arrayDescription = value?.description || "";
         const handleArrayDescriptionChange = (newDescription: string) => {
           onChange?.({
-            name: 'ARRAY',
+            name: "ARRAY",
             description: newDescription || undefined,
             elementType: (value as ArrayType)?.elementType || {
-              name: 'STRING',
+              name: "STRING",
             },
             defaultValue: value?.defaultValue,
           });
@@ -313,7 +314,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
               <AdvancedNestedTypeBuilder
                 value={
                   (value as ArrayType)?.elementType || {
-                    name: 'STRING',
+                    name: "STRING",
                   }
                 }
                 onChange={handleElementTypeChange}
@@ -325,7 +326,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
             <Form.Item label="Default Value" className={styles.formItem}>
               <div className={styles.defaultValueContainer}>
                 <Upload
-                  beforeUpload={(file) => handleFileUpload(file, 'array')}
+                  beforeUpload={(file) => handleFileUpload(file, "array")}
                   disabled={disabled}
                   showUploadList={false}
                   accept=".json"
@@ -343,12 +344,12 @@ export const AdvancedNestedTypeBuilder: React.FC<
             </Form.Item>
           </div>
         );
-      case 'OBJECT':
+      case "OBJECT":
         const schema = (value as ObjectType)?.schema || {};
-        const objectDescription = value?.description || '';
+        const objectDescription = value?.description || "";
         const handleObjectDescriptionChange = (newDescription: string) => {
           onChange?.({
-            name: 'OBJECT',
+            name: "OBJECT",
             description: newDescription || undefined,
             schema: (value as ObjectType)?.schema || {},
             defaultValue: value?.defaultValue,
@@ -406,7 +407,7 @@ export const AdvancedNestedTypeBuilder: React.FC<
             <Form.Item label="Default Value" className={styles.formItem}>
               <div className={styles.defaultValueContainer}>
                 <Upload
-                  beforeUpload={(file) => handleFileUpload(file, 'object')}
+                  beforeUpload={(file) => handleFileUpload(file, "object")}
                   disabled={disabled}
                   showUploadList={false}
                   accept=".json"

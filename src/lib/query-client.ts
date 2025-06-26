@@ -1,5 +1,5 @@
-import { QueryClient } from '@tanstack/react-query';
-import { message } from 'antd';
+import { QueryClient } from "@tanstack/react-query";
+import { message } from "antd";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,8 +24,8 @@ export const queryClient = new QueryClient({
         const errorMessage =
           error?.response?.data?.message ||
           error?.message ||
-          'An error occurred';
-        console.error('Mutation error:', error);
+          "An error occurred";
+        console.error("Mutation error:", error);
 
         // Don't show duplicate messages if individual hooks already handle errors
         if (!error.isHandled) {

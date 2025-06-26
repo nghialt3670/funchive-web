@@ -1,7 +1,8 @@
-import React from 'react';
-import { Form, Input } from 'antd';
-import type { StringType } from '@/features/function/function-types';
-import styles from './string-type-builder.module.css';
+import type { StringType } from "@/features/function/function-types";
+import { Form, Input } from "antd";
+import React from "react";
+
+import styles from "./string-type-builder.module.css";
 
 interface StringTypeBuilderProps {
   value?: StringType;
@@ -14,12 +15,12 @@ export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const description = value?.description || '';
-  const defaultValue = value?.defaultValue || '';
+  const description = value?.description || "";
+  const defaultValue = value?.defaultValue || "";
 
   const handleDescriptionChange = (newDescription: string) => {
     onChange?.({
-      name: 'STRING',
+      name: "STRING",
       description: newDescription || undefined,
       defaultValue: value?.defaultValue,
     });
@@ -27,7 +28,7 @@ export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
 
   const handleDefaultValueChange = (newDefaultValue: string) => {
     onChange?.({
-      name: 'STRING',
+      name: "STRING",
       description: value?.description,
       defaultValue: newDefaultValue || undefined,
     });

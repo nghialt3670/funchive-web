@@ -1,9 +1,10 @@
 import React, {
-  createContext,
   type PropsWithChildren,
+  createContext,
   useContext,
-} from 'react';
-import type { FunctionDetailDto } from '../function-types';
+} from "react";
+
+import type { FunctionDetailDto } from "../function-types";
 
 export const FunctionDetailContext = createContext<FunctionDetailDto | null>(
   null,
@@ -28,12 +29,12 @@ export const useFunctionDetailContext = () => {
 
   if (functionDetail === undefined) {
     throw new Error(
-      'useFunctionDetailContext must be used within a FunctionDetailContextProvider',
+      "useFunctionDetailContext must be used within a FunctionDetailContextProvider",
     );
   }
 
   if (functionDetail === null) {
-    throw new Error('FunctionDetail not found');
+    throw new Error("FunctionDetail not found");
   }
 
   return functionDetail;

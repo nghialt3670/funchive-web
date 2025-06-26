@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Form, Select, Space } from 'antd';
-import type { Type, TypeName } from '@/features/function/function-types';
-import { TYPE_NAMES } from '@/features/function/function-types';
-import { StringTypeBuilder } from './string-type-builder';
-import { NumberTypeBuilder } from './number-type-builder';
-import { BooleanTypeBuilder } from './boolean-type-builder';
-import { FileTypeBuilder } from './file-type-builder';
-import { AdvancedNestedTypeBuilder } from './advanced-nested-type-builder';
-import styles from './type-builder.module.css';
+import type { Type, TypeName } from "@/features/function/function-types";
+import { TYPE_NAMES } from "@/features/function/function-types";
+import { Card, Form, Select, Space } from "antd";
+import React, { useEffect, useState } from "react";
+
+import { AdvancedNestedTypeBuilder } from "./advanced-nested-type-builder";
+import { BooleanTypeBuilder } from "./boolean-type-builder";
+import { FileTypeBuilder } from "./file-type-builder";
+import { NumberTypeBuilder } from "./number-type-builder";
+import { StringTypeBuilder } from "./string-type-builder";
+import styles from "./type-builder.module.css";
 
 const { Option } = Select;
 
@@ -24,7 +25,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const [typeName, setTypeName] = useState<TypeName>(value?.name || 'STRING');
+  const [typeName, setTypeName] = useState<TypeName>(value?.name || "STRING");
 
   useEffect(() => {
     if (value) {
@@ -38,26 +39,26 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     let newType: Type;
 
     switch (newTypeName) {
-      case 'STRING':
-        newType = { name: 'STRING' };
+      case "STRING":
+        newType = { name: "STRING" };
         break;
-      case 'NUMBER':
-        newType = { name: 'NUMBER' };
+      case "NUMBER":
+        newType = { name: "NUMBER" };
         break;
-      case 'BOOLEAN':
-        newType = { name: 'BOOLEAN' };
+      case "BOOLEAN":
+        newType = { name: "BOOLEAN" };
         break;
-      case 'FILE':
-        newType = { name: 'FILE' };
+      case "FILE":
+        newType = { name: "FILE" };
         break;
-      case 'ARRAY':
-        newType = { name: 'ARRAY', elementType: { name: 'STRING' } };
+      case "ARRAY":
+        newType = { name: "ARRAY", elementType: { name: "STRING" } };
         break;
-      case 'OBJECT':
-        newType = { name: 'OBJECT', schema: {} };
+      case "OBJECT":
+        newType = { name: "OBJECT", schema: {} };
         break;
       default:
-        newType = { name: 'STRING' };
+        newType = { name: "STRING" };
     }
 
     onChange?.(newType);
@@ -65,7 +66,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
 
   const renderTypeSpecificBuilder = () => {
     switch (typeName) {
-      case 'STRING':
+      case "STRING":
         return (
           <StringTypeBuilder
             value={value as any}
@@ -73,7 +74,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             disabled={disabled}
           />
         );
-      case 'NUMBER':
+      case "NUMBER":
         return (
           <NumberTypeBuilder
             value={value as any}
@@ -81,7 +82,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             disabled={disabled}
           />
         );
-      case 'BOOLEAN':
+      case "BOOLEAN":
         return (
           <BooleanTypeBuilder
             value={value as any}
@@ -89,7 +90,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             disabled={disabled}
           />
         );
-      case 'FILE':
+      case "FILE":
         return (
           <FileTypeBuilder
             value={value as any}
@@ -97,8 +98,8 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             disabled={disabled}
           />
         );
-      case 'ARRAY':
-      case 'OBJECT':
+      case "ARRAY":
+      case "OBJECT":
         return (
           <AdvancedNestedTypeBuilder
             value={value}

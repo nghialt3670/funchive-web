@@ -1,61 +1,40 @@
-import type { MenuProps } from 'antd';
+import { Button } from "@/components/button/button";
+import { NamespaceProvider } from "@/contexts/namespace-context";
 import {
-  useContext,
-  type FC,
-  type MouseEvent,
-  type PropsWithChildren,
-} from 'react';
-import {
-  Button,
-  Card,
-  Dropdown,
-  message,
-  Tag,
-  Tooltip,
-  Typography,
-} from 'antd';
+  useCompileFunctionMutation,
+  useDeleteFunctionMutation,
+} from "@/features/function/function-hooks";
+import type { FunctionDetailDto } from "@/features/function/function-types";
+import { getLanguageIcon } from "@/features/function/utils/icon-utils";
+import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import {
   ArrowRightOutlined,
-  BugOutlined,
-  CheckCircleOutlined,
   CopyOutlined,
   DeleteOutlined,
   EditOutlined,
-  ExclamationCircleOutlined,
   EyeOutlined,
-  LoadingOutlined,
   MoreOutlined,
-  PauseCircleOutlined,
   PlayCircleOutlined,
   RocketOutlined,
-} from '@ant-design/icons';
-import styles from './function-card.module.css';
-import type {
-  CompilationStatus,
-  FunctionDetailDto,
-} from '@/features/function/function-types';
-import { useNavigate } from 'react-router-dom';
-import { getLanguageIcon } from '@/features/function/utils/icon-utils';
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Dropdown, Tag, Tooltip, Typography } from "antd";
+import { type FC, type MouseEvent, type PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
 import {
-  useDeleteFunctionMutation,
-  useCompileFunctionMutation,
-} from '@/features/function/function-hooks';
-import {
-  FunctionDetailContext,
   FunctionDetailContextProvider,
   useFunctionDetailContext,
-} from '../../contexts/function-detail-context';
-import { TypeTooltip } from '../type-tooltip';
+} from "../../contexts/function-detail-context";
 import {
   getCompilationStatusColor,
   getTypeColor,
-} from '../../utils/color-utils';
-import { getCompilationStatusIcon } from '../../utils/icon-utils';
-import { getCompilationStatusLabel } from '../../utils/label-utils';
-import { NamespaceProvider } from '@/contexts/namespace-context';
-import { useNamespace } from '@/hooks/use-namespace';
-import { useTranslation } from 'react-i18next';
-import { useNamespacedTranslation } from '@/hooks/use-namespaced-translation';
+} from "../../utils/color-utils";
+import { getCompilationStatusIcon } from "../../utils/icon-utils";
+import { getCompilationStatusLabel } from "../../utils/label-utils";
+import { TypeTooltip } from "../type-tooltip";
+import styles from "./function-card.module.css";
 
 const { Text, Paragraph } = Typography;
 
@@ -70,7 +49,7 @@ export const FunctionCard: FC<FunctionCardProps> = ({
   onCardClick,
 }) => {
   const navigate = useNavigate();
-  const namespace = 'function';
+  const namespace = "function";
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (onCardClick) {
@@ -78,7 +57,7 @@ export const FunctionCard: FC<FunctionCardProps> = ({
       return;
     }
     // Don't navigate if clicking on buttons or dropdowns
-    if ((e.target as HTMLElement).closest('button, .ant-dropdown')) {
+    if ((e.target as HTMLElement).closest("button, .ant-dropdown")) {
       return;
     }
     navigate(`/functions/${functionDetail.id}`);
@@ -87,23 +66,20 @@ export const FunctionCard: FC<FunctionCardProps> = ({
   return (
     <NamespaceProvider namespace={namespace}>
       <FunctionDetailContextProvider functionDetail={functionDetail}>
-        <Card
-          className={styles.functionCard}
-          hoverable
-          onClick={handleCardClick}
-          bodyStyle={{
-            padding: '1rem',
-          }}
-        >
+        <div className={styles.functionCard} onClick={handleCardClick}>
           {children}
-        </Card>
+        </div>
       </FunctionDetailContextProvider>
     </NamespaceProvider>
   );
 };
 
 export const FunctionCardHeader: FC<PropsWithChildren> = ({ children }) => {
-  return <div className={styles.functionCardHeader}>{children}</div>;
+  return (
+    <div className={styles.functionCardHeader}>
+      {children}
+    </div>
+  );
 };
 
 export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
@@ -111,7 +87,11 @@ export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const FunctionCardFooter: FC<PropsWithChildren> = ({ children }) => {
-  return <div className={styles.functionCardFooter}>{children}</div>;
+  return (
+    <div className={styles.functionCardFooter}>
+      {children}
+    </div>
+  );
 };
 
 export const FunctionLanguageIcon: FC = () => {
@@ -125,7 +105,7 @@ export const FunctionName: FC = () => {
 
   return (
     <Paragraph
-      ellipsis={{ rows: 3, expandable: true, symbol: t('show-more') }}
+      ellipsis={{ rows: 3, expandable: true, symbol: t("show-more") }}
       strong
       className={styles.functionName}
     >
@@ -140,7 +120,7 @@ export const FunctionDescription: FC = () => {
 
   return (
     <Paragraph
-      ellipsis={{ rows: 5, expandable: true, symbol: t('show-more') }}
+      ellipsis={{ rows: 3, expandable: true, symbol: t("show-more") }}
       className={styles.functionDescription}
     >
       {definition.description}
@@ -155,17 +135,13 @@ export const FunctionInputOutputTypes: FC = () => {
 
   return (
     <div className={styles.functionInputOutputTypes}>
-      <TypeTooltip
-        type={definition.inputType}
-      >
+      <TypeTooltip type={definition.inputType}>
         <Tag color={inputTypeColor} className={styles.inputTypeTag}>
           {definition.inputType.name}
         </Tag>
       </TypeTooltip>
       <ArrowRightOutlined />
-      <TypeTooltip
-        type={definition.outputType}
-      >
+      <TypeTooltip type={definition.outputType}>
         <Tag color={outputTypeColor} className={styles.outputTypeTag}>
           {definition.outputType.name}
         </Tag>
@@ -198,8 +174,8 @@ export const FunctionCompilationStatus: FC = () => {
 
 export const FunctionCompileOrExecuteButton: FC = () => {
   const { compilationStatus } = useFunctionDetailContext();
-  const canRun = compilationStatus === 'SUCCESS';
-  const needsCompilation = ['NOT_STARTED', 'OUTDATED', 'FAILED'].includes(
+  const canRun = compilationStatus === "SUCCESS";
+  const needsCompilation = ["NOT_STARTED", "OUTDATED", "FAILED"].includes(
     compilationStatus,
   );
 
@@ -224,14 +200,14 @@ export const FunctionCompileButton: FC = () => {
   };
 
   return (
-    <Tooltip title={t('compile-function')} key="compile">
+    <Tooltip title={t("compile-function")} key="compile">
       <Button
         type="text"
         icon={<RocketOutlined />}
         onClick={handleCompile}
         className={styles.functionCompileButton}
       >
-        {t('compile')}
+        {t("compile")}
       </Button>
     </Tooltip>
   );
@@ -247,14 +223,14 @@ export const FunctionExecuteButton: FC = () => {
   };
 
   return (
-    <Tooltip title={t('execute-function')} key="execute">
+    <Tooltip title={t("execute-function")} key="execute">
       <Button
         type="text"
         icon={<PlayCircleOutlined />}
         onClick={handleExecute}
         className={styles.functionExecuteButton}
       >
-        {t('execute')}
+        {t("execute")}
       </Button>
     </Tooltip>
   );
@@ -310,10 +286,7 @@ export const FunctionOptions: FC = () => {
   ];
 
   return (
-    <Dropdown
-      menu={{ items: dropdownItems }}
-      trigger={["hover"]}
-    >
+    <Dropdown menu={{ items: dropdownItems }} trigger={["hover"]}>
       <Button
         type="text"
         onClick={(e) => e.stopPropagation()}

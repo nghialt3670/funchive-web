@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useTheme, type Theme } from '@/contexts/theme-context';
-import styles from './theme-toggle.module.css';
+import { type Theme, useTheme } from "@/contexts/theme-context";
+import React, { useEffect, useRef, useState } from "react";
+
+import styles from "./theme-toggle.module.css";
 
 const SunIcon = () => (
   <svg
@@ -67,15 +68,15 @@ export function ThemeToggle() {
     label: string;
     icon: React.ReactNode;
   }> = [
-    { value: 'light', label: 'Light', icon: <SunIcon /> },
-    { value: 'dark', label: 'Dark', icon: <MoonIcon /> },
-    { value: 'system', label: 'System', icon: <SystemIcon /> },
+    { value: "light", label: "Light", icon: <SunIcon /> },
+    { value: "dark", label: "Dark", icon: <MoonIcon /> },
+    { value: "system", label: "System", icon: <SystemIcon /> },
   ];
 
   const currentTheme = themes.find((t) => t.value === theme);
   const displayIcon =
-    theme === 'system' ? (
-      resolvedTheme === 'dark' ? (
+    theme === "system" ? (
+      resolvedTheme === "dark" ? (
         <MoonIcon />
       ) : (
         <SunIcon />
@@ -95,21 +96,21 @@ export function ThemeToggle() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Close dropdown on escape key
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
     }
   }, [isOpen]);
 
@@ -136,7 +137,7 @@ export function ThemeToggle() {
           {themes.map((themeOption) => (
             <button
               key={themeOption.value}
-              className={`${styles.dropdownItem} ${theme === themeOption.value ? styles.active : ''}`}
+              className={`${styles.dropdownItem} ${theme === themeOption.value ? styles.active : ""}`}
               onClick={() => handleThemeSelect(themeOption.value)}
               role="option"
               aria-selected={theme === themeOption.value}

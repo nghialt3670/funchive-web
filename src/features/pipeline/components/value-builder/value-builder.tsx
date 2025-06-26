@@ -1,30 +1,31 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Card,
-  Input,
-  Button,
-  Space,
-  Row,
-  Col,
-  Typography,
-  Switch,
-  InputNumber,
-  Upload,
-  Alert,
-} from 'antd';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  UploadOutlined,
-  CodeOutlined,
-} from '@ant-design/icons';
 import type {
-  Type,
-  ObjectType,
   ArrayType,
   FileType,
-} from '@/features/function/function-types';
-import styles from './value-builder.module.css';
+  ObjectType,
+  Type,
+} from "@/features/function/function-types";
+import {
+  CodeOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Input,
+  InputNumber,
+  Row,
+  Space,
+  Switch,
+  Typography,
+  Upload,
+} from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+
+import styles from "./value-builder.module.css";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -62,7 +63,7 @@ const ObjectFieldValue: React.FC<ObjectFieldValueProps> = ({
         <Col span={6}>
           <Text strong>{fieldName}</Text>
           <br />
-          <Text type="secondary" style={{ fontSize: '11px' }}>
+          <Text type="secondary" style={{ fontSize: "11px" }}>
             {fieldType.name}
           </Text>
         </Col>
@@ -90,7 +91,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
     value !== undefined ? value : getDefaultValue(type),
   );
   const [isValid, setIsValid] = useState(true);
-  const [validationError, setValidationError] = useState<string>('');
+  const [validationError, setValidationError] = useState<string>("");
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -117,17 +118,17 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
     }
 
     switch (type.name) {
-      case 'STRING':
-        return '';
-      case 'NUMBER':
+      case "STRING":
+        return "";
+      case "NUMBER":
         return 0;
-      case 'BOOLEAN':
+      case "BOOLEAN":
         return false;
-      case 'FILE':
+      case "FILE":
         return null;
-      case 'ARRAY':
+      case "ARRAY":
         return [];
-      case 'OBJECT':
+      case "OBJECT":
         const objectType = type as ObjectType;
         const defaultObj: any = {};
         Object.entries(objectType.schema || {}).forEach(([key, fieldType]) => {
@@ -142,48 +143,48 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
   const validateValue = (val: any): boolean => {
     try {
       switch (type.name) {
-        case 'STRING':
-          if (typeof val !== 'string') {
-            setValidationError('Value must be a string');
+        case "STRING":
+          if (typeof val !== "string") {
+            setValidationError("Value must be a string");
             setIsValid(false);
             return false;
           }
           break;
-        case 'NUMBER':
-          if (typeof val !== 'number' || isNaN(val)) {
-            setValidationError('Value must be a valid number');
+        case "NUMBER":
+          if (typeof val !== "number" || isNaN(val)) {
+            setValidationError("Value must be a valid number");
             setIsValid(false);
             return false;
           }
           break;
-        case 'BOOLEAN':
-          if (typeof val !== 'boolean') {
-            setValidationError('Value must be a boolean');
+        case "BOOLEAN":
+          if (typeof val !== "boolean") {
+            setValidationError("Value must be a boolean");
             setIsValid(false);
             return false;
           }
           break;
-        case 'ARRAY':
+        case "ARRAY":
           if (!Array.isArray(val)) {
-            setValidationError('Value must be an array');
+            setValidationError("Value must be an array");
             setIsValid(false);
             return false;
           }
           break;
-        case 'OBJECT':
-          if (typeof val !== 'object' || val === null || Array.isArray(val)) {
-            setValidationError('Value must be an object');
+        case "OBJECT":
+          if (typeof val !== "object" || val === null || Array.isArray(val)) {
+            setValidationError("Value must be an object");
             setIsValid(false);
             return false;
           }
           break;
       }
 
-      setValidationError('');
+      setValidationError("");
       setIsValid(true);
       return true;
     } catch (error) {
-      setValidationError('Invalid value');
+      setValidationError("Invalid value");
       setIsValid(false);
       return false;
     }
@@ -195,7 +196,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
 
   const renderValueInput = () => {
     switch (type.name) {
-      case 'STRING':
+      case "STRING":
         return (
           <Input
             placeholder="Enter string value"
@@ -205,7 +206,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           />
         );
 
-      case 'NUMBER':
+      case "NUMBER":
         return (
           <InputNumber
             placeholder="Enter number value"
@@ -216,7 +217,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           />
         );
 
-      case 'BOOLEAN':
+      case "BOOLEAN":
         return (
           <Switch
             checked={currentValue}
@@ -227,7 +228,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           />
         );
 
-      case 'FILE':
+      case "FILE":
         const fileType = type as FileType;
         return (
           <Upload
@@ -248,12 +249,12 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
             <Button icon={<UploadOutlined />} disabled={disabled}>
               {fileType.extension
                 ? `Upload ${fileType.extension} file`
-                : 'Upload file'}
+                : "Upload file"}
             </Button>
           </Upload>
         );
 
-      case 'ARRAY':
+      case "ARRAY":
         const arrayType = type as ArrayType;
         const arrayValue = Array.isArray(currentValue) ? currentValue : [];
 
@@ -306,17 +307,17 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
             ))}
 
             {arrayValue.length === 0 && (
-              <Text type="secondary" style={{ fontStyle: 'italic' }}>
+              <Text type="secondary" style={{ fontStyle: "italic" }}>
                 No items in array. Click "Add Item" to start.
               </Text>
             )}
           </div>
         );
 
-      case 'OBJECT':
+      case "OBJECT":
         const objectType = type as ObjectType;
         const objectValue =
-          typeof currentValue === 'object' && currentValue !== null
+          typeof currentValue === "object" && currentValue !== null
             ? currentValue
             : {};
 
@@ -396,7 +397,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           {type.description && (
             <Text
               type="secondary"
-              style={{ fontSize: '12px', fontStyle: 'italic' }}
+              style={{ fontSize: "12px", fontStyle: "italic" }}
             >
               {type.description}
             </Text>
@@ -417,9 +418,9 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           <details>
             <summary
               style={{
-                cursor: 'pointer',
-                fontSize: '12px',
-                color: '#666',
+                cursor: "pointer",
+                fontSize: "12px",
+                color: "#666",
               }}
             >
               <CodeOutlined /> Show JSON Preview

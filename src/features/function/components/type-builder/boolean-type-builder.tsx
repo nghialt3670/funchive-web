@@ -1,7 +1,8 @@
-import React from 'react';
-import { Form, Input, Switch } from 'antd';
-import type { BooleanType } from '@/features/function/function-types';
-import styles from './boolean-type-builder.module.css';
+import type { BooleanType } from "@/features/function/function-types";
+import { Form, Input, Switch } from "antd";
+import React from "react";
+
+import styles from "./boolean-type-builder.module.css";
 
 interface BooleanTypeBuilderProps {
   value?: BooleanType;
@@ -14,12 +15,12 @@ export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const description = value?.description || '';
+  const description = value?.description || "";
   const defaultValue = value?.defaultValue;
 
   const handleDescriptionChange = (newDescription: string) => {
     onChange?.({
-      name: 'BOOLEAN',
+      name: "BOOLEAN",
       description: newDescription || undefined,
       defaultValue: value?.defaultValue,
     });
@@ -27,7 +28,7 @@ export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
 
   const handleDefaultValueChange = (newDefaultValue: boolean) => {
     onChange?.({
-      name: 'BOOLEAN',
+      name: "BOOLEAN",
       description: value?.description,
       defaultValue: newDefaultValue,
     });

@@ -1,7 +1,8 @@
-import React from 'react';
-import { Form, Input, InputNumber } from 'antd';
-import type { NumberType } from '@/features/function/function-types';
-import styles from './number-type-builder.module.css';
+import type { NumberType } from "@/features/function/function-types";
+import { Form, Input, InputNumber } from "antd";
+import React from "react";
+
+import styles from "./number-type-builder.module.css";
 
 interface NumberTypeBuilderProps {
   value?: NumberType;
@@ -14,12 +15,12 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const description = value?.description || '';
+  const description = value?.description || "";
   const defaultValue = value?.defaultValue;
 
   const handleDescriptionChange = (newDescription: string) => {
     onChange?.({
-      name: 'NUMBER',
+      name: "NUMBER",
       description: newDescription || undefined,
       defaultValue: value?.defaultValue,
     });
@@ -27,7 +28,7 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
 
   const handleDefaultValueChange = (newDefaultValue: number | null) => {
     onChange?.({
-      name: 'NUMBER',
+      name: "NUMBER",
       description: value?.description,
       defaultValue: newDefaultValue || undefined,
     });

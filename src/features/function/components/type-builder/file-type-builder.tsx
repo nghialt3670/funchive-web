@@ -1,8 +1,9 @@
-import React from 'react';
-import { Form, Input, Upload, Button, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import type { FileType } from '@/features/function/function-types';
-import styles from './file-type-builder.module.css';
+import type { FileType } from "@/features/function/function-types";
+import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Upload, message } from "antd";
+import React from "react";
+
+import styles from "./file-type-builder.module.css";
 
 interface FileTypeBuilderProps {
   value?: FileType;
@@ -15,13 +16,13 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const description = value?.description || '';
-  const extension = value?.extension || '';
+  const description = value?.description || "";
+  const extension = value?.extension || "";
   const defaultValue = value?.defaultValue;
 
   const handleDescriptionChange = (newDescription: string) => {
     onChange?.({
-      name: 'FILE',
+      name: "FILE",
       description: newDescription || undefined,
       extension: value?.extension,
       defaultValue: value?.defaultValue,
@@ -30,7 +31,7 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
 
   const handleExtensionChange = (newExtension: string) => {
     onChange?.({
-      name: 'FILE',
+      name: "FILE",
       description: value?.description,
       extension: newExtension || undefined,
       defaultValue: value?.defaultValue,
@@ -43,14 +44,14 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
       try {
         const content = e.target?.result as string;
         onChange?.({
-          name: 'FILE',
+          name: "FILE",
           description: value?.description,
           extension: value?.extension,
           defaultValue: content,
         });
-        message.success('File uploaded successfully');
+        message.success("File uploaded successfully");
       } catch (error) {
-        message.error('Failed to read file');
+        message.error("Failed to read file");
       }
     };
     reader.readAsText(file);

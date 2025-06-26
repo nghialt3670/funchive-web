@@ -1,33 +1,29 @@
-import { useState } from 'react';
+import { Button } from "@/components/button";
+import { Loading } from "@/components/loading";
+import { Retry } from "@/components/retry";
 import {
-  Row,
-  Col,
-  Typography,
-  Button,
-  Input,
-  Select,
-  Spin,
-  Alert,
-  Pagination,
-} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useFunctionPageQuery } from '@/features/function/function-hooks';
-import type { FunctionFilter } from '@/features/function/function-types';
-import { SORT_OPTIONS } from '@/features/function/function-types';
-import styles from './functions-page.module.css';
-import { FunctionCard } from '@/features/function/components/function-card';
-import {
-  FunctionDescription,
-  FunctionCardHeader,
+  FunctionCard,
   FunctionCardBody,
   FunctionCardFooter,
-  FunctionName,
-  FunctionLanguageIcon,
-  FunctionInputOutputTypes,
+  FunctionCardHeader,
+  FunctionCompilationStatus,
   FunctionCompileOrExecuteButton,
+  FunctionDescription,
+  FunctionInputOutputTypes,
+  FunctionLanguageIcon,
+  FunctionName,
   FunctionOptions,
-} from '@/features/function/components/function-card/function-card';
+} from "@/features/function/components/function-card";
+import { useFunctionPageQuery } from "@/features/function/function-hooks";
+import type { FunctionFilter } from "@/features/function/function-types";
+import { SORT_OPTIONS } from "@/features/function/function-types";
+import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Col, Input, Pagination, Row, Select, Tooltip, Typography } from "antd";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+import styles from "./functions-page.module.css";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -35,14 +31,26 @@ const { Option } = Select;
 
 export const FunctionsPage = () => {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<FunctionFilter>({});
-  const [sort, setSort] = useState<string>('createdAt,desc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const { t: tCommon } = useTranslation();
+  const { t } = useTranslation("function");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Extract state from URL parameters
+  const filter = useMemo<FunctionFilter>(() => {
+    const keyword = searchParams.get("keyword") || undefined;
+    const language = searchParams.get("language") || undefined;
+    return { keyword, language };
+  }, [searchParams]);
+
+  const sort = searchParams.get("sort") || "createdAt,desc";
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const pageSize = parseInt(searchParams.get("size") || "20", 10);
 
   const {
     data: functionsPage,
     isLoading,
+    isFetching,
+    isPending,
     error,
     refetch,
   } = useFunctionPageQuery(filter, {
@@ -51,184 +59,203 @@ export const FunctionsPage = () => {
     sort: sort,
   });
 
+  const updateUrlParams = (updates: Record<string, string | undefined>) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === undefined || value === "") {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, value);
+      }
+    });
+
+    setSearchParams(newParams);
+  };
+
   const handleSearch = (keyword: string) => {
-    setFilter((prev) => ({ ...prev, keyword }));
-    setCurrentPage(1);
+    updateUrlParams({
+      keyword: keyword || undefined,
+      page: "1",
+    });
   };
 
   const handleLanguageFilter = (language: string) => {
-    setFilter((prev) => ({ ...prev, language: language || undefined }));
-    setCurrentPage(1);
+    updateUrlParams({
+      language: language || undefined,
+      page: "1",
+    });
   };
 
   const handleSortChange = (newSort: string) => {
-    setSort(newSort);
-    setCurrentPage(1);
+    updateUrlParams({
+      sort: newSort,
+      page: "1",
+    });
   };
 
   const handlePageChange = (page: number, size?: number) => {
-    setCurrentPage(page);
+    const updates: Record<string, string | undefined> = {
+      page: page.toString(),
+    };
+
     if (size && size !== pageSize) {
-      setPageSize(size);
+      updates.size = size.toString();
     }
+
+    updateUrlParams(updates);
+  };
+
+  const handleResetFilters = () => {
+    setSearchParams(new URLSearchParams());
   };
 
   if (error) {
-    return (
-      <div>
-        <Alert
-          message="Error loading functions"
-          description={error.message}
-          type="error"
-          showIcon
-          action={
-            <Button size="small" onClick={() => refetch()}>
-              Retry
-            </Button>
-          }
-        />
-      </div>
-    );
+    return <Retry error={error} onRetry={refetch} />;
   }
 
   return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.headerInfo}>
-            <Title level={2}>Functions</Title>
-            <p>Manage and deploy your serverless functions</p>
-          </div>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            size="large"
-            onClick={() => navigate('/functions/new')}
-          >
-            Create Function
-          </Button>
+    <div className={styles.functionsPageContainer}>
+      {/* Header */}
+      <div className={styles.functionsPageHeader}>
+        <div className={styles.headerInfo}>
+          <Title level={2}>{t("functions")}</Title>
+          <p>{t("manage-and-deploy-your-serverless-functions")}</p>
         </div>
-
-        {/* Filters */}
-        <div className={styles.filtersSection}>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Search
-                placeholder="Search functions..."
-                onSearch={handleSearch}
-                className={styles.filterSelect}
-                allowClear
-              />
-            </Col>
-            <Col span={5}>
-              <Select
-                placeholder="Filter by language"
-                className={styles.filterSelect}
-                allowClear
-                onChange={handleLanguageFilter}
-              >
-                <Option value="python">Python</Option>
-                <Option value="javascript">JavaScript</Option>
-                <Option value="java">Java</Option>
-                <Option value="go">Go</Option>
-              </Select>
-            </Col>
-            <Col span={5}>
-              <Select
-                placeholder="Sort by"
-                className={styles.filterSelect}
-                value={sort}
-                onChange={handleSortChange}
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={6}>
-              <div className={styles.filterCount}>
-                {functionsPage && (
-                  <span>
-                    {functionsPage.total} function
-                    {functionsPage.total > 1 ? 's' : ''} found
-                  </span>
-                )}
-              </div>
-            </Col>
-          </Row>
-        </div>
-
-        {/* Functions Grid */}
-        {isLoading ? (
-          <div className={styles.loadingContainer}>
-            <Spin size="large" />
-          </div>
-        ) : (
-          <>
-            <Row gutter={[16, 16]} className={styles.functionsGrid}>
-              {functionsPage?.items.map((functionDetail) => (
-                <Col
-                  xs={24}
-                  sm={24}
-                  md={12}
-                  lg={8}
-                  xl={6}
-                  key={functionDetail.id}
-                >
-                  <FunctionCard functionDetail={functionDetail}>
-                    <FunctionCardHeader>
-                      <FunctionLanguageIcon />
-                      <FunctionName />
-                    </FunctionCardHeader>
-                    <FunctionCardBody>
-                      <FunctionDescription />
-                      <FunctionInputOutputTypes />
-                    </FunctionCardBody>
-                    <FunctionCardFooter>
-                      <FunctionCompileOrExecuteButton />
-                      <FunctionOptions />
-                    </FunctionCardFooter>
-                  </FunctionCard>
-                </Col>
-              ))}
-            </Row>
-
-            {/* Pagination */}
-            {functionsPage && functionsPage.total > 0 && (
-              <div className={styles.paginationContainer}>
-                <Pagination
-                  current={currentPage}
-                  total={functionsPage.total}
-                  pageSize={pageSize}
-                  showSizeChanger
-                  showQuickJumper
-                  showTotal={(total, range) =>
-                    `${range[0]}-${range[1]} of ${total} functions`
-                  }
-                  pageSizeOptions={['10', '20', '50', '100']}
-                  onChange={handlePageChange}
-                  size="default"
-                />
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Empty State */}
-        {!isLoading && functionsPage?.items.length === 0 && (
-          <div className={styles.emptyState}>
-            <Title level={3}>No functions found</Title>
-            <p>Get started by creating your first function</p>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => navigate('/functions/new')}
-            >
-              Create Function
-            </Button>
-          </div>
-        )}
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          size="large"
+          onClick={() => navigate("/functions/new")}
+        >
+          {t("create-function")}
+        </Button>
       </div>
+
+      {/* Filters */}
+      <div className={styles.filtersSection}>
+        <Row gutter={16}>
+          <Col span={1}>
+            <Tooltip title={tCommon("reset-filters")}>
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={handleResetFilters}
+                className={styles.filterSelect}
+              />
+            </Tooltip>
+          </Col>
+          <Col span={8}>
+            <Search
+              placeholder={t("search-functions-placeholder")}
+              defaultValue={filter.keyword}
+              onSearch={handleSearch}
+              className={styles.filterSelect}
+              allowClear
+            />
+          </Col>
+          <Col span={5}>
+            <Select
+              placeholder={t("filter-by-language-placeholder")}
+              className={styles.filterSelect}
+              value={filter.language}
+              allowClear
+              onChange={handleLanguageFilter}
+            >
+              <Option value="python">Python</Option>
+              <Option value="javascript">JavaScript</Option>
+              <Option value="java">Java</Option>
+              <Option value="go">Go</Option>
+            </Select>
+          </Col>
+          <Col span={5}>
+            <Select
+              placeholder={t("sort-by-placeholder")}
+              className={styles.filterSelect}
+              value={sort}
+              onChange={handleSortChange}
+            >
+              {SORT_OPTIONS.map((option) => (
+                <Option key={option.value} value={option.value}>
+                  {tCommon(option.label)}
+                </Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={2}>
+            <div className={styles.filterCount}>
+              {functionsPage && (
+                <span>
+                  {t("found") +
+                    " " +
+                    functionsPage.total +
+                    " " +
+                    (functionsPage.total > 1
+                      ? t("functions").toLowerCase()
+                      : t("function").toLowerCase())}
+                </span>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </div>
+
+      {/* Functions Grid */}
+      {isLoading || isFetching || isPending ? (
+        <Loading />
+      ) : (
+        <>
+          <Row gutter={[16, 16]} className={styles.functionsGrid}>
+            {functionsPage?.items.map((functionDetail) => (
+              <Col
+                xs={24}
+                sm={24}
+                md={12}
+                lg={8}
+                xl={6}
+                key={functionDetail.id}
+              >
+                <FunctionCard functionDetail={functionDetail}>
+                  <FunctionCardHeader>
+                    <FunctionLanguageIcon />
+                    <FunctionName />
+                  </FunctionCardHeader>
+                  <FunctionCardBody>
+                    <FunctionDescription />
+                    <FunctionInputOutputTypes />
+                    <FunctionCompilationStatus />
+                  </FunctionCardBody>
+                  <FunctionCardFooter>
+                    <FunctionCompileOrExecuteButton />
+                    <FunctionOptions />
+                  </FunctionCardFooter>
+                </FunctionCard>
+              </Col>
+            ))}
+          </Row>
+
+          {/* Pagination */}
+          {functionsPage && functionsPage.total > 0 && (
+            <div className={styles.paginationContainer}>
+              <Pagination
+                current={currentPage}
+                total={functionsPage.total}
+                pageSize={pageSize}
+                showSizeChanger
+                showQuickJumper
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} ${t("of").toLowerCase()} ${total} ${
+                    total > 1
+                      ? t("functions").toLowerCase()
+                      : t("function").toLowerCase()
+                  }`
+                }
+                pageSizeOptions={["10", "20", "50", "100"]}
+                onChange={handlePageChange}
+              />
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 };

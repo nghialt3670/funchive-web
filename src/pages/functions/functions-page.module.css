@@ -1,15 +1,17 @@
-.container {
+.functionsPageContainer {
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
+  gap: 1rem;
 }
 
-.header {
+.functionsPageHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
 }
 
 .headerInfo h1 {
@@ -23,8 +25,7 @@
 }
 
 .filtersSection {
-  margin-bottom: 24px;
-  padding: 20px;
+  padding: 0.75rem;
   background: var(--color-background-secondary);
   border-radius: var(--border-radius-lg);
 }
@@ -42,42 +43,12 @@
   font-size: 14px;
 }
 
-.loadingContainer {
-  text-align: center;
-  padding: 50px;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .functionsGrid {
-  margin-bottom: 32px;
+  padding: 0rem;
 }
 
 .paginationContainer {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-border);
-}
-
-.emptyState {
-  text-align: center;
-  padding: 64px 32px;
-  background: var(--color-background-secondary);
-  border-radius: var(--border-radius-lg);
-  margin-top: 32px;
-  color: var(--color-text-secondary);
-}
-
-.emptyState h3 {
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
-}
-
-.emptyState p {
-  color: var(--color-text-tertiary);
-  margin-bottom: 24px;
+  padding: 1rem;
 }

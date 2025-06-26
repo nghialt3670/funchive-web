@@ -1,20 +1,20 @@
-import axios from 'axios';
-import type { PageRequest, ResponseBody, ResponsePage } from '@/types/api';
 import type {
   ExecutionTriggerDto,
   FunctionCreateDto,
   FunctionDetailDto,
   FunctionFilter,
   FunctionUpdateDto,
-} from '@/features/function/function-types';
+} from "@/features/function/function-types";
+import type { PageRequest, ResponseBody, ResponsePage } from "@/types/api";
+import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const functionAxios = axios.create({
-  baseURL: API_BASE_URL + '/funchive-function-service',
+  baseURL: API_BASE_URL + "/funchive-function-service",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   timeout: 10000,
 });
@@ -25,7 +25,7 @@ export const functionApi = {
     compile: boolean = false,
   ): Promise<FunctionDetailDto> => {
     const response = await functionAxios.post<ResponseBody<FunctionDetailDto>>(
-      '/functions',
+      "/functions",
       data,
       {
         params: { compile },
@@ -46,8 +46,8 @@ export const functionApi = {
     pageRequest: PageRequest = {},
   ): Promise<ResponsePage<FunctionDetailDto>> => {
     const params = {
-      keyword: filter.keyword || '',
-      language: filter.language || '',
+      keyword: filter.keyword || "",
+      language: filter.language || "",
       page: pageRequest.page || 0,
       size: pageRequest.size || 20,
       ...(pageRequest.sort && { sort: pageRequest.sort }),
@@ -55,7 +55,7 @@ export const functionApi = {
 
     const response = await functionAxios.get<
       ResponseBody<ResponsePage<FunctionDetailDto>>
-    >('/functions', { params });
+    >("/functions", { params });
     return response.data.data;
   },
 
@@ -100,7 +100,7 @@ export const functionApi = {
 
 functionAxios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -115,8 +115,8 @@ functionAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   },

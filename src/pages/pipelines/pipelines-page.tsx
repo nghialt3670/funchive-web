@@ -1,27 +1,28 @@
-import { useState } from 'react';
 import {
-  Row,
-  Col,
-  Typography,
-  Button,
-  Input,
-  Spin,
-  Alert,
-  Pagination,
-  Card,
-} from 'antd';
-import {
-  PlusOutlined,
-  PlayCircleOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import {
-  usePipelinePage,
   useCreatePipeline,
-} from '@/features/pipeline/pipeline-hooks';
-import type { PipelineFilter } from '@/features/pipeline/pipeline-types';
-import styles from './pipelines-page.module.css';
+  usePipelinePage,
+} from "@/features/pipeline/pipeline-hooks";
+import type { PipelineFilter } from "@/features/pipeline/pipeline-types";
+import {
+  EditOutlined,
+  PlayCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Input,
+  Pagination,
+  Row,
+  Spin,
+  Typography,
+} from "antd";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import styles from "./pipelines-page.module.css";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -42,7 +43,7 @@ export const PipelinesPage = () => {
   } = usePipelinePage(filter, {
     page: currentPage - 1, // Convert to 0-based index
     size: pageSize,
-    sort: 'createdAt,desc',
+    sort: "createdAt,desc",
   });
 
   const handleSearch = (keyword: string) => {
@@ -65,8 +66,8 @@ export const PipelinesPage = () => {
   const handleCreatePipeline = async () => {
     try {
       const newPipeline = await createPipeline.mutateAsync({
-        name: 'New Pipeline',
-        description: 'A new pipeline workflow',
+        name: "New Pipeline",
+        description: "A new pipeline workflow",
         nodes: [],
         connections: [],
       });
@@ -74,7 +75,7 @@ export const PipelinesPage = () => {
       // Navigate to the new pipeline editor
       navigate(`/pipelines/${newPipeline.id}/edit`);
     } catch (error) {
-      console.error('Failed to create pipeline:', error);
+      console.error("Failed to create pipeline:", error);
     }
   };
 
@@ -132,7 +133,7 @@ export const PipelinesPage = () => {
           <Col span={11}>
             <div className={styles.filterCount}>
               <span>
-                {total} pipeline{total !== 1 ? 's' : ''} found
+                {total} pipeline{total !== 1 ? "s" : ""} found
               </span>
             </div>
           </Col>
@@ -141,7 +142,7 @@ export const PipelinesPage = () => {
 
       {/* Loading State */}
       {isLoading && (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
+        <div style={{ textAlign: "center", padding: "50px" }}>
           <Spin size="large" />
         </div>
       )}
@@ -206,7 +207,7 @@ export const PipelinesPage = () => {
             showTotal={(total, range) =>
               `${range[0]}-${range[1]} of ${total} pipelines`
             }
-            pageSizeOptions={['10', '20', '50', '100']}
+            pageSizeOptions={["10", "20", "50", "100"]}
             onChange={handlePageChange}
             size="default"
           />

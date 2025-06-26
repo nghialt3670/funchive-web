@@ -129,11 +129,11 @@
   box-shadow: var(--shadow-sm) !important;
 }
 
-.functionNode .nodeHandle[data-handlepos='left'] {
+.functionNode .nodeHandle[data-handlepos="left"] {
   background: var(--color-success) !important;
 }
 
-.functionNode .nodeHandle[data-handlepos='right'] {
+.functionNode .nodeHandle[data-handlepos="right"] {
   background: var(--color-warning) !important;
 }
 

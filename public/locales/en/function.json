@@ -1,8 +1,15 @@
 {
-    "function": "Function",
-    "functions": "Functions",
-    "compile-function": "Compile Function",
-    "execute-function": "Execute Function",
-    "compile": "Compile",
-    "execute": "Execute"
+  "function": "Function",
+  "functions": "Functions",
+  "compile-function": "Compile Function",
+  "execute-function": "Execute Function",
+  "compile": "Compile",
+  "execute": "Execute",
+  "manage-and-deploy-your-serverless-functions": "Manage and deploy your serverless functions",
+  "create-function": "Create Function",
+  "search-functions-placeholder": "Search functions...",
+  "filter-by-language-placeholder": "Filter by language",
+  "sort-by-placeholder": "Sort by",
+  "found": "Found",
+  "of": "Of"
 }

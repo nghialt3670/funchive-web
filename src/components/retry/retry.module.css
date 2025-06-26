@@ -1,0 +1,10 @@
+.retryContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.retryContainer > div {
+  width: 100%;
+}

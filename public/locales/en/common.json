@@ -1,5 +1,17 @@
 {
-    "show-more": "Show more",
-    "show-less": "Show less",
-    "options": "Options"
+  "show-more": "Show more",
+  "show-less": "Show less",
+  "options": "Options",
+  "reset-filters": "Reset filters",
+  "newest-first": "Newest first",
+  "oldest-first": "Oldest first",
+  "recently-updated": "Recently updated",
+  "least-recently-updated": "Least recently updated",
+  "name-a-z": "Name (A-Z)",
+  "name-z-a": "Name (Z-A)",
+  "page-size": "Page size",
+  "go-to": "Go to",
+  "page": "Page",
+  "items-per-page": "items per page",
+  "jump-to-page": "Jump to page"
 }

@@ -1,31 +1,31 @@
-import { CodeOutlined } from '@ant-design/icons';
-import pythonLogo from 'programming-languages-logos/src/python/python.svg';
-import javaLogo from 'programming-languages-logos/src/java/java.svg';
-import goLogo from 'programming-languages-logos/src/go/go.svg';
-import csharpLogo from 'programming-languages-logos/src/csharp/csharp.svg';
-import {
-  CheckCircleOutlined,
-  BugOutlined,
-  LoadingOutlined,
-  ExclamationCircleOutlined,
-  PauseCircleOutlined,
-} from '@ant-design/icons';
 import {
   type CompilationStatus,
   type Language,
-} from '@/features/function/function-types';
+} from "@/features/function/function-types";
+import { CodeOutlined } from "@ant-design/icons";
+import {
+  BugOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  LoadingOutlined,
+  PauseCircleOutlined,
+} from "@ant-design/icons";
+import csharpLogo from "programming-languages-logos/src/csharp/csharp.svg";
+import goLogo from "programming-languages-logos/src/go/go.svg";
+import javaLogo from "programming-languages-logos/src/java/java.svg";
+import pythonLogo from "programming-languages-logos/src/python/python.svg";
 
 export const getCompilationStatusIcon = (status: CompilationStatus) => {
   switch (status) {
-    case 'SUCCESS':
+    case "SUCCESS":
       return <CheckCircleOutlined />;
-    case 'FAILED':
+    case "FAILED":
       return <BugOutlined />;
-    case 'IN_PROGRESS':
+    case "IN_PROGRESS":
       return <LoadingOutlined spin />;
-    case 'OUTDATED':
+    case "OUTDATED":
       return <ExclamationCircleOutlined />;
-    case 'NOT_STARTED':
+    case "NOT_STARTED":
       return <PauseCircleOutlined />;
     default:
       return <PauseCircleOutlined />;
@@ -34,19 +34,19 @@ export const getCompilationStatusIcon = (status: CompilationStatus) => {
 
 export const getLanguageIcon = (language: Language) => {
   const iconStyle = {
-    width: '1.5rem',
-    height: '1.5rem',
-    objectFit: 'contain' as const,
+    width: "1rem",
+    height: "1rem",
+    objectFit: "contain" as const,
   };
 
   switch (language.toUpperCase()) {
-    case 'PYTHON':
+    case "PYTHON":
       return <img src={pythonLogo} alt="Python" style={iconStyle} />;
-    case 'C#':
+    case "C#":
       return <img src={csharpLogo} alt="C#" style={iconStyle} />;
-    case 'JAVA':
+    case "JAVA":
       return <img src={javaLogo} alt="Java" style={iconStyle} />;
-    case 'GO':
+    case "GO":
       return <img src={goLogo} alt="Go" style={iconStyle} />;
     default:
       return <CodeOutlined />;

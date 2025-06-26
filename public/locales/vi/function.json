@@ -1,8 +1,15 @@
 {
-    "function": "Hàm",
-    "functions": "Hàm",
-    "compile-function": "Biên dịch hàm",
-    "execute-function": "Thực thi hàm",
-    "compile": "Biên dịch",
-    "execute": "Thực thi"
+  "function": "Hàm",
+  "functions": "Hàm",
+  "compile-function": "Biên dịch hàm",
+  "execute-function": "Thực thi hàm",
+  "compile": "Biên dịch",
+  "execute": "Thực thi",
+  "manage-and-deploy-your-serverless-functions": "Quản lý và triển khai các hàm serverless của bạn",
+  "create-function": "Tạo hàm",
+  "search-functions-placeholder": "Tìm kiếm hàm...",
+  "filter-by-language-placeholder": "Lọc theo ngôn ngữ",
+  "sort-by-placeholder": "Sắp xếp theo",
+  "found": "Tìm thấy",
+  "of": "Trong"
 }

@@ -1,9 +1,9 @@
 import {
-  createContext,
-  useContext,
   type FC,
   type PropsWithChildren,
-} from 'react';
+  createContext,
+  useContext,
+} from "react";
 
 export const NamespaceContext = createContext<string | null>(null);
 
