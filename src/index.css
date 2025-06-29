@@ -16,8 +16,8 @@
   --color-primary-hover: #1d4ed8;
   --color-primary-active: #1e40af;
 
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f8fafc;
+  --color-background-primary: #eff3f7;
+  --color-background-secondary: #e8eef4;
   --color-background-tertiary: #f1f5f9;
   --color-background-hover: #f1f5f9;
   --color-background-selected: #eff6ff;
@@ -35,6 +35,8 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
+
+  --color-sidebar-background: #f1f5f9;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md:
@@ -78,6 +80,8 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
+
+  --color-sidebar-background: #1e293b;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md:

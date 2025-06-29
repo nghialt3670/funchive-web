@@ -1,19 +1,15 @@
-import { NamespaceProvider } from "@/contexts/namespace-context";
 import {
   useCreatePipeline,
   usePipelinePage,
 } from "@/features/pipeline/pipeline-hooks";
 import type { PipelineFilter } from "@/features/pipeline/pipeline-types";
-import {
-  EditOutlined,
-  PlayCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { usePageSearchParams } from "@/hooks/use-page-search-params.ts";
+import { PlusOutlined } from "@ant-design/icons";
+import { NamespaceProvider } from "@components/providers/namespace-provider.tsx";
 import { ResourceEmpty } from "@components/ui/resource-empty";
 import {
   Alert,
   Button,
-  Card,
   Col,
   Input,
   Pagination,
@@ -25,6 +21,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import { PipelineCard } from "../../features/pipeline/components/pipeline-card";
 import styles from "./pipelines-page.module.css";
 
 const { Title } = Typography;
@@ -39,16 +36,14 @@ export const PipelinesPage = () => {
 
   const createPipeline = useCreatePipeline();
 
+  const pageRequest = usePageSearchParams();
+
   // Fetch pipelines using the new API
   const {
     data: pipelinePage,
     isLoading,
     error,
-  } = usePipelinePage(filter, {
-    page: currentPage - 1, // Convert to 0-based index
-    size: pageSize,
-    sort: "createdAt,desc",
-  });
+  } = usePipelinePage(filter, pageRequest);
 
   const handleSearch = (keyword: string) => {
     setFilter({ ...filter, keyword });
@@ -109,7 +104,6 @@ export const PipelinesPage = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            size="large"
             loading={createPipeline.isPending}
             onClick={handleCreatePipeline}
           >
@@ -158,45 +152,7 @@ export const PipelinesPage = () => {
           <Row gutter={[16, 16]} className={styles.pipelinesGrid}>
             {pipelines.map((pipeline) => (
               <Col xs={24} sm={24} md={12} lg={8} xl={6} key={pipeline.id}>
-                <Card
-                  className={styles.pipelineCard}
-                  actions={[
-                    <EditOutlined
-                      key="edit"
-                      onClick={() => navigate(`/pipelines/${pipeline.id}/edit`)}
-                    />,
-                    <PlayCircleOutlined
-                      key="run"
-                      onClick={() => navigate(`/pipelines/${pipeline.id}/run`)}
-                    />,
-                  ]}
-                >
-                  <Card.Meta
-                    title={
-                      <div
-                        className={styles.cardTitle}
-                        onClick={() => navigate(`/pipelines/${pipeline.id}`)}
-                      >
-                        {pipeline.name}
-                      </div>
-                    }
-                    description={pipeline.description}
-                  />
-                  <div className={styles.cardMeta}>
-                    <div className={styles.nodeCount}>
-                      {pipeline.nodes?.length || 0} nodes
-                    </div>
-                    <div className={styles.connectionCount}>
-                      {pipeline.connections?.length || 0} connections
-                    </div>
-                  </div>
-                  <div className={styles.cardFooter}>
-                    <span>
-                      Updated{" "}
-                      {new Date(pipeline.updatedAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </Card>
+                <PipelineCard pipeline={pipeline} />
               </Col>
             ))}
           </Row>

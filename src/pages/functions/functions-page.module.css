@@ -1,7 +1,7 @@
 .functionsPageContainer {
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 80rem;
   margin: 0 auto;
   padding: 1rem;
   padding-bottom: 1rem;
@@ -46,10 +46,4 @@
 
 .functionsGrid {
   padding: 0rem;
-}
-
-.paginationContainer {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
 }

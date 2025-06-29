@@ -1,5 +1,5 @@
 .container {
-  max-width: 1200px;
+  max-width: 80rem;
   margin: 0 auto;
   padding: 1rem;
   padding-bottom: 2rem;
@@ -44,74 +44,6 @@
 
 .pipelinesGrid {
   margin-bottom: 32px;
-}
-
-.pipelineCard {
-  height: 100%;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 8px;
-}
-
-.pipelineCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.cardTitle {
-  color: var(--color-primary);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.cardTitle:hover {
-  text-decoration: underline;
-}
-
-.cardMeta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 16px 0 8px 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-border);
-}
-
-.nodeCount {
-  color: var(--color-text-secondary);
-  font-size: 14px;
-}
-
-.status {
-  padding: 4px 8px;
-  border-radius: var(--border-radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.status.active {
-  background: var(--color-background-selected);
-  color: var(--color-success);
-  border: 1px solid var(--color-success);
-}
-
-.status.draft {
-  background: var(--color-background-secondary);
-  color: var(--color-warning);
-  border: 1px solid var(--color-warning);
-}
-
-.status.paused {
-  background: var(--color-background-tertiary);
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-}
-
-.cardFooter {
-  color: var(--color-text-tertiary);
-  font-size: 12px;
-  margin-top: 8px;
 }
 
 .paginationContainer {

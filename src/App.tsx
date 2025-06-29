@@ -3,6 +3,7 @@ import { FunctionsPage } from "@/pages/functions";
 import { PipelinePage } from "@/pages/pipeline";
 import { PipelinesPage } from "@/pages/pipelines";
 import { RootLayout } from "@components/layouts/root-layout";
+import { NamespaceProvider } from "@components/providers/namespace-provider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./app.css";
@@ -13,10 +14,38 @@ function App() {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<div>Home</div>} />
-          <Route path="functions" element={<FunctionsPage />} />
-          <Route path="functions/new" element={<FunctionPage />} />
-          <Route path="functions/:id" element={<FunctionPage />} />
-          <Route path="functions/:id/edit" element={<FunctionPage />} />
+          <Route
+            path="functions"
+            element={
+              <NamespaceProvider namespace="function">
+                <FunctionsPage />
+              </NamespaceProvider>
+            }
+          />
+          <Route
+            path="functions/new"
+            element={
+              <NamespaceProvider namespace="function">
+                <FunctionPage />
+              </NamespaceProvider>
+            }
+          />
+          <Route
+            path="functions/:id"
+            element={
+              <NamespaceProvider namespace="function">
+                <FunctionPage />
+              </NamespaceProvider>
+            }
+          />
+          <Route
+            path="functions/:id/edit"
+            element={
+              <NamespaceProvider namespace="function">
+                <FunctionPage />
+              </NamespaceProvider>
+            }
+          />
           <Route path="pipelines" element={<PipelinesPage />} />
           <Route path="pipelines/new" element={<PipelinePage />} />
           <Route path="pipelines/:id" element={<PipelinePage />} />

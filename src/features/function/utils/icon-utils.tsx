@@ -2,13 +2,13 @@ import {
   type CompilationStatus,
   type Language,
 } from "@/features/function/function-types";
-import { CodeOutlined } from "@ant-design/icons";
+import { CodeFilled } from "@ant-design/icons";
 import {
-  BugOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
+  BugFilled,
+  CheckCircleFilled,
+  ExclamationCircleFilled,
   LoadingOutlined,
-  PauseCircleOutlined,
+  PauseCircleFilled,
 } from "@ant-design/icons";
 import csharpLogo from "programming-languages-logos/src/csharp/csharp.svg";
 import goLogo from "programming-languages-logos/src/go/go.svg";
@@ -18,17 +18,17 @@ import pythonLogo from "programming-languages-logos/src/python/python.svg";
 export const getCompilationStatusIcon = (status: CompilationStatus) => {
   switch (status) {
     case "SUCCESS":
-      return <CheckCircleOutlined />;
+      return <CheckCircleFilled />;
     case "FAILED":
-      return <BugOutlined />;
+      return <BugFilled />;
     case "IN_PROGRESS":
       return <LoadingOutlined spin />;
     case "OUTDATED":
-      return <ExclamationCircleOutlined />;
+      return <ExclamationCircleFilled />;
     case "NOT_STARTED":
-      return <PauseCircleOutlined />;
+      return <PauseCircleFilled />;
     default:
-      return <PauseCircleOutlined />;
+      return <PauseCircleFilled />;
   }
 };
 
@@ -49,6 +49,6 @@ export const getLanguageIcon = (language: Language) => {
     case "GO":
       return <img src={goLogo} alt="Go" style={iconStyle} />;
     default:
-      return <CodeOutlined />;
+      return <CodeFilled />;
   }
 };

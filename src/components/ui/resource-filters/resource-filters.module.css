@@ -1,0 +1,26 @@
+.filtersSection {
+  padding: 0.75rem;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
+}
+
+.filterButton {
+  width: 100%;
+}
+
+.filterInput {
+  width: 100%;
+}
+
+.filterSelect {
+  width: 100%;
+}
+
+.filterCount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 32px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}

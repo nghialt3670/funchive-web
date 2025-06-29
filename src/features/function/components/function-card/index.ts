@@ -1,1 +1,1 @@
-export * from "./function-card.tsx";
+export { FunctionCard } from "./function-card.tsx";

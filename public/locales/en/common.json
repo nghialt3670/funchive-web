@@ -1,4 +1,7 @@
 {
+  "dashboard": "Dashboard",
+  "functions": "Functions",
+  "pipelines": "Pipelines",
   "show-more": "Show more",
   "show-less": "Show less",
   "options": "Options",
@@ -13,5 +16,11 @@
   "go-to": "Go to",
   "page": "Page",
   "items-per-page": "items per page",
-  "jump-to-page": "Jump to page"
+  "jump-to-page": "Jump to page",
+  "expand-sidebar": "Expand sidebar",
+  "collapse-sidebar": "Collapse sidebar",
+  "details": "Details",
+  "edit": "Edit",
+  "clone": "Clone",
+  "delete": "Delete"
 }

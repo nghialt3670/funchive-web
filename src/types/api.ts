@@ -11,8 +11,13 @@ export interface ResponsePage<T> {
   total: number;
 }
 
+export interface Sort {
+  field: string;
+  order: "asc" | "desc";
+}
+
 export interface PageRequest {
   page?: number;
   size?: number;
-  sort?: string;
+  sorts?: Sort[];
 }

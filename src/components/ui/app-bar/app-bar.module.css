@@ -1,20 +1,14 @@
 /* App Bar Styles */
 .appBar {
-  background-color: var(--color-primary);
+  background-color: var(--color-background-secondary);
   color: var(--color-text-inverse);
-  box-shadow: var(--shadow-md);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .appBarContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: none;
+  margin: 0;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,33 +16,15 @@
   gap: 2rem;
 }
 
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .appTitle {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
   margin: 0;
-}
-
-/* Navigation Styles */
-.navMenu {
-  display: flex;
-  gap: 2rem;
-  flex: 1;
-  justify-content: center;
-}
-
-.navLink {
-  color: var(--color-text-inverse);
-  text-decoration: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--border-radius-md);
-  transition: background-color var(--transition-normal);
-  font-weight: 500;
-}
-
-.navLink:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.navLink.active {
-  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-primary);
 }

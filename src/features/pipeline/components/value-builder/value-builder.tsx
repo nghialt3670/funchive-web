@@ -5,8 +5,8 @@ import type {
   Type,
 } from "@/features/function/function-types";
 import {
-  CodeOutlined,
-  DeleteOutlined,
+  CodeFilled,
+  DeleteFilled,
   PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
@@ -293,7 +293,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
                 <Button
                   type="text"
                   danger
-                  icon={<DeleteOutlined />}
+                  icon={<DeleteFilled />}
                   size="small"
                   onClick={() => {
                     const newArray = arrayValue.filter(
@@ -423,7 +423,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
                 color: "#666",
               }}
             >
-              <CodeOutlined /> Show JSON Preview
+              <CodeFilled /> Show JSON Preview
             </summary>
             <div className={styles.valuePreview}>
               {JSON.stringify(currentValue, null, 2)}

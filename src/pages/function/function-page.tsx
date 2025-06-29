@@ -1,4 +1,10 @@
+import { BackButton } from "@/components/ui/back-button/back-button";
+import {
+  FunctionLanguageIcon,
+} from "@/features/function/components/function-language-icon/function-language-icon";
+import { FunctionStatusTag } from "@/features/function/components/function-status-tag";
 import { TypeBuilder } from "@/features/function/components/type-builder";
+import { FunctionDetailContextProvider } from "@/features/function/contexts/function-detail-context";
 import {
   useCompileFunctionMutation,
   useCreateFunctionMutation,
@@ -8,23 +14,22 @@ import {
   useUpdateFunctionMutation,
 } from "@/features/function/function-hooks.ts";
 import type {
-  CompilationStatus,
   FunctionCreateDto,
   FunctionUpdateDto,
 } from "@/features/function/function-types.ts";
 import { toSnakeCase } from "@/utils/code-utils.ts";
 import {
-  ArrowLeftOutlined,
-  CodeOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  PlayCircleOutlined,
-  RocketOutlined,
-  SaveOutlined,
+  BuildFilled,
+  CodeFilled,
+  DeleteFilled,
+  EditFilled,
+  FileTextFilled,
+  PlayCircleFilled,
+  SaveFilled,
+  SettingFilled,
 } from "@ant-design/icons";
 import {
   Alert,
-  Badge,
   Button,
   Card,
   Col,
@@ -36,6 +41,7 @@ import {
   Select,
   Space,
   Spin,
+  Tabs,
   Tag,
   Typography,
 } from "antd";
@@ -64,7 +70,7 @@ export const FunctionPage: React.FC = () => {
 
   // React Query hooks
   const {
-    data: functionData,
+    data: functionDetail,
     isLoading,
     error,
     refetch,
@@ -101,18 +107,18 @@ export const FunctionPage: React.FC = () => {
   }, [id, location.pathname, form]);
 
   useEffect(() => {
-    if (functionData && mode !== "create") {
+    if (functionDetail && mode !== "create") {
       form.setFieldsValue({
-        "definition.name": functionData.definition.name,
-        "definition.description": functionData.definition.description,
-        "definition.inputType": functionData.definition.inputType,
-        "definition.outputType": functionData.definition.outputType,
-        "implementation.language": functionData.implementation.language,
+        "definition.name": functionDetail.definition.name,
+        "definition.description": functionDetail.definition.description,
+        "definition.inputType": functionDetail.definition.inputType,
+        "definition.outputType": functionDetail.definition.outputType,
+        "implementation.language": functionDetail.implementation.language,
       });
-      setFunctionName(functionData.definition.name);
+      setFunctionName(functionDetail.definition.name);
 
-      const fullCode = functionData.implementation.code;
-      const funcSignature = `def ${toSnakeCase(functionData.definition.name)}(input_data):`;
+      const fullCode = functionDetail.implementation.code;
+      const funcSignature = `def ${toSnakeCase(functionDetail.definition.name)}(input_data):`;
       const bodyStartIndex =
         fullCode.indexOf(funcSignature) + funcSignature.length;
       if (bodyStartIndex > funcSignature.length) {
@@ -122,7 +128,7 @@ export const FunctionPage: React.FC = () => {
         setFunctionBody(fullCode);
       }
     }
-  }, [functionData, form, mode]);
+  }, [functionDetail, form, mode]);
 
   const watchedFunctionName = Form.useWatch("definition.name", form);
 
@@ -216,29 +222,14 @@ export const FunctionPage: React.FC = () => {
     });
   };
 
-  const getStatusBadge = (status?: CompilationStatus) => {
-    if (!status) return null;
-
-    const statusConfig = {
-      SUCCESS: { color: "success", text: "Compiled" },
-      FAILED: { color: "error", text: "Failed" },
-      IN_PROGRESS: { color: "processing", text: "Compiling" },
-      OUTDATED: { color: "warning", text: "Outdated" },
-      NOT_STARTED: { color: "default", text: "Not Compiled" },
-    };
-
-    const config = statusConfig[status];
-    return <Badge status={config.color as any} text={config.text} />;
-  };
-
   const getPageTitle = () => {
     switch (mode) {
       case "create":
         return "Create Function";
       case "edit":
-        return `Edit Function: ${functionData?.definition.name || ""}`;
+        return `Edit Function: ${functionDetail?.definition.name || ""}`;
       case "view":
-        return functionData?.definition.name || "Function";
+        return functionDetail?.definition.name || "Function";
       default:
         return "Function";
     }
@@ -251,19 +242,19 @@ export const FunctionPage: React.FC = () => {
       actions.push(
         <Button
           key="edit"
-          icon={<EditOutlined />}
+          icon={<EditFilled />}
           onClick={() => setMode("edit")}
         >
           Edit
         </Button>,
       );
 
-      if (functionData?.compilationStatus === "SUCCESS") {
+      if (functionDetail?.compilationStatus === "SUCCESS") {
         actions.push(
           <Button
             key="run"
             type="primary"
-            icon={<PlayCircleOutlined />}
+            icon={<PlayCircleFilled />}
             onClick={handleRun}
             loading={executeMutation.isPending}
           >
@@ -275,7 +266,7 @@ export const FunctionPage: React.FC = () => {
           <Button
             key="compile"
             type="primary"
-            icon={<RocketOutlined />}
+            icon={<BuildFilled />}
             loading={compileMutation.isPending}
             onClick={handleCompile}
           >
@@ -283,18 +274,6 @@ export const FunctionPage: React.FC = () => {
           </Button>,
         );
       }
-
-      actions.push(
-        <Button
-          key="delete"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={handleDelete}
-          loading={deleteMutation.isPending}
-        >
-          Delete
-        </Button>,
-      );
     }
 
     if (mode === "edit") {
@@ -307,7 +286,7 @@ export const FunctionPage: React.FC = () => {
         <Button
           key="save"
           type="primary"
-          icon={<SaveOutlined />}
+          icon={<SaveFilled />}
           loading={updateMutation.isPending}
           onClick={handleSave}
         >
@@ -321,7 +300,7 @@ export const FunctionPage: React.FC = () => {
         <Button
           key="save"
           type="primary"
-          icon={<SaveOutlined />}
+          icon={<SaveFilled />}
           loading={createMutation.isPending}
           onClick={handleSave}
         >
@@ -346,13 +325,7 @@ export const FunctionPage: React.FC = () => {
   if (error && mode !== "create") {
     return (
       <div className={styles.container}>
-        <Button
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate("/functions")}
-          className={styles.backButton}
-        >
-          Back to Functions
-        </Button>
+        <BackButton />
         <Alert
           message="Error loading function"
           description={error.message}
@@ -369,183 +342,285 @@ export const FunctionPage: React.FC = () => {
   }
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <Button
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate("/functions")}
-          className={styles.backButton}
-        >
-          Back to Functions
-        </Button>
-
-        <div className={styles.headerContent}>
-          <div className={styles.headerInfo}>
-            <Title level={1}>{getPageTitle()}</Title>
-            {mode !== "create" && functionData && (
-              <Space className={styles.headerMeta}>
-                {getStatusBadge(functionData.compilationStatus)}
-                <Tag icon={<CodeOutlined />} color="blue">
-                  {functionData.implementation.language}
-                </Tag>
-              </Space>
-            )}
-          </div>
+    <FunctionDetailContextProvider functionDetail={functionDetail!!}>
+      <div className={styles.container}>
+        {/* Header */}
+        <div className={styles.header}>
+          <BackButton />
           <Space>{getHeaderActions()}</Space>
+
+          <div className={styles.headerContent}>
+            <div className={styles.headerInfo}>
+              <Title level={2}>{getPageTitle()}</Title>
+              {mode !== "create" && functionDetail && (
+                <Space>
+                  <FunctionLanguageIcon functionDetail={functionDetail} />
+                  <FunctionStatusTag functionDetail={functionDetail} />
+                </Space>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className={styles.tabsContainer}>
+          <Tabs
+            defaultActiveKey="definition"
+            className={styles.functionTabs}
+            items={[
+              {
+                key: "definition",
+                label: (
+                  <span>
+                    <FileTextFilled />
+                    Definition
+                  </span>
+                ),
+                children: (
+                  <Form
+                    form={form}
+                    layout="vertical"
+                    disabled={mode === "view"}
+                  >
+                    <Card className={styles.tabCard}>
+                      <Row gutter={16}>
+                        <Col span={12}>
+                          <Form.Item
+                            label="Function Name"
+                            name="definition.name"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Function name is required",
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Enter function name" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                          <Form.Item
+                            label="Description"
+                            name="definition.description"
+                          >
+                            <TextArea
+                              rows={3}
+                              placeholder="Describe what this function does..."
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                          <Form.Item
+                            label="Input Type"
+                            name="definition.inputType"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Input type is required",
+                              },
+                            ]}
+                          >
+                            <TypeBuilder disabled={mode === "view"} />
+                          </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                          <Form.Item
+                            label="Output Type"
+                            name="definition.outputType"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Output type is required",
+                              },
+                            ]}
+                          >
+                            <TypeBuilder disabled={mode === "view"} />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Form>
+                ),
+              },
+              {
+                key: "implementation",
+                label: (
+                  <span>
+                    <CodeFilled />
+                    Implementation
+                  </span>
+                ),
+                children: (
+                  <Form
+                    form={form}
+                    layout="vertical"
+                    disabled={mode === "view"}
+                  >
+                    <Card className={styles.tabCard}>
+                      <Form.Item
+                        label="Programming Language"
+                        name="implementation.language"
+                        rules={[{ required: true }]}
+                        className={styles.languageSelect}
+                      >
+                        <Select>
+                          <Option value="python">Python</Option>
+                          <Option value="javascript">JavaScript</Option>
+                          <Option value="java">Java</Option>
+                          <Option value="go">Go</Option>
+                        </Select>
+                      </Form.Item>
+
+                      <Form.Item
+                        label="Function Code"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Function code is required",
+                          },
+                        ]}
+                        className={styles.codeContainer}
+                      >
+                        <div>
+                          {/* Fixed function signature */}
+                          <div className={styles.functionSignature}>
+                            def{" "}
+                            {functionName
+                              ? toSnakeCase(functionName)
+                              : "function_name"}
+                            (input_data):
+                          </div>
+
+                          {/* Editable function body */}
+                          <TextArea
+                            value={functionBody}
+                            onChange={(e) => setFunctionBody(e.target.value)}
+                            rows={18}
+                            className={styles.functionBody}
+                            placeholder="    # Write your function body here...\n    return input_data"
+                            disabled={mode === "view"}
+                          />
+                        </div>
+                      </Form.Item>
+
+                      {mode === "view" &&
+                        functionDetail &&
+                        functionDetail.implementation.language === "PYTHON" &&
+                        (functionDetail.implementation as any).packages?.length >
+                          0 && (
+                          <div>
+                            <Divider orientation="left">Dependencies</Divider>
+                            <Space wrap>
+                              {(
+                                functionDetail.implementation as any
+                              ).packages.map((pkg: any, index: number) => (
+                                <Tag key={index} color="blue">
+                                  {pkg.name}@{pkg.version}
+                                </Tag>
+                              ))}
+                            </Space>
+                          </div>
+                        )}
+                    </Card>
+                  </Form>
+                ),
+              },
+              {
+                key: "settings",
+                label: (
+                  <span>
+                    <SettingFilled />
+                    Settings
+                  </span>
+                ),
+                children: (
+                  <Card className={styles.tabCard}>
+                    <div className={styles.settingsContent}>
+                      {/* Metadata Section */}
+                      {mode === "view" && functionDetail?.createdAt && (
+                        <>
+                          <div className={styles.metadataSection}>
+                            <Title level={4}>Metadata</Title>
+                            <Row gutter={16}>
+                              <Col span={12}>
+                                <div className={styles.metadataItem}>
+                                  <Text type="secondary">Created:</Text>
+                                  <br />
+                                  <Text>
+                                    {new Date(
+                                      functionDetail.createdAt,
+                                    ).toLocaleString()}
+                                  </Text>
+                                  <br />
+                                  <Text type="secondary">
+                                    by {functionDetail.createdBy}
+                                  </Text>
+                                </div>
+                              </Col>
+                              <Col span={12}>
+                                <div className={styles.metadataItem}>
+                                  <Text type="secondary">Last Updated:</Text>
+                                  <br />
+                                  <Text>
+                                    {new Date(
+                                      functionDetail.updatedAt,
+                                    ).toLocaleString()}
+                                  </Text>
+                                  <br />
+                                  <Text type="secondary">
+                                    by {functionDetail.updatedBy}
+                                  </Text>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                          <Divider />
+                        </>
+                      )}
+
+                      {/* Danger Zone */}
+                      {mode === "view" && (
+                        <div className={styles.dangerZone}>
+                          <Title level={4} type="danger">
+                            Danger Zone
+                          </Title>
+                          <div className={styles.dangerZoneContent}>
+                            <div className={styles.dangerZoneDescription}>
+                              <Text strong>Delete Function</Text>
+                              <br />
+                              <Text type="secondary">
+                                Once you delete a function, there is no going
+                                back. Please be certain.
+                              </Text>
+                            </div>
+                            <Button
+                              danger
+                              icon={<DeleteFilled />}
+                              onClick={handleDelete}
+                              loading={deleteMutation.isPending}
+                              className={styles.deleteButton}
+                            >
+                              Delete Function
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {mode !== "view" && (
+                        <div className={styles.noSettings}>
+                          <Text type="secondary">
+                            Settings are only available in view mode.
+                          </Text>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                ),
+              },
+            ]}
+          />
         </div>
       </div>
-
-      {/* Main Content */}
-      <Form form={form} layout="vertical" disabled={mode === "view"}>
-        <Row gutter={24}>
-          <Col span={24}>
-            <Card title="Definition" className={styles.card}>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    label="Function Name"
-                    name="definition.name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Function name is required",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Enter function name" />
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item
-                    label="Input Type"
-                    name="definition.inputType"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Input type is required",
-                      },
-                    ]}
-                  >
-                    <TypeBuilder disabled={mode === "view"} />
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item
-                    label="Output Type"
-                    name="definition.outputType"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Output type is required",
-                      },
-                    ]}
-                  >
-                    <TypeBuilder disabled={mode === "view"} />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Form.Item label="Description" name="definition.description">
-                <TextArea
-                  rows={3}
-                  placeholder="Describe what this function does..."
-                />
-              </Form.Item>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row gutter={24}>
-          <Col span={24}>
-            <Card title="Implementation">
-              <Form.Item
-                label="Programming Language"
-                name="implementation.language"
-                rules={[{ required: true }]}
-                className={styles.languageSelect}
-              >
-                <Select>
-                  <Option value="python">Python</Option>
-                  <Option value="javascript">JavaScript</Option>
-                  <Option value="java">Java</Option>
-                  <Option value="go">Go</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label="Function Code"
-                rules={[
-                  {
-                    required: true,
-                    message: "Function code is required",
-                  },
-                ]}
-                className={styles.codeContainer}
-              >
-                <div>
-                  {/* Fixed function signature */}
-                  <div className={styles.functionSignature}>
-                    def{" "}
-                    {functionName ? toSnakeCase(functionName) : "function_name"}
-                    (input_data):
-                  </div>
-
-                  {/* Editable function body */}
-                  <TextArea
-                    value={functionBody}
-                    onChange={(e) => setFunctionBody(e.target.value)}
-                    rows={18}
-                    className={styles.functionBody}
-                    placeholder="    # Write your function body here...\n    return input_data"
-                    disabled={mode === "view"}
-                  />
-                </div>
-              </Form.Item>
-
-              {mode === "view" &&
-                functionData &&
-                functionData.implementation.language === "python" &&
-                (functionData.implementation as any).packages?.length > 0 && (
-                  <div>
-                    <Divider orientation="left">Dependencies</Divider>
-                    <Space wrap>
-                      {(functionData.implementation as any).packages.map(
-                        (pkg: any, index: number) => (
-                          <Tag key={index} color="blue">
-                            {pkg.name}@{pkg.version}
-                          </Tag>
-                        ),
-                      )}
-                    </Space>
-                  </div>
-                )}
-            </Card>
-          </Col>
-        </Row>
-      </Form>
-
-      {/* Metadata (View mode only) */}
-      {mode === "view" && functionData?.createdAt && (
-        <Card title="Metadata" className={styles.metadataCard}>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Text type="secondary">Created:</Text>
-              <br />
-              <Text>{new Date(functionData.createdAt).toLocaleString()}</Text>
-              <br />
-              <Text type="secondary">by {functionData.createdBy}</Text>
-            </Col>
-            <Col span={12}>
-              <Text type="secondary">Last Updated:</Text>
-              <br />
-              <Text>{new Date(functionData.updatedAt).toLocaleString()}</Text>
-              <br />
-              <Text type="secondary">by {functionData.updatedBy}</Text>
-            </Col>
-          </Row>
-        </Card>
-      )}
-    </div>
+    </FunctionDetailContextProvider>
   );
 };

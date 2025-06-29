@@ -1,3 +1,5 @@
+import type { Sort } from "@/types/api";
+
 export interface BaseType {
   name: string;
   description?: string;
@@ -105,17 +107,20 @@ export interface FunctionFilter {
 }
 
 export interface SortOption {
-  value: string;
+  value: Sort;
   label: string;
 }
 
 export const SORT_OPTIONS: SortOption[] = [
-  { value: "createdAt,desc", label: "newest-first" },
-  { value: "createdAt,asc", label: "oldest-first" },
-  { value: "updatedAt,desc", label: "recently-updated" },
-  { value: "updatedAt,asc", label: "least-recently-updated" },
-  { value: "definition.name,asc", label: "name-a-z" },
-  { value: "definition.name,desc", label: "name-z-a" },
+  { value: { field: "createdAt", order: "desc" }, label: "newest-first" },
+  { value: { field: "createdAt", order: "asc" }, label: "oldest-first" },
+  { value: { field: "updatedAt", order: "desc" }, label: "recently-updated" },
+  {
+    value: { field: "updatedAt", order: "asc" },
+    label: "least-recently-updated",
+  },
+  { value: { field: "definition.name", order: "asc" }, label: "name-a-z" },
+  { value: { field: "definition.name", order: "desc" }, label: "name-z-a" },
 ];
 
 export interface ExecutionTriggerDto {

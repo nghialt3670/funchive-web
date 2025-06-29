@@ -1,4 +1,4 @@
-import { NamespaceProvider } from "@/contexts/namespace-context";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   useCompileFunctionMutation,
   useDeleteFunctionMutation,
@@ -8,33 +8,33 @@ import { getLanguageIcon } from "@/features/function/utils/icon-utils";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import {
   ArrowRightOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
+  BuildFilled,
+  CopyFilled,
+  DeleteFilled,
+  EditFilled,
+  EyeFilled,
   MoreOutlined,
-  PlayCircleOutlined,
-  RocketOutlined,
+  PlayCircleFilled,
 } from "@ant-design/icons";
-import { Button } from "@components/ui/button/button";
 import type { MenuProps } from "antd";
-import { Dropdown, Tag, Tooltip, Typography } from "antd";
-import { type FC, type MouseEvent, type PropsWithChildren } from "react";
-import { useTranslation } from "react-i18next";
+import { Button, Card, Dropdown, Tag, Tooltip, Typography } from "antd";
+import {
+  type FC,
+  type MouseEvent,
+  type PropsWithChildren,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
   FunctionDetailContextProvider,
   useFunctionDetailContext,
 } from "../../contexts/function-detail-context";
-import {
-  getCompilationStatusColor,
-  getTypeColor,
-} from "../../utils/color-utils";
-import { getCompilationStatusIcon } from "../../utils/icon-utils";
-import { getCompilationStatusLabel } from "../../utils/label-utils";
+import { getTypeColor } from "../../utils/color-utils";
+import { FunctionPopup } from "../function-popup";
 import { TypeTooltip } from "../type-tooltip";
 import styles from "./function-card.module.css";
+import { FunctionStatusTag } from "../function-status-tag/function-status-tag";
 
 const { Text, Paragraph } = Typography;
 
@@ -48,29 +48,36 @@ export const FunctionCard: FC<FunctionCardProps> = ({
   children,
   onCardClick,
 }) => {
-  const navigate = useNavigate();
-  const namespace = "function";
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (onCardClick) {
       onCardClick(e);
       return;
     }
-    // Don't navigate if clicking on buttons or dropdowns
-    if ((e.target as HTMLElement).closest("button, .ant-dropdown")) {
+    // Don't open popup if clicking on buttons or dropdowns
+    if ((e.target as HTMLElement).closest("button, .ant-dropdown, .ant-btn")) {
       return;
     }
-    navigate(`/functions/${functionDetail.id}`);
+    // Open popup by default instead of navigating
+    setPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setPopupOpen(false);
   };
 
   return (
-    <NamespaceProvider namespace={namespace}>
-      <FunctionDetailContextProvider functionDetail={functionDetail}>
-        <div className={styles.functionCard} onClick={handleCardClick}>
-          {children}
-        </div>
-      </FunctionDetailContextProvider>
-    </NamespaceProvider>
+    <FunctionDetailContextProvider functionDetail={functionDetail}>
+      <Card onClick={handleCardClick} bodyStyle={{ padding: 0 }} hoverable>
+        {children}
+      </Card>
+      <FunctionPopup
+        functionDetail={functionDetail}
+        open={popupOpen}
+        onClose={handleClosePopup}
+      />
+    </FunctionDetailContextProvider>
   );
 };
 
@@ -83,7 +90,13 @@ export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const FunctionCardFooter: FC<PropsWithChildren> = ({ children }) => {
-  return <div className={styles.functionCardFooter}>{children}</div>;
+  return (
+    <div className={styles.cardActions}>
+      <FunctionCompileOrExecuteButton />
+      <FunctionOptions />
+      {children}
+    </div>
+  );
 };
 
 export const FunctionLanguageIcon: FC = () => {
@@ -92,14 +105,18 @@ export const FunctionLanguageIcon: FC = () => {
 };
 
 export const FunctionName: FC = () => {
-  const { t } = useTranslation();
-  const { definition } = useFunctionDetailContext();
+  const { id, definition } = useFunctionDetailContext();
+  const navigate = useNavigate();
+
+  const handleNameClick = () => {
+    navigate(`/functions/${id}`);
+  };
 
   return (
     <Paragraph
-      ellipsis={{ rows: 3, expandable: true, symbol: t("show-more") }}
-      strong
       className={styles.functionName}
+      ellipsis={{ rows: 2 }}
+      onClick={handleNameClick}
     >
       {definition.name}
     </Paragraph>
@@ -107,12 +124,11 @@ export const FunctionName: FC = () => {
 };
 
 export const FunctionDescription: FC = () => {
-  const { t } = useTranslation();
   const { definition } = useFunctionDetailContext();
 
   return (
     <Paragraph
-      ellipsis={{ rows: 3, expandable: true, symbol: t("show-more") }}
+      ellipsis={{ rows: 3, expandable: false }}
       className={styles.functionDescription}
     >
       {definition.description}
@@ -127,39 +143,35 @@ export const FunctionInputOutputTypes: FC = () => {
 
   return (
     <div className={styles.functionInputOutputTypes}>
-      <TypeTooltip type={definition.inputType}>
-        <Tag color={inputTypeColor} className={styles.inputTypeTag}>
-          {definition.inputType.name}
-        </Tag>
-      </TypeTooltip>
-      <ArrowRightOutlined />
-      <TypeTooltip type={definition.outputType}>
-        <Tag color={outputTypeColor} className={styles.outputTypeTag}>
-          {definition.outputType.name}
-        </Tag>
-      </TypeTooltip>
+      <Text type="secondary" className={styles.inputOutputTypesLabel}>
+        Input/Output:
+      </Text>
+      <div className={styles.inputOutputTypes}>
+        <TypeTooltip type={definition.inputType}>
+          <Tag color={inputTypeColor} className={styles.inputTypeTag}>
+            {definition.inputType.name}
+          </Tag>
+        </TypeTooltip>
+        <ArrowRightOutlined />
+        <TypeTooltip type={definition.outputType}>
+          <Tag color={outputTypeColor} className={styles.outputTypeTag}>
+            {definition.outputType.name}
+          </Tag>
+        </TypeTooltip>
+      </div>
     </div>
   );
 };
 
-export const FunctionCompilationStatus: FC = () => {
-  const { compilationStatus } = useFunctionDetailContext();
-  const compilationStatusColor = getCompilationStatusColor(compilationStatus);
-  const compilationStatusIcon = getCompilationStatusIcon(compilationStatus);
-  const compilationStatusLabel = getCompilationStatusLabel(compilationStatus);
+  export const FunctionCompilationStatus: FC = () => {
+  const functionDetail = useFunctionDetailContext();
 
   return (
     <div className={styles.compilationSection}>
       <Text type="secondary" className={styles.compilationLabel}>
-        Compilation:
+        Status:
       </Text>
-      <Tag
-        color={compilationStatusColor}
-        className={styles.compilationTag}
-        icon={compilationStatusIcon}
-      >
-        {compilationStatusLabel}
-      </Tag>
+      <FunctionStatusTag functionDetail={functionDetail} />
     </div>
   );
 };
@@ -187,20 +199,19 @@ export const FunctionCompileButton: FC = () => {
   const { id } = useFunctionDetailContext();
   const compileMutation = useCompileFunctionMutation();
 
-  const handleCompile = () => {
+  const handleCompile = (e: MouseEvent) => {
+    e.stopPropagation();
     compileMutation.mutate(id);
   };
 
   return (
     <Tooltip title={t("compile-function")} key="compile">
       <Button
-        type="text"
-        icon={<RocketOutlined />}
+        className={styles.actionButton}
         onClick={handleCompile}
-        className={styles.functionCompileButton}
-      >
-        {t("compile")}
-      </Button>
+        aria-label="Compile function"
+        icon={<BuildFilled />}
+      />
     </Tooltip>
   );
 };
@@ -210,20 +221,21 @@ export const FunctionExecuteButton: FC = () => {
   const { t } = useNamespacedTranslation();
   const { id } = useFunctionDetailContext();
 
-  const handleExecute = () => {
+  const handleExecute = (e: MouseEvent) => {
+    e.stopPropagation();
     navigate(`/pipelines/new?functionId=${id}`);
   };
 
   return (
     <Tooltip title={t("execute-function")} key="execute">
-      <Button
-        type="text"
-        icon={<PlayCircleOutlined />}
+      <button
+        className={styles.actionButton}
         onClick={handleExecute}
-        className={styles.functionExecuteButton}
+        aria-label="Execute function"
       >
+        <PlayCircleFilled />
         {t("execute")}
-      </Button>
+      </button>
     </Tooltip>
   );
 };
@@ -233,37 +245,24 @@ export const FunctionOptions: FC = () => {
   const navigate = useNavigate();
   const deleteMutation = useDeleteFunctionMutation();
 
-  const handleEdit = () => {
-    navigate(`/functions/${id}/edit`);
-  };
-
-  const handleDelete = () => {
-    deleteMutation.mutate(id);
-  };
-
-  const handleClone = () => {
-    // TODO: Implement clone functionality
-    console.log("Cloning function:", id);
-  };
-
   const dropdownItems: MenuProps["items"] = [
     {
       key: "view",
       label: "View Details",
-      icon: <EyeOutlined />,
+      icon: <EyeFilled />,
       onClick: () => navigate(`/functions/${id}`),
     },
     {
       key: "edit",
       label: "Edit Function",
-      icon: <EditOutlined />,
-      onClick: handleEdit,
+      icon: <EditFilled />,
+      onClick: () => navigate(`/functions/${id}/edit`),
     },
     {
       key: "clone",
       label: "Clone Function",
-      icon: <CopyOutlined />,
-      onClick: handleClone,
+      icon: <CopyFilled />,
+      onClick: () => navigate(`/functions/${id}/clone`),
     },
     {
       type: "divider",
@@ -271,19 +270,27 @@ export const FunctionOptions: FC = () => {
     {
       key: "delete",
       label: "Delete",
-      icon: <DeleteOutlined />,
+      icon: (
+        <ConfirmDialog
+          message="Are you sure you want to delete this function?"
+          onConfirm={() => deleteMutation.mutate(id)}
+        >
+          <DeleteFilled />
+        </ConfirmDialog>
+      ),
       danger: true,
-      onClick: handleDelete,
     },
   ];
 
   return (
     <Dropdown menu={{ items: dropdownItems }} trigger={["hover"]}>
-      <Button
-        type="text"
+      <button
+        className={styles.actionButton}
         onClick={(e) => e.stopPropagation()}
-        icon={<MoreOutlined />}
-      />
+        aria-label="More options"
+      >
+        <MoreOutlined />
+      </button>
     </Dropdown>
   );
 };

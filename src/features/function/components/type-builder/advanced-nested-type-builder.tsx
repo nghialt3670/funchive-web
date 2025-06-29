@@ -5,11 +5,7 @@ import type {
   TypeName,
 } from "@/features/function/function-types";
 import { TYPE_NAMES } from "@/features/function/function-types";
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { DeleteFilled, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   Alert,
   Button,
@@ -95,7 +91,7 @@ const ObjectField: React.FC<ObjectFieldProps> = ({
           <Button
             type="text"
             danger
-            icon={<DeleteOutlined />}
+            icon={<DeleteFilled />}
             onClick={() => onDelete(fieldName)}
             disabled={disabled}
           />

@@ -2,6 +2,6 @@
   "pipeline": "Pipeline",
   "pipelines": "Pipelines",
   "create-new-pipeline": "Create New Pipeline",
-  "no-pipelines-found": "No pipelines found",
-  "get-started-by-creating-your-first-pipeline": "Get started by creating your first pipeline"
+  "pipeline-empty-title": "No pipelines found",
+  "pipeline-empty-description": "Get started by creating your first pipeline"
 }

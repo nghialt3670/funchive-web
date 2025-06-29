@@ -1,0 +1,68 @@
+.functionModal {
+  padding: 0;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.descriptionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.typesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.typeFlow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.typeTag {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: help;
+}
+
+.statusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.statusTag {
+  font-size: 12px;
+  font-weight: 500;
+  width: fit-content;
+}

@@ -4,8 +4,8 @@ import {
   ArrowLeftOutlined,
   DragOutlined,
   FunctionOutlined,
-  PlayCircleOutlined,
-  SaveOutlined,
+  PlayCircleFilled,
+  SaveFilled,
 } from "@ant-design/icons";
 import {
   Button,
@@ -526,7 +526,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         </div>
         <Space>
           <Button
-            icon={<PlayCircleOutlined />}
+            icon={<PlayCircleFilled />}
             onClick={handleRun}
             disabled={nodes.length === 0}
             loading={executePipeline.isPending}
@@ -535,7 +535,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
           </Button>
           <Button
             type="primary"
-            icon={<SaveOutlined />}
+            icon={<SaveFilled />}
             onClick={handleSave}
             disabled={nodes.length === 0}
             loading={updatePipeline.isPending}

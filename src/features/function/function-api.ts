@@ -6,7 +6,9 @@ import type {
   FunctionUpdateDto,
 } from "@/features/function/function-types";
 import type { PageRequest, ResponseBody, ResponsePage } from "@/types/api";
+import { sortToSearchParam } from "@/utils/api-utils";
 import axios from "axios";
+import qs from "qs";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
@@ -15,6 +17,9 @@ const functionAxios = axios.create({
   baseURL: API_BASE_URL + "/funchive-function-service",
   headers: {
     "Content-Type": "application/json",
+  },
+  paramsSerializer: {
+    serialize: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
   },
   timeout: 10000,
 });
@@ -50,7 +55,7 @@ export const functionApi = {
       language: filter.language || "",
       page: pageRequest.page || 0,
       size: pageRequest.size || 20,
-      ...(pageRequest.sort && { sort: pageRequest.sort }),
+      sort: pageRequest.sorts?.map(sortToSearchParam),
     };
 
     const response = await functionAxios.get<

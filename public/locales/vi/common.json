@@ -1,4 +1,7 @@
 {
+  "dashboard": "Trang chủ",
+  "functions": "Hàm",
+  "pipelines": "Luồng",
   "show-more": "Xem thêm",
   "show-less": "Thu gọn",
   "options": "Tùy chọn",
@@ -13,5 +16,11 @@
   "go-to": "Đến trang",
   "page": "Trang",
   "items-per-page": "mục trên trang",
-  "jump-to-page": "Nhảy đến trang"
+  "jump-to-page": "Nhảy đến trang",
+  "expand-sidebar": "Mở rộng thanh bên",
+  "collapse-sidebar": "Thu gọn thanh bên",
+  "details": "Chi tiết",
+  "edit": "Chỉnh sửa",
+  "clone": "Sao chép",
+  "delete": "Xóa"
 }

@@ -4,6 +4,7 @@ import type {
   FunctionFilter,
   FunctionUpdateDto,
 } from "@/features/function/function-types";
+import { usePageSearchParams } from "@/hooks/use-page-search-params";
 import type { PageRequest } from "@/types/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
@@ -32,13 +33,12 @@ export const useFunctionDetailQuery = (
   });
 };
 
-export const useFunctionPageQuery = (
-  filter: FunctionFilter = {},
-  pageRequest: PageRequest = {},
-) => {
+export const useFunctionPageQuery = (filter: FunctionFilter = {}) => {
+  const { page, size, sorts } = usePageSearchParams();
+
   return useQuery({
-    queryKey: functionQueryKeys.list(filter, pageRequest),
-    queryFn: () => functionApi.getFunctionPage(filter, pageRequest),
+    queryKey: functionQueryKeys.list(filter, { page, size, sorts }),
+    queryFn: () => functionApi.getFunctionPage(filter, { page, size, sorts }),
     staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
   });

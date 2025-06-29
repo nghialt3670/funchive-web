@@ -1,4 +1,5 @@
-import { type Theme, useTheme } from "@/contexts/theme-context.tsx";
+import { type Theme } from "@/contexts/theme-context.tsx";
+import { useTheme } from "@/hooks/use-theme.ts";
 import React, { useEffect, useRef, useState } from "react";
 
 import styles from "./theme-toggle.module.css";
