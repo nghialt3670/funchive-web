@@ -5,61 +5,6 @@
   overflow: hidden;
 }
 
-/* App Bar Styles */
-.appBar {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-  box-shadow: var(--shadow-md);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  flex-shrink: 0;
-}
-
-.appBarContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 3rem;
-  gap: 2rem;
-}
-
-.appTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-}
-
-/* Navigation Styles */
-.navMenu {
-  display: flex;
-  gap: 2rem;
-  flex: 1;
-  justify-content: center;
-}
-
-.navLink {
-  color: var(--color-text-inverse);
-  text-decoration: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--border-radius-md);
-  transition: background-color var(--transition-normal);
-  font-weight: 500;
-}
-
-.navLink:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.navLink.active {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
 /* Main Content Area */
 .mainContent {
   flex: 1;

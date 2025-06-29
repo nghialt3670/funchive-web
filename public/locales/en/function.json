@@ -11,5 +11,7 @@
   "filter-by-language-placeholder": "Filter by language",
   "sort-by-placeholder": "Sort by",
   "found": "Found",
-  "of": "Of"
+  "of": "Of",
+  "function-empty-title": "No functions found",
+  "function-empty-description": "Get started by creating your first function"
 }

@@ -1,0 +1,6 @@
+.resourceEmpty {
+  text-align: center;
+  padding: 6rem;
+  background: var(--color-background-secondary);
+  border-radius: 1rem;
+}

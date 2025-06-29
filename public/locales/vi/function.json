@@ -11,5 +11,7 @@
   "filter-by-language-placeholder": "Lọc theo ngôn ngữ",
   "sort-by-placeholder": "Sắp xếp theo",
   "found": "Tìm thấy",
-  "of": "Trong"
+  "of": "Trong",
+  "function-empty-title": "Không tìm thấy hàm",
+  "function-empty-description": "Bắt đầu bằng cách tạo hàm đầu tiên của bạn"
 }

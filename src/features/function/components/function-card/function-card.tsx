@@ -1,4 +1,3 @@
-import { Button } from "@/components/button/button";
 import { NamespaceProvider } from "@/contexts/namespace-context";
 import {
   useCompileFunctionMutation,
@@ -17,6 +16,7 @@ import {
   PlayCircleOutlined,
   RocketOutlined,
 } from "@ant-design/icons";
+import { Button } from "@components/ui/button/button";
 import type { MenuProps } from "antd";
 import { Dropdown, Tag, Tooltip, Typography } from "antd";
 import { type FC, type MouseEvent, type PropsWithChildren } from "react";
@@ -75,11 +75,7 @@ export const FunctionCard: FC<FunctionCardProps> = ({
 };
 
 export const FunctionCardHeader: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <div className={styles.functionCardHeader}>
-      {children}
-    </div>
-  );
+  return <div className={styles.functionCardHeader}>{children}</div>;
 };
 
 export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
@@ -87,11 +83,7 @@ export const FunctionCardBody: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const FunctionCardFooter: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <div className={styles.functionCardFooter}>
-      {children}
-    </div>
-  );
+  return <div className={styles.functionCardFooter}>{children}</div>;
 };
 
 export const FunctionLanguageIcon: FC = () => {

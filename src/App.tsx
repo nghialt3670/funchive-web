@@ -1,8 +1,8 @@
-import { Layout } from "@/components/layout";
 import { FunctionPage } from "@/pages/function";
 import { FunctionsPage } from "@/pages/functions";
 import { PipelinePage } from "@/pages/pipeline";
 import { PipelinesPage } from "@/pages/pipelines";
+import { RootLayout } from "@components/layouts/root-layout";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./app.css";
@@ -11,7 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<RootLayout />}>
           <Route index element={<div>Home</div>} />
           <Route path="functions" element={<FunctionsPage />} />
           <Route path="functions/new" element={<FunctionPage />} />

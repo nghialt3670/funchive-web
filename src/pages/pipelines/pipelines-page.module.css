@@ -121,21 +121,3 @@
   padding-top: 24px;
   border-top: 1px solid var(--color-border);
 }
-
-.emptyState {
-  text-align: center;
-  padding: 64px 32px;
-  background: var(--color-background-secondary);
-  border-radius: var(--border-radius-lg);
-  margin-top: 32px;
-}
-
-.emptyState h3 {
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
-}
-
-.emptyState p {
-  color: var(--color-text-tertiary);
-  margin-bottom: 24px;
-}

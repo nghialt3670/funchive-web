@@ -14,7 +14,8 @@
   align-items: flex-start;
 }
 
-.headerInfo h1 {
+.headerTitle {
+  color: var(--color-text-secondary);
   margin-bottom: 0px;
 }
 

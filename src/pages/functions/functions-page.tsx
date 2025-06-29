@@ -1,6 +1,3 @@
-import { Button } from "@/components/button";
-import { Loading } from "@/components/loading";
-import { Retry } from "@/components/retry";
 import {
   FunctionCard,
   FunctionCardBody,
@@ -18,6 +15,10 @@ import { useFunctionPageQuery } from "@/features/function/function-hooks";
 import type { FunctionFilter } from "@/features/function/function-types";
 import { SORT_OPTIONS } from "@/features/function/function-types";
 import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Button } from "@components/ui/button";
+import { Loading } from "@components/ui/loading";
+import { ResourceEmpty } from "@components/ui/resource-empty";
+import { Retry } from "@components/ui/retry";
 import { Col, Input, Pagination, Row, Select, Tooltip, Typography } from "antd";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -110,6 +111,8 @@ export const FunctionsPage = () => {
     setSearchParams(new URLSearchParams());
   };
 
+  const isFiltering = !!filter.keyword || !!filter.language;
+
   if (error) {
     return <Retry error={error} onRetry={refetch} />;
   }
@@ -119,7 +122,9 @@ export const FunctionsPage = () => {
       {/* Header */}
       <div className={styles.functionsPageHeader}>
         <div className={styles.headerInfo}>
-          <Title level={2}>{t("functions")}</Title>
+          <Title className={styles.headerTitle} level={2}>
+            {t("functions")}
+          </Title>
           <p>{t("manage-and-deploy-your-serverless-functions")}</p>
         </div>
         <Button
@@ -255,6 +260,22 @@ export const FunctionsPage = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && functionsPage?.items.length === 0 && (
+        <ResourceEmpty
+          title={t("function-empty-title")}
+          redirectOptions={
+            isFiltering
+              ? undefined
+              : {
+                  path: "/functions/new",
+                  description: t("function-empty-description"),
+                  buttonLabel: t("create-function"),
+                }
+          }
+        />
       )}
     </div>
   );
