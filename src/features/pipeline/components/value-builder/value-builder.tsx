@@ -3,7 +3,7 @@ import type {
   FileType,
   ObjectType,
   Type,
-} from "@/features/function/function-types";
+} from "@/features/function/types";
 import {
   CodeFilled,
   DeleteFilled,

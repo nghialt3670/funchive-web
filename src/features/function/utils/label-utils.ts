@@ -1,7 +1,7 @@
 import {
   type CompilationStatus,
   type Type,
-} from "@/features/function/function-types";
+} from "@/features/function/types";
 
 export const getCompilationStatusLabel = (status: CompilationStatus) => {
   switch (status) {

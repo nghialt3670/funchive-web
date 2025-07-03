@@ -3,8 +3,8 @@ import type {
   ObjectType,
   Type,
   TypeName,
-} from "@/features/function/function-types";
-import { TYPE_NAMES } from "@/features/function/function-types";
+} from "@/features/function/types";
+import { TYPE_NAMES } from "@/features/function/types";
 import { DeleteFilled, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   Alert,

@@ -1,5 +1,5 @@
-import { useFunctionPageQuery } from "@/features/function/function-hooks";
-import type { FunctionDetailDto } from "@/features/function/function-types";
+import { useFunctionPageQuery } from "@/features/function/hooks";
+import type { FunctionDetailDto } from "@/features/function/types";
 import {
   ArrowLeftOutlined,
   DragOutlined,

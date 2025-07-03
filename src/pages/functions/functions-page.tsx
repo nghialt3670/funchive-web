@@ -1,8 +1,8 @@
 import { FunctionCard } from "@/features/function/components/function-card";
 import { FunctionPopup } from "@/features/function/components/function-popup/function-popup";
-import { useFunctionPageQuery } from "@/features/function/function-hooks";
-import type { FunctionFilter } from "@/features/function/function-types";
-import { SORT_OPTIONS } from "@/features/function/function-types";
+import { useFunctionPageQuery } from "@/features/function/hooks";
+import type { FunctionFilter } from "@/features/function/types";
+import { SORT_OPTIONS } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { usePageSearchParams } from "@/hooks/use-page-search-params.ts";
 import { searchParamToSort, sortToSearchParam } from "@/utils/api-utils";

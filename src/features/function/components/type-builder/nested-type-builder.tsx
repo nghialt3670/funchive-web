@@ -1,5 +1,5 @@
-import type { Type, TypeName } from "@/features/function/function-types";
-import { TYPE_NAMES } from "@/features/function/function-types";
+import type { Type, TypeName } from "@/features/function/types";
+import { TYPE_NAMES } from "@/features/function/types";
 import { Card, Form, Select, Space } from "antd";
 import React, { useEffect, useState } from "react";
 

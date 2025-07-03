@@ -1,15 +1,7 @@
-import React from "react";
-import {
-  Card,
-  Divider,
-  Form,
-  Input,
-  Select,
-  Space,
-  Tag,
-} from "antd";
+import type { FunctionDetailDto } from "@/features/function/types";
 import { toSnakeCase } from "@/utils/code-utils";
-import type { FunctionDetailDto } from "@/features/function/function-types";
+import { Card, Divider, Form, Input, Select, Space, Tag } from "antd";
+import React from "react";
 
 import styles from "./python-implementation-builder.module.css";
 
@@ -25,7 +17,9 @@ interface PythonImplementationBuilderProps {
   functionDetail?: FunctionDetailDto;
 }
 
-export const PythonImplementationBuilder: React.FC<PythonImplementationBuilderProps> = ({
+export const PythonImplementationBuilder: React.FC<
+  PythonImplementationBuilderProps
+> = ({
   form,
   functionBody,
   setFunctionBody,
@@ -33,7 +27,6 @@ export const PythonImplementationBuilder: React.FC<PythonImplementationBuilderPr
   mode,
   functionDetail,
 }) => {
-
   return (
     <Form form={form} layout="vertical" disabled={mode === "view"}>
       <Card className={styles.tabCard}>
@@ -64,10 +57,7 @@ export const PythonImplementationBuilder: React.FC<PythonImplementationBuilderPr
           <div>
             {/* Fixed function signature */}
             <div className={styles.functionSignature}>
-              def{" "}
-              {functionName
-                ? toSnakeCase(functionName)
-                : "function_name"}
+              def {functionName ? toSnakeCase(functionName) : "function_name"}
               (input_data):
             </div>
 
@@ -95,7 +85,7 @@ export const PythonImplementationBuilder: React.FC<PythonImplementationBuilderPr
                     <Tag key={index} color="blue">
                       {pkg.name}@{pkg.version}
                     </Tag>
-                  )
+                  ),
                 )}
               </Space>
             </div>

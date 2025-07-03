@@ -31,8 +31,6 @@ export const TypeTag: FC<TypeTagProps> = ({ type }) => {
   const typeClass = getTypeClass(type.name);
 
   return (
-      <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>
-        {type.name}
-      </Tag>
+    <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>{type.name}</Tag>
   );
 };

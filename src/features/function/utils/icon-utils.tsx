@@ -1,7 +1,4 @@
-import {
-  type CompilationStatus,
-  type Language,
-} from "@/features/function/function-types";
+import "@/features/function/types";
 import {
   BugFilled,
   CheckCircleFilled,
@@ -32,23 +29,4 @@ export const getCompilationStatusIcon = (status: CompilationStatus) => {
   }
 };
 
-export const getLanguageIcon = (language: Language) => {
-  const iconStyle = {
-    width: "1rem",
-    height: "1rem",
-    objectFit: "contain" as const,
-  };
-
-  switch (language.toUpperCase()) {
-    case "PYTHON":
-      return <img src={pythonLogo} alt="Python" style={iconStyle} />;
-    case "C#":
-      return <img src={csharpLogo} alt="C#" style={iconStyle} />;
-    case "JAVA":
-      return <img src={javaLogo} alt="Java" style={iconStyle} />;
-    case "GO":
-      return <img src={goLogo} alt="Go" style={iconStyle} />;
-    default:
-      return <CodeFilled />;
-  }
-};
+export const getLanguageIcon = (language: Language) => {};

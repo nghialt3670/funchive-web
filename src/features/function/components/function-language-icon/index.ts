@@ -1,1 +1,0 @@
-export { FunctionLanguageIcon } from "./function-language-icon";

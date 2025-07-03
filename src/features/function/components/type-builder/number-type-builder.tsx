@@ -1,4 +1,4 @@
-import type { NumberType } from "@/features/function/function-types";
+import type { NumberType } from "@/features/function/types";
 import { Form, Input, InputNumber } from "antd";
 import React from "react";
 

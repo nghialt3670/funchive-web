@@ -1,4 +1,4 @@
-import type { FileType } from "@/features/function/function-types";
+import type { FileType } from "@/features/function/types";
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload, message } from "antd";
 import React from "react";

@@ -1,4 +1,4 @@
-import type { FunctionDetailDto } from "@/features/function/function-types";
+import type { FunctionDetailDto } from "@/features/function/types";
 // import { getCompilationStatusColor } from "@/features/function/utils/color-utils";
 import { getCompilationStatusIcon } from "@/features/function/utils/icon-utils";
 import { getCompilationStatusLabel } from "@/features/function/utils/label-utils";

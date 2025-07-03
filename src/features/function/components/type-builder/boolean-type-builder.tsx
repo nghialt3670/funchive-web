@@ -1,4 +1,4 @@
-import type { BooleanType } from "@/features/function/function-types";
+import type { BooleanType } from "@/features/function/types";
 import { Form, Input, Switch } from "antd";
 import React from "react";
 

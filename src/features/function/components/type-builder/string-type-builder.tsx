@@ -1,4 +1,4 @@
-import type { StringType } from "@/features/function/function-types";
+import type { StringType } from "@/features/function/types";
 import { Form, Input } from "antd";
 import React from "react";
 
