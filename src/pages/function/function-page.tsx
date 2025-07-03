@@ -1,9 +1,8 @@
 import { BackButton } from "@/components/ui/back-button/back-button";
-import {
-  FunctionLanguageIcon,
-} from "@/features/function/components/function-language-icon/function-language-icon";
+import { FunctionLanguageIcon } from "@/features/function/components/function-language-icon/function-language-icon";
 import { FunctionStatusTag } from "@/features/function/components/function-status-tag";
 import { TypeBuilder } from "@/features/function/components/type-builder";
+import { PythonImplementationBuilder } from "@/features/function/components/python-implementation-builder";
 import { FunctionDetailContextProvider } from "@/features/function/contexts/function-detail-context";
 import {
   useCompileFunctionMutation,
@@ -20,16 +19,14 @@ import type {
 import { toSnakeCase } from "@/utils/code-utils.ts";
 import {
   BuildFilled,
-  CodeFilled,
   DeleteFilled,
   EditFilled,
-  FileTextFilled,
+  InfoCircleFilled,
   PlayCircleFilled,
   SaveFilled,
   SettingFilled,
 } from "@ant-design/icons";
 import {
-  Alert,
   Button,
   Card,
   Col,
@@ -38,25 +35,28 @@ import {
   Input,
   Modal,
   Row,
-  Select,
   Space,
-  Spin,
   Tabs,
-  Tag,
   Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import styles from "./function-page.module.css";
+import { Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
+import { Loading } from "@/components/ui/loading/loading";
+import {Retry} from "@components/ui/retry";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { Option } = Select;
 
 type PageMode = "create" | "view" | "edit";
 
 export const FunctionPage: React.FC = () => {
+  const { t } = useTranslation();
+  const { t: nt } = useNamespacedTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -312,38 +312,18 @@ export const FunctionPage: React.FC = () => {
     return actions;
   };
 
-  // Handle loading state
-  if (isLoading && mode !== "create") {
-    return (
-      <div className={styles.loadingContainer}>
-        <Spin size="large" />
-      </div>
-    );
-  }
-
   // Handle error state
   if (error && mode !== "create") {
-    return (
-      <div className={styles.container}>
-        <BackButton />
-        <Alert
-          message="Error loading function"
-          description={error.message}
-          type="error"
-          showIcon
-          action={
-            <Button size="small" onClick={() => refetch()}>
-              Retry
-            </Button>
-          }
-        />
-      </div>
-    );
+    return <Retry error={error} onRetry={refetch} />;
+  }
+
+  if (isLoading || !functionDetail) {
+    return <Loading />;
   }
 
   return (
-    <FunctionDetailContextProvider functionDetail={functionDetail!!}>
-      <div className={styles.container}>
+    <FunctionDetailContextProvider functionDetail={functionDetail}>
+      <div className={styles.functionPageContainer}>
         {/* Header */}
         <div className={styles.header}>
           <BackButton />
@@ -354,7 +334,6 @@ export const FunctionPage: React.FC = () => {
               <Title level={2}>{getPageTitle()}</Title>
               {mode !== "create" && functionDetail && (
                 <Space>
-                  <FunctionLanguageIcon functionDetail={functionDetail} />
                   <FunctionStatusTag functionDetail={functionDetail} />
                 </Space>
               )}
@@ -366,15 +345,14 @@ export const FunctionPage: React.FC = () => {
         <div className={styles.tabsContainer}>
           <Tabs
             defaultActiveKey="definition"
-            className={styles.functionTabs}
             items={[
               {
                 key: "definition",
                 label: (
-                  <span>
-                    <FileTextFilled />
-                    Definition
-                  </span>
+                  <Box padding="0 1rem">
+                    <InfoCircleFilled />
+                    <Text>{nt("definition")}</Text>
+                  </Box>
                 ),
                 children: (
                   <Form
@@ -445,93 +423,35 @@ export const FunctionPage: React.FC = () => {
               {
                 key: "implementation",
                 label: (
-                  <span>
-                    <CodeFilled />
-                    Implementation
-                  </span>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    gap={1}
+                    padding="0 1rem"
+                  >
+                    <FunctionLanguageIcon functionDetail={functionDetail} />
+                    <Text>{nt("implementation")}</Text>
+                  </Box>
                 ),
                 children: (
-                  <Form
+                  <PythonImplementationBuilder
                     form={form}
-                    layout="vertical"
-                    disabled={mode === "view"}
-                  >
-                    <Card className={styles.tabCard}>
-                      <Form.Item
-                        label="Programming Language"
-                        name="implementation.language"
-                        rules={[{ required: true }]}
-                        className={styles.languageSelect}
-                      >
-                        <Select>
-                          <Option value="python">Python</Option>
-                          <Option value="javascript">JavaScript</Option>
-                          <Option value="java">Java</Option>
-                          <Option value="go">Go</Option>
-                        </Select>
-                      </Form.Item>
-
-                      <Form.Item
-                        label="Function Code"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Function code is required",
-                          },
-                        ]}
-                        className={styles.codeContainer}
-                      >
-                        <div>
-                          {/* Fixed function signature */}
-                          <div className={styles.functionSignature}>
-                            def{" "}
-                            {functionName
-                              ? toSnakeCase(functionName)
-                              : "function_name"}
-                            (input_data):
-                          </div>
-
-                          {/* Editable function body */}
-                          <TextArea
-                            value={functionBody}
-                            onChange={(e) => setFunctionBody(e.target.value)}
-                            rows={18}
-                            className={styles.functionBody}
-                            placeholder="    # Write your function body here...\n    return input_data"
-                            disabled={mode === "view"}
-                          />
-                        </div>
-                      </Form.Item>
-
-                      {mode === "view" &&
-                        functionDetail &&
-                        functionDetail.implementation.language === "PYTHON" &&
-                        (functionDetail.implementation as any).packages?.length >
-                          0 && (
-                          <div>
-                            <Divider orientation="left">Dependencies</Divider>
-                            <Space wrap>
-                              {(
-                                functionDetail.implementation as any
-                              ).packages.map((pkg: any, index: number) => (
-                                <Tag key={index} color="blue">
-                                  {pkg.name}@{pkg.version}
-                                </Tag>
-                              ))}
-                            </Space>
-                          </div>
-                        )}
-                    </Card>
-                  </Form>
+                    functionBody={functionBody}
+                    setFunctionBody={setFunctionBody}
+                    functionName={functionName}
+                    mode={mode}
+                    functionDetail={functionDetail}
+                  />
                 ),
               },
               {
                 key: "settings",
                 label: (
-                  <span>
+                  <Box padding="0 1rem">
                     <SettingFilled />
-                    Settings
-                  </span>
+                    <Text>{t("settings")}</Text>
+                  </Box>
                 ),
                 children: (
                   <Card className={styles.tabCard}>

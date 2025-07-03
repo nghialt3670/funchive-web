@@ -13,5 +13,7 @@
   "found": "Tìm thấy",
   "of": "Trong",
   "function-empty-title": "Không tìm thấy hàm",
-  "function-empty-description": "Bắt đầu bằng cách tạo hàm đầu tiên của bạn"
+  "function-empty-description": "Bắt đầu bằng cách tạo hàm đầu tiên của bạn",
+  "definition": "Định nghĩa",
+  "implementation": "Triển khai"
 }

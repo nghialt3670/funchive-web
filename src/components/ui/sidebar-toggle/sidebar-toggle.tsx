@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { useSidebar } from "../../../contexts/sidebar-context";
-import { useMediaQuery } from "../../../hooks/use-media-query";
+import { useSidebarMode } from "../../../hooks/use-media-query";
 
 export const SidebarToggle = () => {
   const { t } = useTranslation();
@@ -13,17 +13,20 @@ export const SidebarToggle = () => {
     toggleSidebarCollapse,
     toggleSidebar,
   } = useSidebar();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { isOverlayMode } = useSidebarMode();
 
   const handleToggle = () => {
-    if (isMobile) {
+    if (isOverlayMode) {
+      // In overlay mode: toggle open/close
       toggleSidebar();
     } else {
+      // In collapsible mode: toggle collapse/expand
       toggleSidebarCollapse();
     }
   };
 
-  const isExpanded = isMobile ? isSidebarOpen : !isSidebarCollapsed;
+  // Determine if sidebar is currently "expanded" based on mode
+  const isExpanded = isOverlayMode ? isSidebarOpen : !isSidebarCollapsed;
   const tooltipText = isExpanded ? t("collapse-sidebar") : t("expand-sidebar");
 
   return (

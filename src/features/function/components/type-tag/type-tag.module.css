@@ -1,0 +1,45 @@
+.typeTag {
+  font-size: 0.7rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0 !important;
+  border: none !important;
+}
+
+/* Type-specific styles using theme-aware colors */
+.typeTag.string {
+  background-color: var(--tag-string-bg) !important;
+  color: var(--tag-string-color) !important;
+}
+
+.typeTag.number {
+  background-color: var(--tag-number-bg) !important;
+  color: var(--tag-number-color) !important;
+}
+
+.typeTag.boolean {
+  background-color: var(--tag-boolean-bg) !important;
+  color: var(--tag-boolean-color) !important;
+}
+
+.typeTag.file {
+  background-color: var(--tag-file-bg) !important;
+  color: var(--tag-file-color) !important;
+}
+
+.typeTag.array {
+  background-color: var(--tag-array-bg) !important;
+  color: var(--tag-array-color) !important;
+}
+
+.typeTag.object {
+  background-color: var(--tag-object-bg) !important;
+  color: var(--tag-object-color) !important;
+}
+
+.typeTag.default {
+  background-color: var(--tag-default-bg) !important;
+  color: var(--tag-default-color) !important;
+}

@@ -34,8 +34,8 @@
   transform: rotate(-45deg) translate(4px, -4px);
 }
 
-/* Show only on mobile */
-@media (max-width: 768px) {
+/* Show on tablet and below */
+@media (max-width: 1280px) {
   .menuButton {
     display: flex;
   }

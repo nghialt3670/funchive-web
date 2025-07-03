@@ -22,5 +22,11 @@
   "details": "Details",
   "edit": "Edit",
   "clone": "Clone",
-  "delete": "Delete"
+  "delete": "Delete",
+  "more-options": "More options",
+  "in-out": "In/Out",
+  "status": "Status",
+  "description": "Description",
+  "input-output": "Input/Output",
+  "settings": "Settings"
 }

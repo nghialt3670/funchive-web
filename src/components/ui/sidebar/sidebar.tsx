@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useSidebar } from "../../../contexts/sidebar-context";
-import { useMediaQuery } from "../../../hooks/use-media-query";
+import { useSidebarMode } from "../../../hooks/use-media-query";
 import styles from "./sidebar.module.css";
 
 const { Sider } = Layout;
@@ -13,7 +13,7 @@ export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isSidebarCollapsed, isSidebarOpen, closeSidebar } = useSidebar();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { isOverlayMode } = useSidebarMode();
 
   const navItems = [
     { key: "/", label: t("dashboard") },
@@ -31,22 +31,24 @@ export const Sidebar = () => {
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
-    if (isMobile) {
+    if (isOverlayMode) {
       closeSidebar();
     }
   };
 
   const handleBackdropClick = () => {
-    if (isMobile) {
+    if (isOverlayMode) {
       closeSidebar();
     }
   };
 
-  const isSidebarVisible = isMobile ? isSidebarOpen : !isSidebarCollapsed;
+  // Determine sidebar visibility based on mode
+  const isSidebarVisible = isOverlayMode ? isSidebarOpen : !isSidebarCollapsed;
 
   return (
     <div className={styles.sidebarContainer}>
-      {isMobile && (
+      {/* Backdrop for overlay mode */}
+      {isOverlayMode && (
         <div
           className={`${styles.backdrop} ${
             isSidebarOpen ? styles.backdropVisible : ""
@@ -64,10 +66,12 @@ export const Sidebar = () => {
         trigger={null}
         data-sidebar
         style={{
-          position: isMobile ? "fixed" : "relative",
+          position: isOverlayMode ? "fixed" : "relative",
         }}
       >
         <Menu
+          mode="inline"
+          theme="light"
           selectedKeys={getSelectedKey()}
           items={navItems}
           onClick={handleMenuClick}

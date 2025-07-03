@@ -1,14 +1,5 @@
 import { FunctionCard } from "@/features/function/components/function-card";
-import {
-  FunctionCardBody,
-  FunctionCardFooter,
-  FunctionCardHeader,
-  FunctionCompilationStatus,
-  FunctionDescription,
-  FunctionInputOutputTypes,
-  FunctionLanguageIcon,
-  FunctionName,
-} from "@/features/function/components/function-card/function-card";
+import { FunctionPopup } from "@/features/function/components/function-popup/function-popup";
 import { useFunctionPageQuery } from "@/features/function/function-hooks";
 import type { FunctionFilter } from "@/features/function/function-types";
 import { SORT_OPTIONS } from "@/features/function/function-types";
@@ -41,10 +32,8 @@ export const FunctionsPage = () => {
 
   const { sorts, setPage, setSorts } = usePageSearchParams();
 
-  // Filter configuration for ResourceFilters component
   const filterConfigs = [{ key: "keyword" }, { key: "language" }];
 
-  // Extract filter state for conditional logic
   const filter = useMemo<FunctionFilter>(() => {
     const keyword = searchParams.get("keyword") || undefined;
     const language = searchParams.get("language") || undefined;
@@ -88,7 +77,7 @@ export const FunctionsPage = () => {
         </Button>
       </div>
 
-      {/* Filters using ResourceFilters component */}
+      {/* Filters using the ResourceFilters component */}
       <ResourceFilters
         filters={filterConfigs}
         onPageReset={() => setPage(1)}
@@ -169,18 +158,9 @@ export const FunctionsPage = () => {
                 xl={6}
                 key={functionDetail.id}
               >
-                <FunctionCard functionDetail={functionDetail}>
-                  <FunctionCardHeader>
-                    <FunctionLanguageIcon />
-                    <FunctionName />
-                  </FunctionCardHeader>
-                  <FunctionCardBody>
-                    <FunctionDescription />
-                    <FunctionInputOutputTypes />
-                    <FunctionCompilationStatus />
-                  </FunctionCardBody>
-                  <FunctionCardFooter />
-                </FunctionCard>
+                <FunctionPopup functionDetail={functionDetail}>
+                  <FunctionCard functionDetail={functionDetail} />
+                </FunctionPopup>
               </Col>
             ))}
           </Row>

@@ -2,10 +2,10 @@ import {
   type CompilationStatus,
   type Language,
 } from "@/features/function/function-types";
-import { CodeFilled } from "@ant-design/icons";
 import {
   BugFilled,
   CheckCircleFilled,
+  CodeFilled,
   ExclamationCircleFilled,
   LoadingOutlined,
   PauseCircleFilled,

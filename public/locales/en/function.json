@@ -13,5 +13,7 @@
   "found": "Found",
   "of": "Of",
   "function-empty-title": "No functions found",
-  "function-empty-description": "Get started by creating your first function"
+  "function-empty-description": "Get started by creating your first function",
+  "definition": "Definition",
+  "implementation": "Implementation"
 }

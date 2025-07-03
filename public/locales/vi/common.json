@@ -22,5 +22,11 @@
   "details": "Chi tiết",
   "edit": "Chỉnh sửa",
   "clone": "Sao chép",
-  "delete": "Xóa"
+  "delete": "Xóa",
+  "more-options": "Tùy chọn khác",
+  "in-out": "Đầu vào/ra",
+  "status": "Trạng thái",
+  "description": "Mô tả",
+  "input-output": "Đầu vào/ Đầu ra",
+  "settings": "Cài đặt"
 }

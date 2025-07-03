@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { BREAKPOINTS } from "@/config/constants";
 import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface SidebarContextType {
   isSidebarOpen: boolean;
@@ -24,11 +25,13 @@ interface SidebarProviderProps {
 }
 
 export const SidebarProvider = ({ children }: SidebarProviderProps) => {
+  // For overlay mode (mobile/tablet) - controls whether sidebar is open
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // For collapsible mode (desktop) - controls whether sidebar is collapsed
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    // Initialize collapsed state based on screen size
     if (typeof window !== "undefined") {
-      return window.innerWidth <= 768;
+      return window.innerWidth <= BREAKPOINTS.TABLET;
     }
     return false;
   });
@@ -45,7 +48,7 @@ export const SidebarProvider = ({ children }: SidebarProviderProps) => {
     setIsSidebarCollapsed((prev) => !prev);
   };
 
-  // Close sidebar when clicking outside on mobile
+  // Close overlay sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -72,10 +75,10 @@ export const SidebarProvider = ({ children }: SidebarProviderProps) => {
     };
   }, [isSidebarOpen]);
 
-  // Close sidebar on route change (mobile)
+  // Handle route changes - close overlay on navigation
   useEffect(() => {
     const handleRouteChange = () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= BREAKPOINTS.TABLET) {
         closeSidebar();
       }
     };
@@ -87,14 +90,12 @@ export const SidebarProvider = ({ children }: SidebarProviderProps) => {
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        // On mobile, close the sidebar and ensure it's collapsed for proper behavior
+      if (window.innerWidth <= BREAKPOINTS.TABLET) {
+        // Switch to overlay mode - close overlay and set collapsed
         setIsSidebarOpen(false);
         setIsSidebarCollapsed(true);
-      } else {
-        // On desktop, you might want to restore previous collapsed state
-        // For now, let's not auto-expand to respect user preference
       }
+      // Note: We don't auto-expand on desktop to respect user preference
     };
 
     window.addEventListener("resize", handleResize);

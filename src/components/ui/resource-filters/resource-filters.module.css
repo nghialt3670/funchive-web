@@ -1,7 +1,7 @@
 .filtersSection {
   padding: 0.75rem;
   background: var(--color-background-secondary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-sm);
 }
 
 .filterButton {

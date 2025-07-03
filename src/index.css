@@ -19,7 +19,7 @@
   --color-background-primary: #eff3f7;
   --color-background-secondary: #e8eef4;
   --color-background-tertiary: #f1f5f9;
-  --color-background-hover: #f1f5f9;
+  --color-background-hover: #d1d5db;
   --color-background-selected: #eff6ff;
 
   --color-text-primary: #1a202c;
@@ -37,6 +37,22 @@
   --color-info: #3b82f6;
 
   --color-sidebar-background: #f1f5f9;
+
+  /* Tag-specific colors for light theme */
+  --tag-string-bg: #e6f4ff;
+  --tag-string-color: #0958d9;
+  --tag-number-bg: #f6ffed;
+  --tag-number-color: #389e0d;
+  --tag-boolean-bg: #fff2e8;
+  --tag-boolean-color: #d46b08;
+  --tag-file-bg: #f9f0ff;
+  --tag-file-color: #722ed1;
+  --tag-array-bg: #fff1f0;
+  --tag-array-color: #cf1322;
+  --tag-object-bg: #e6f4ff;
+  --tag-object-color: #1677ff;
+  --tag-default-bg: #fafafa;
+  --tag-default-color: #262626;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md:
@@ -64,7 +80,7 @@
   --color-background-primary: #0f172a;
   --color-background-secondary: #1e293b;
   --color-background-tertiary: #334155;
-  --color-background-hover: #334155;
+  --color-background-hover: #475569;
   --color-background-selected: #1e40af;
 
   --color-text-primary: #f8fafc;
@@ -82,6 +98,22 @@
   --color-info: #3b82f6;
 
   --color-sidebar-background: #1e293b;
+
+  /* Tag-specific colors for dark theme */
+  --tag-string-bg: #1d39c4;
+  --tag-string-color: #91caff;
+  --tag-number-bg: #1b5e20;
+  --tag-number-color: #95de64;
+  --tag-boolean-bg: #d48806;
+  --tag-boolean-color: #ffd591;
+  --tag-file-bg: #531dab;
+  --tag-file-color: #d3adf7;
+  --tag-array-bg: #a8071a;
+  --tag-array-color: #ff7875;
+  --tag-object-bg: #003eb3;
+  --tag-object-color: #69b1ff;
+  --tag-default-bg: #262626;
+  --tag-default-color: #d9d9d9;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md:

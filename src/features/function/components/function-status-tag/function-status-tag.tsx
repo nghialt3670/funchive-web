@@ -1,10 +1,10 @@
-import { getCompilationStatusColor } from "@/features/function/utils/color-utils";
+import type { FunctionDetailDto } from "@/features/function/function-types";
+// import { getCompilationStatusColor } from "@/features/function/utils/color-utils";
 import { getCompilationStatusIcon } from "@/features/function/utils/icon-utils";
 import { getCompilationStatusLabel } from "@/features/function/utils/label-utils";
 import { Tag } from "antd";
 import { type FC } from "react";
 
-import type { FunctionDetailDto } from "@/features/function/function-types";
 import styles from "./function-status-tag.module.css";
 
 export interface FunctionStatusTagProps {
@@ -14,9 +14,9 @@ export interface FunctionStatusTagProps {
 export const FunctionStatusTag: FC<FunctionStatusTagProps> = ({
   functionDetail,
 }) => {
-  const compilationStatusColor = getCompilationStatusColor(
-    functionDetail.compilationStatus,
-  );
+  // const compilationStatusColor = getCompilationStatusColor(
+  //   functionDetail.compilationStatus,
+  // );
   const compilationStatusIcon = getCompilationStatusIcon(
     functionDetail.compilationStatus,
   );
@@ -26,7 +26,7 @@ export const FunctionStatusTag: FC<FunctionStatusTagProps> = ({
 
   return (
     <Tag
-      color={compilationStatusColor}
+      // color={compilationStatusColor}
       className={styles.functionStatusTag}
       icon={compilationStatusIcon}
     >

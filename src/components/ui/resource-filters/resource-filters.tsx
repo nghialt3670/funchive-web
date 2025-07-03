@@ -1,7 +1,7 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { Button, Col, Row, Tooltip } from "antd";
-import { useMemo } from "react";
 import type { ReactNode } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -42,7 +42,6 @@ export const ResourceFilters = ({
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Extract filter state from URL parameters
   const filterState = useMemo<FilterState>(() => {
     const state: FilterState = {};
     filters.forEach(({ key, defaultValue }) => {
@@ -74,7 +73,7 @@ export const ResourceFilters = ({
     resetFilters: () => {
       const resetParams = new URLSearchParams();
       // Keep non-filter params if needed (like page, size, etc.)
-      const preservedParams = ["page", "size", "sorts"];
+      const preservedParams = ["page", "size"];
       preservedParams.forEach((param) => {
         const value = searchParams.get(param);
         if (value) {

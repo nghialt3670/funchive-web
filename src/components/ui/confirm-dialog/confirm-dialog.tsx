@@ -1,7 +1,9 @@
+import { tryCloneNodeWithOnClick } from "@/utils/element-utils";
 import { Modal } from "antd";
 import { type FC, type PropsWithChildren, useState } from "react";
-import { type ReactElement, cloneElement, isValidElement } from "react";
 import { useTranslation } from "react-i18next";
+
+import styles from "./confirm-dialog.module.css";
 
 export interface ConfirmDialogProps extends PropsWithChildren {
   message: string;
@@ -21,21 +23,13 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
     setOpen(false);
   };
 
-  const clonedChildren = isValidElement(children)
-    ? cloneElement(children as ReactElement<any>, {
-        onClick: (e: any) => {
-          e.stopPropagation(); // Prevent event bubbling
-          // Call original onClick if it exists
-          if ((children as ReactElement<any>).props.onClick) {
-            (children as ReactElement<any>).props.onClick(e);
-          }
-          setOpen(true);
-        },
-      })
-    : children;
+  const clonedChildren = tryCloneNodeWithOnClick(children, (e) => {
+    e.stopPropagation();
+    setOpen(true);
+  });
 
   return (
-    <>
+    <div className={styles.confirmDialogContainer}>
       {clonedChildren}
       <Modal
         title={t("confirm")}
@@ -45,9 +39,10 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
         okText={t("confirm")}
         cancelText={t("cancel")}
         zIndex={2000}
+        centered
       >
         {message}
       </Modal>
-    </>
+    </div>
   );
 };

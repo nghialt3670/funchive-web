@@ -1,0 +1,39 @@
+.tabCard {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.tabCard .ant-card-body {
+  padding: 24px;
+}
+
+.languageSelect {
+  width: 200px;
+  margin-bottom: 16px;
+}
+
+.codeContainer {
+  margin-bottom: 16px;
+}
+
+.functionSignature {
+  background: var(--color-background-secondary);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.functionBody {
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+  resize: vertical;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}

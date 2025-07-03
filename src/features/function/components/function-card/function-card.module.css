@@ -27,9 +27,13 @@
   color: var(--color-primary);
   font-weight: 600;
   font-size: 1rem;
-  line-height: 1.4;
-  min-height: 2.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* ✅ or remove entirely */
+  flex: 1;
 }
+
 
 .functionName:hover {
   text-decoration: underline;
@@ -45,36 +49,22 @@
 
 .functionInputOutputTypes {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-border);
+  gap: 1rem;
 }
 
 .inputOutputTypes {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.inputTypeTag,
-.outputTypeTag {
-  font-size: 11px;
-  cursor: help;
-  border-radius: 6px;
-  font-weight: 500;
-  padding: 2px 8px;
+  gap: 0.125rem;
 }
 
 .compilationSection {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border);
+  gap: 0.5rem;
 }
 
 .inputOutputTypesLabel {
@@ -89,7 +79,7 @@
   font-size: 0.8rem;
 }
 
-.cardActions {
+.functionCardFooter {
   display: flex;
   justify-content: center;
   gap: 16px;

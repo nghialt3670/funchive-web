@@ -1,14 +1,15 @@
 import { Tooltip } from "antd";
-import React, { type PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren } from "react";
 
 import type { Type } from "../../function-types";
 import { getTypeRepresentation } from "../../utils/label-utils";
+import styles from "./type-tooltip.module.css";
 
 interface TypeTooltipProps extends PropsWithChildren {
   type: Type;
 }
 
-export const TypeTooltip: React.FC<TypeTooltipProps> = ({ type, children }) => {
+export const TypeTooltip: FC<TypeTooltipProps> = ({ type, children }) => {
   if (type.name !== "OBJECT" || !type.schema) {
     return <>{children}</>;
   }
@@ -17,6 +18,7 @@ export const TypeTooltip: React.FC<TypeTooltipProps> = ({ type, children }) => {
     <Tooltip
       title={<pre>{JSON.stringify(getTypeRepresentation(type), null, 2)}</pre>}
       placement="top"
+      className={styles.typeTooltip}
     >
       {children}
     </Tooltip>
