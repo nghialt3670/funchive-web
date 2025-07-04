@@ -28,5 +28,16 @@
   "status": "Trạng thái",
   "description": "Mô tả",
   "input-output": "Đầu vào/ Đầu ra",
-  "settings": "Cài đặt"
+  "settings": "Cài đặt",
+  "default-value": "Giá trị mặc định",
+  "description-placeholder": "Nhập mô tả...",
+  "default-value-placeholder": "Nhập giá trị mặc định...",
+  "upload-text-file": "Tải lên tệp văn bản",
+  "true": "Đúng",
+  "false": "Sai",
+  "file-extension": "Định dạng tệp",
+  "upload-default-file": "Tải lên tệp mặc định",
+  "file-extension-placeholder": "Ví dụ: .pdf, .jpg, .txt",
+  "data-fields": "Trường dữ liệu",
+  "upload-json-file": "Tải lên tệp JSON"
 }

@@ -15,11 +15,11 @@ import { type FC, type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import {
-  useImplementationCompileMutation,
-  useFunctionDeleteMutation,
-} from "../../hooks";
 import type { FunctionDetailDto } from "../../function-types";
+import {
+  useCompileFunctionMutation,
+  useDeleteFunctionMutation,
+} from "../../hooks";
 import { getLanguageIcon } from "../../utils/icon-utils";
 import { FunctionStatusTag } from "../function-status-tag/function-status-tag";
 import { TypeTag } from "../type-tag";
@@ -39,8 +39,8 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
   const { t } = useTranslation();
   const { t: tNs } = useNamespacedTranslation();
   const navigate = useNavigate();
-  const compileMutation = useImplementationCompileMutation();
-  const deleteMutation = useFunctionDeleteMutation();
+  const compileMutation = useCompileFunctionMutation();
+  const deleteMutation = useDeleteFunctionMutation();
 
   const { id, definition, implementation, compilationStatus } = functionDetail;
 

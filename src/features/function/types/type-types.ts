@@ -49,3 +49,5 @@ export const TYPE_NAMES = {
   ARRAY: "ARRAY",
   OBJECT: "OBJECT",
 } as const;
+
+export type TypeName = keyof typeof TYPE_NAMES;

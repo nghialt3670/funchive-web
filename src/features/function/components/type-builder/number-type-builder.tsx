@@ -1,59 +1,73 @@
 import type { NumberType } from "@/features/function/types";
-import { Form, Input, InputNumber } from "antd";
-import React from "react";
+import { Box } from "@mui/material";
+import { Form, InputNumber, Switch, Typography } from "antd";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import styles from "./number-type-builder.module.css";
+const { Text } = Typography;
 
 interface NumberTypeBuilderProps {
   value?: NumberType;
   onChange?: (type: NumberType) => void;
   disabled?: boolean;
+  readonly?: boolean;
 }
 
 export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
   value,
   onChange,
   disabled = false,
+  readonly = false,
 }) => {
-  const description = value?.description || "";
-  const defaultValue = value?.defaultValue;
-
-  const handleDescriptionChange = (newDescription: string) => {
-    onChange?.({
-      name: "NUMBER",
-      description: newDescription || undefined,
-      defaultValue: value?.defaultValue,
-    });
-  };
+  const { t } = useTranslation();
+  const [hasDefaultValue, setHasDefaultValue] = useState(false);
 
   const handleDefaultValueChange = (newDefaultValue: number | null) => {
     onChange?.({
       name: "NUMBER",
       description: value?.description,
-      defaultValue: newDefaultValue || undefined,
+      defaultValue: newDefaultValue
+        ? {
+            type: "NUMBER",
+            data: newDefaultValue,
+          }
+        : undefined,
     });
   };
 
   return (
-    <div className={styles.numberTypeBuilder}>
-      <Form.Item label="Description" className={styles.formItem}>
-        <Input
-          placeholder="Type description"
-          value={description}
-          onChange={(e) => handleDescriptionChange(e.target.value)}
-          disabled={disabled}
-        />
-      </Form.Item>
-
-      <Form.Item label="Default Value" className={styles.formItem}>
+    <Box display="flex" flexDirection="row" width="100%" gap={1}>
+      <Form.Item
+        label={
+          <Box
+            display="flex"
+            flexDirection="row"
+            gap={1}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
+              {t("default-value")}
+            </Text>
+            <Switch
+              size="small"
+              checked={hasDefaultValue}
+              onChange={() => setHasDefaultValue(!hasDefaultValue)}
+              disabled={disabled}
+            />
+          </Box>
+        }
+        style={{ width: "100%", maxWidth: "200px", marginBottom: 0 }}
+      >
         <InputNumber
-          placeholder="Default number value"
-          value={defaultValue}
+          placeholder={t("default-value-placeholder")}
+          value={value?.defaultValue?.data as number}
           onChange={handleDefaultValueChange}
-          className={styles.numberInput}
-          disabled={disabled}
+          disabled={disabled || !hasDefaultValue}
+          readOnly={readonly}
+          style={{ width: "100%" }}
         />
       </Form.Item>
-    </div>
+    </Box>
   );
 };

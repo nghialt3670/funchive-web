@@ -1,58 +1,95 @@
 import type { StringType } from "@/features/function/types";
-import { Form, Input } from "antd";
-import React from "react";
+import { UploadOutlined } from "@ant-design/icons";
+import { Box, useMediaQuery } from "@mui/material";
+import { Button, Form, Input, Switch, Tooltip, Typography, Upload } from "antd";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import styles from "./string-type-builder.module.css";
+const { TextArea } = Input;
+const { Text } = Typography;
 
 interface StringTypeBuilderProps {
   value?: StringType;
   onChange?: (type: StringType) => void;
   disabled?: boolean;
+  readonly?: boolean;
 }
 
 export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
   value,
   onChange,
   disabled = false,
+  readonly = false,
 }) => {
-  const description = value?.description || "";
-  const defaultValue = value?.defaultValue || "";
-
-  const handleDescriptionChange = (newDescription: string) => {
-    onChange?.({
-      name: "STRING",
-      description: newDescription || undefined,
-      defaultValue: value?.defaultValue,
-    });
-  };
+  const { t } = useTranslation();
+  const [hasDefaultValue, setHasDefaultValue] = useState(false);
+  const isTablet = useMediaQuery("(max-width: 1024px)");
 
   const handleDefaultValueChange = (newDefaultValue: string) => {
     onChange?.({
       name: "STRING",
       description: value?.description,
-      defaultValue: newDefaultValue || undefined,
+      defaultValue: {
+        type: "STRING",
+        data: newDefaultValue,
+      },
     });
   };
 
   return (
-    <div className={styles.stringTypeBuilder}>
-      <Form.Item label="Description" className={styles.formItem}>
-        <Input
-          placeholder="Type description"
-          value={description}
-          onChange={(e) => handleDescriptionChange(e.target.value)}
-          disabled={disabled}
-        />
-      </Form.Item>
-
-      <Form.Item label="Default Value" className={styles.formItem}>
-        <Input
-          placeholder="Default string value"
-          value={defaultValue}
+    <Form.Item
+      label={
+        <Box
+          display="flex"
+          flexDirection="row"
+          gap={1}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
+            {t("default-value")}
+          </Text>
+          <Switch
+            size="small"
+            checked={hasDefaultValue}
+            onChange={() => setHasDefaultValue(!hasDefaultValue)}
+            disabled={disabled}
+          />
+        </Box>
+      }
+      style={{ width: "100%", marginBottom: 0 }}
+    >
+      <Box display="flex" flexDirection="row" gap={1}>
+        <TextArea
+          placeholder={t("default-value-placeholder")}
+          value={value?.defaultValue?.data as string}
           onChange={(e) => handleDefaultValueChange(e.target.value)}
-          disabled={disabled}
+          autoSize={{ minRows: 1, maxRows: 5 }}
+          disabled={disabled || !hasDefaultValue}
+          readOnly={readonly}
         />
-      </Form.Item>
-    </div>
+        <Upload
+          disabled={disabled || !hasDefaultValue}
+          showUploadList={false}
+          accept=".txt"
+        >
+          {isTablet ? (
+            <Tooltip title={t("upload-text-file")}>
+              <Button
+                icon={<UploadOutlined />}
+                disabled={disabled || !hasDefaultValue}
+              />
+            </Tooltip>
+          ) : (
+            <Button
+              icon={<UploadOutlined />}
+              disabled={disabled || !hasDefaultValue}
+            >
+              {t("upload-text-file")}
+            </Button>
+          )}
+        </Upload>
+      </Box>
+    </Form.Item>
   );
 };

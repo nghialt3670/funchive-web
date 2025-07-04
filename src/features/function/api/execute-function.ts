@@ -3,7 +3,7 @@ import type { ResponseBody } from "@/types/api";
 
 import { functionAxios } from "./axios-config";
 
-export const executeImplementation = async (
+export const executeFunction = async (
   functionId: string,
   implementationId: string,
   inputValueId: string,

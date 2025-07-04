@@ -65,6 +65,14 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             activeShadow: "none",
             controlOutline: "none",
           },
+          InputNumber: {
+            colorText: "var(--color-text-primary)",
+            colorTextPlaceholder: "var(--color-text-tertiary)",
+            colorBorder: "var(--color-border)",
+            activeBorderColor: "var(--color-border-focus)",
+            hoverBorderColor: "var(--color-border-hover)",
+            controlOutline: "none",
+          },
           Select: {
             colorText: "var(--color-text-primary)",
             colorTextPlaceholder: "var(--color-text-tertiary)",

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { updateFunction } from "../api/update-function";
 import { functionQueryKeys } from "./function-query-keys";
 
-export const useFunctionUpdateMutation = () => {
+export const useUpdateFunctionBasicInfoMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
@@ -31,7 +31,7 @@ export const useFunctionUpdateMutation = () => {
         queryKey: functionQueryKeys.lists(),
       });
 
-      message.success(t("function-updated-successfully"));
+      message.success(t("function-basic-info-updated-successfully"));
     },
     onError: (error) => {
       console.error(error.message);

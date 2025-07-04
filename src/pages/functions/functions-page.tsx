@@ -1,6 +1,6 @@
 import { FunctionCard } from "@/features/function/components/function-card";
 import { FunctionPopup } from "@/features/function/components/function-popup/function-popup";
-import { useFunctionPageQuery } from "@/features/function/hooks";
+import { useGetFunctionPageQuery } from "@/features/function/hooks";
 import type { FunctionFilter } from "@/features/function/types";
 import { SORT_OPTIONS } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
@@ -47,7 +47,7 @@ export const FunctionsPage = () => {
     isLoading,
     error,
     refetch,
-  } = useFunctionPageQuery(filter);
+  } = useGetFunctionPageQuery(filter);
 
   const handleSortChange = (newSort: string) => {
     setSorts([searchParamToSort(newSort)]);
@@ -158,9 +158,9 @@ export const FunctionsPage = () => {
                 xl={6}
                 key={functionDetail.id}
               >
-                <FunctionPopup functionDetail={functionDetail}>
-                  <FunctionCard functionDetail={functionDetail} />
-                </FunctionPopup>
+                {/* <FunctionPopup functionDetail={functionDetail}> */}
+                <FunctionCard functionDetail={functionDetail} />
+                {/* </FunctionPopup> */}
               </Col>
             ))}
           </Row>

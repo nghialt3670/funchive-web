@@ -1,8 +1,8 @@
 import { FunctionStatusTag } from "@/features/function/components/function-status-tag/function-status-tag";
 import { TypeTag } from "@/features/function/components/type-tag/type-tag";
 import { TypeTooltip } from "@/features/function/components/type-tooltip";
+import { useCompileFunctionMutation } from "@/features/function/hooks";
 import type { FunctionDetailDto } from "@/features/function/types";
-import { useImplementationCompileMutation } from "@/features/function/hooks";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import {
   ArrowRightOutlined,
@@ -36,10 +36,11 @@ export const FunctionCard: FC<FunctionCardProps> = ({
   const { t } = useTranslation();
   const { t: nt } = useNamespacedTranslation();
   const navigate = useNavigate();
-  const compileMutation = useImplementationCompileMutation();
+  const compileMutation = useCompileFunctionMutation();
 
-  const { id, name, description, inputType, outputType, implementations } = functionDetail;
-  
+  const { id, name, description, inputType, outputType, implementations } =
+    functionDetail;
+
   // For now, we'll assume we can run if there are implementations
   // Later this should check actual compilation status from implementation details
   const canRun = implementations.length > 0;

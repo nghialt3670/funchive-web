@@ -28,5 +28,16 @@
   "status": "Status",
   "description": "Description",
   "input-output": "Input/Output",
-  "settings": "Settings"
+  "settings": "Settings",
+  "default-value": "Default value",
+  "description-placeholder": "Enter description...",
+  "default-value-placeholder": "Enter default value...",
+  "upload-text-file": "Upload text file",
+  "true": "True",
+  "false": "False",
+  "file-extension": "File extension",
+  "upload-default-file": "Upload default file",
+  "file-extension-placeholder": "e.g., .pdf, .jpg, .txt",
+  "data-fields": "Fields",
+  "upload-json-file": "Upload JSON file"
 }

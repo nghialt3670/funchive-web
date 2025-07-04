@@ -1,31 +1,26 @@
-import type {
-  FunctionCreateDto,
-  FunctionDetailDto,
-} from "@/features/function/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { useTranslation } from "react-i18next";
 
-import { createFunction } from "../api/create-function";
+import { deleteFunction } from "../api/delete-function";
 import { functionQueryKeys } from "./function-query-keys";
 
-export const useFunctionCreateMutation = () => {
+export const useDeleteFunctionMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: FunctionCreateDto) => createFunction(data),
-    onSuccess: (functionDetail: FunctionDetailDto) => {
+    mutationFn: (functionId: string) => deleteFunction(functionId),
+    onSuccess: (_, functionId) => {
+      queryClient.removeQueries({
+        queryKey: functionQueryKeys.detail(functionId),
+      });
+
       queryClient.invalidateQueries({
         queryKey: functionQueryKeys.lists(),
       });
 
-      queryClient.setQueryData(
-        functionQueryKeys.detail(functionDetail.id),
-        functionDetail,
-      );
-
-      message.success(t("function-created-successfully"));
+      message.success(t("function-deleted-successfully"));
     },
     onError: (error) => {
       console.error(error.message);

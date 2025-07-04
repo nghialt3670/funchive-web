@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFunctionDetail } from "../api/get-function-detail";
 import { functionQueryKeys } from "./function-query-keys";
 
-export const useFunctionDetailQuery = (
+export const useGetFunctionDetailQuery = (
   functionId: string,
   enabled: boolean = true,
 ) => {

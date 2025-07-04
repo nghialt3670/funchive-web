@@ -1,9 +1,9 @@
-import { compileImplementation } from "./compile-implementation";
+import { compileFunction } from "./compile-function.ts";
 import { createFunction } from "./create-function";
 import { createImplementation } from "./create-implementation";
 import { deleteFunction } from "./delete-function";
 import { deleteImplementation } from "./delete-implementation";
-import { executeImplementation } from "./execute-implementation";
+import { executeFunction } from "./execute-function.ts";
 import { getFunctionDetail } from "./get-function-detail";
 import { getFunctionPage } from "./get-function-page";
 import { getImplementationDetail } from "./get-implementation-detail";
@@ -22,6 +22,6 @@ export const functionApi = {
   getImplementationPage,
   updateImplementation,
   deleteImplementation,
-  compileImplementation,
-  executeImplementation,
+  compileImplementation: compileFunction,
+  executeImplementation: executeFunction,
 };

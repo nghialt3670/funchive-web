@@ -1,4 +1,4 @@
-import { useFunctionPageQuery } from "@/features/function/hooks";
+import { useGetFunctionPageQuery } from "@/features/function/hooks";
 import type { FunctionDetailDto } from "@/features/function/types";
 import {
   ArrowLeftOutlined,
@@ -281,7 +281,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
 
   // Fetch available functions
   const { data: functionsPage, isLoading: functionsLoading } =
-    useFunctionPageQuery(
+    useGetFunctionPageQuery(
       {},
       { page: 0, size: 100, sort: "definition.name,asc" },
     );

@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFunctionPage } from "../api/get-function-page";
 import { functionQueryKeys } from "./function-query-keys";
 
-export const useFunctionPageQuery = (filter: FunctionFilter = {}) => {
+export const useGetFunctionPageQuery = (filter: FunctionFilter = {}) => {
   const { page, size, sorts } = usePageSearchParams();
 
   return useQuery({

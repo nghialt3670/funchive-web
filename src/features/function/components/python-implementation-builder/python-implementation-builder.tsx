@@ -1,3 +1,4 @@
+import { EditableSection } from "@/components/ui/editable-section";
 import type { FunctionDetailDto } from "@/features/function/types";
 import { toSnakeCase } from "@/utils/code-utils";
 import { Card, Divider, Form, Input, Select, Space, Tag } from "antd";
@@ -27,70 +28,131 @@ export const PythonImplementationBuilder: React.FC<
   mode,
   functionDetail,
 }) => {
+  const isViewMode = mode === "view";
+
   return (
-    <Form form={form} layout="vertical" disabled={mode === "view"}>
-      <Card className={styles.tabCard}>
-        <Form.Item
-          label="Programming Language"
-          name="implementation.language"
-          rules={[{ required: true }]}
-          className={styles.languageSelect}
-        >
-          <Select>
-            <Option value="python">Python</Option>
-            <Option value="javascript">JavaScript</Option>
-            <Option value="java">Java</Option>
-            <Option value="go">Go</Option>
-          </Select>
-        </Form.Item>
+    <Card className={styles.tabCard}>
+      {isViewMode ? (
+        // View mode with editable sections
+        <>
+          <EditableSection
+            title="Programming Language"
+            disabled={true} // TODO: Implement language editing
+          >
+            <Form.Item
+              label="Programming Language"
+              name="implementation.language"
+              rules={[{ required: true }]}
+              className={styles.languageSelect}
+            >
+              <Select disabled={true}>
+                <Option value="python">Python</Option>
+                <Option value="javascript">JavaScript</Option>
+                <Option value="java">Java</Option>
+                <Option value="go">Go</Option>
+              </Select>
+            </Form.Item>
+          </EditableSection>
 
-        <Form.Item
-          label="Function Code"
-          rules={[
-            {
-              required: true,
-              message: "Function code is required",
-            },
-          ]}
-          className={styles.codeContainer}
-        >
-          <div>
-            {/* Fixed function signature */}
-            <div className={styles.functionSignature}>
-              def {functionName ? toSnakeCase(functionName) : "function_name"}
-              (input_data):
-            </div>
+          <EditableSection
+            title="Function Code"
+            disabled={true} // TODO: Implement code editing
+          >
+            <Form.Item
+              label="Function Code"
+              rules={[
+                {
+                  required: true,
+                  message: "Function code is required",
+                },
+              ]}
+              className={styles.codeContainer}
+            >
+              <div>
+                {/* Fixed function signature */}
+                <div className={styles.functionSignature}>
+                  def{" "}
+                  {functionName ? toSnakeCase(functionName) : "function_name"}
+                  (input_data):
+                </div>
 
-            {/* Editable function body */}
-            <TextArea
-              value={functionBody}
-              onChange={(e) => setFunctionBody(e.target.value)}
-              rows={18}
-              className={styles.functionBody}
-              placeholder="    # Write your function body here...\n    return input_data"
-              disabled={mode === "view"}
-            />
-          </div>
-        </Form.Item>
+                {/* Editable function body */}
+                <TextArea
+                  value={functionBody}
+                  onChange={(e) => setFunctionBody(e.target.value)}
+                  rows={18}
+                  className={styles.functionBody}
+                  placeholder="    # Write your function body here...\n    return input_data"
+                  disabled={true}
+                />
+              </div>
+            </Form.Item>
+          </EditableSection>
 
-        {mode === "view" &&
-          functionDetail &&
-          functionDetail.implementation.language === "PYTHON" &&
-          (functionDetail.implementation as any).packages?.length > 0 && (
+          {functionDetail &&
+            functionDetail.implementation.language === "PYTHON" &&
+            (functionDetail.implementation as any).packages?.length > 0 && (
+              <div>
+                <Divider orientation="left">Dependencies</Divider>
+                <Space wrap>
+                  {(functionDetail.implementation as any).packages.map(
+                    (pkg: any, index: number) => (
+                      <Tag key={index} color="blue">
+                        {pkg.name}@{pkg.version}
+                      </Tag>
+                    ),
+                  )}
+                </Space>
+              </div>
+            )}
+        </>
+      ) : (
+        // Create mode
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Programming Language"
+            name="implementation.language"
+            rules={[{ required: true }]}
+            className={styles.languageSelect}
+          >
+            <Select>
+              <Option value="python">Python</Option>
+              <Option value="javascript">JavaScript</Option>
+              <Option value="java">Java</Option>
+              <Option value="go">Go</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Function Code"
+            rules={[
+              {
+                required: true,
+                message: "Function code is required",
+              },
+            ]}
+            className={styles.codeContainer}
+          >
             <div>
-              <Divider orientation="left">Dependencies</Divider>
-              <Space wrap>
-                {(functionDetail.implementation as any).packages.map(
-                  (pkg: any, index: number) => (
-                    <Tag key={index} color="blue">
-                      {pkg.name}@{pkg.version}
-                    </Tag>
-                  ),
-                )}
-              </Space>
+              {/* Fixed function signature */}
+              <div className={styles.functionSignature}>
+                def {functionName ? toSnakeCase(functionName) : "function_name"}
+                (input_data):
+              </div>
+
+              {/* Editable function body */}
+              <TextArea
+                value={functionBody}
+                onChange={(e) => setFunctionBody(e.target.value)}
+                rows={18}
+                className={styles.functionBody}
+                placeholder="    # Write your function body here...\n    return input_data"
+                disabled={false}
+              />
             </div>
-          )}
-      </Card>
-    </Form>
+          </Form.Item>
+        </Form>
+      )}
+    </Card>
   );
 };
