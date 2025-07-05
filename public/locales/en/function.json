@@ -15,5 +15,7 @@
   "function-empty-title": "No functions found",
   "function-empty-description": "Get started by creating your first function",
   "definition": "Definition",
-  "implementation": "Implementation"
+  "implementation": "Implementation",
+  "input-type": "Input type",
+  "output-type": "Output type"
 }

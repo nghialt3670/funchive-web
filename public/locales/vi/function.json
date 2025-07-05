@@ -15,5 +15,7 @@
   "function-empty-title": "Không tìm thấy hàm",
   "function-empty-description": "Bắt đầu bằng cách tạo hàm đầu tiên của bạn",
   "definition": "Định nghĩa",
-  "implementation": "Triển khai"
+  "implementation": "Triển khai",
+  "input-type": "Kiểu dữ liệu đầu vào",
+  "output-type": "Kiểu dữ liệu đầu ra"
 }

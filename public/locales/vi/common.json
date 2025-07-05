@@ -39,5 +39,9 @@
   "upload-default-file": "Tải lên tệp mặc định",
   "file-extension-placeholder": "Ví dụ: .pdf, .jpg, .txt",
   "data-fields": "Trường dữ liệu",
-  "upload-json-file": "Tải lên tệp JSON"
+  "upload-json-file": "Tải lên tệp JSON",
+  "select-type": "Chọn loại",
+  "add-data-field": "Thêm trường dữ liệu",
+  "remove-data-field": "Xóa trường dữ liệu",
+  "max-depth-reached": "Đã đạt độ sâu tối đa"
 }

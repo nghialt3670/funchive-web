@@ -20,7 +20,7 @@ export interface BooleanType extends BaseType {
 
 export interface FileType extends BaseType {
   name: "FILE";
-  extension?: string;
+  extension: string;
 }
 
 export interface ArrayType extends BaseType {

@@ -1,4 +1,5 @@
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { HorizontalLine } from "@/components/ui/line/line.tsx";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { tryCloneNodeWithOnClick } from "@/utils/element-utils";
 import {
@@ -10,20 +11,20 @@ import {
   EyeFilled,
   PlayCircleFilled,
 } from "@ant-design/icons";
+import { Box } from "@mui/material";
 import { Button, Modal, Space, Tooltip, Typography } from "antd";
 import { type FC, type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import type { FunctionDetailDto } from "../../function-types";
+import type { FunctionDetailDto } from "@/features/function/types";
 import {
   useCompileFunctionMutation,
   useDeleteFunctionMutation,
 } from "../../hooks";
-import { getLanguageIcon } from "../../utils/icon-utils";
 import { FunctionStatusTag } from "../function-status-tag/function-status-tag";
 import { TypeTag } from "../type-tag";
-import styles from "./function-popup.module.css";
+import { TypeTooltip } from "../type-tooltip";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -42,19 +43,25 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
   const compileMutation = useCompileFunctionMutation();
   const deleteMutation = useDeleteFunctionMutation();
 
-  const { id, definition, implementation, compilationStatus } = functionDetail;
+  const { id, name, description, inputType, outputType, implementations } =
+    functionDetail;
 
-  const canRun = compilationStatus === "SUCCESS";
-  const needsCompilation = ["NOT_STARTED", "OUTDATED", "FAILED"].includes(
-    compilationStatus,
-  );
+  // For now, we'll assume we can run if there are implementations
+  // Later this should check actual compilation status from implementation details
+  const canRun = implementations.length > 0;
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleCompile = () => {
-    compileMutation.mutate(id);
+    // Use first implementation for compilation - in real app you'd want to select which one
+    if (implementations.length > 0) {
+      compileMutation.mutate({
+        functionId: id,
+        implementationId: implementations[0].id,
+      });
+    }
   };
 
   const handleExecute = () => {
@@ -71,19 +78,18 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
       {clonedChildren}
       <Modal
         title={
-          <div className={styles.modalHeader}>
-            {getLanguageIcon(implementation.language)}
+          <Box display="flex" alignItems="center" gap={3}>
             <Title level={4} style={{ margin: 0 }}>
-              {definition.name}
+              {name}
             </Title>
-          </div>
+          </Box>
         }
         open={open}
         onCancel={handleClose}
         width={800}
         centered
         footer={
-          <div className={styles.modalFooter}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" gap={2}>
             {/* Primary Action Button */}
             {canRun ? (
               <Tooltip title={tNs("execute-function")}>
@@ -95,17 +101,6 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
                   {tNs("execute")}
                 </Button>
               </Tooltip>
-            ) : needsCompilation ? (
-              <Tooltip title={tNs("compile-function")}>
-                <Button
-                  type="primary"
-                  icon={<BuildFilled />}
-                  onClick={handleCompile}
-                  loading={compileMutation.isPending}
-                >
-                  {tNs("compile")}
-                </Button>
-              </Tooltip>
             ) : (
               <Tooltip title={tNs("compile-function")}>
                 <Button
@@ -113,6 +108,7 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
                   icon={<BuildFilled />}
                   onClick={handleCompile}
                   loading={compileMutation.isPending}
+                  disabled={implementations.length === 0}
                 >
                   {tNs("compile")}
                 </Button>
@@ -154,35 +150,50 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
                 </Button>
               </ConfirmDialog>
             </Space>
-          </div>
+          </Box>
         }
-        className={styles.functionModal}
+        style={{ padding: 0 }}
       >
-        <div className={styles.modalContent}>
+        <Box display="flex" flexDirection="column" gap={3} padding="1rem 0">
           {/* Description Section */}
-          <div className={styles.descriptionSection}>
+          <Box display="flex" flexDirection="column" gap={1}>
             <Text strong>{t("description")}:</Text>
-            <Paragraph className={styles.description}>
-              {definition.description}
+            <Paragraph
+              style={{
+                margin: 0,
+                color: "var(--color-text-secondary)",
+                fontSize: "0.875rem",
+                lineHeight: 1.6,
+              }}
+            >
+              {description}
             </Paragraph>
-          </div>
+          </Box>
+
+          <HorizontalLine />
 
           {/* Input/Output Types Section */}
-          <div className={styles.typesSection}>
+          <Box display="flex" flexDirection="column" gap={1}>
             <Text strong>{t("input-output")}:</Text>
-            <div className={styles.typeFlow}>
-              <TypeTag type={definition.inputType} />
+            <Box display="flex" alignItems="center" gap={2}>
+              <TypeTooltip type={inputType}>
+                <TypeTag type={inputType} />
+              </TypeTooltip>
               <ArrowRightOutlined />
-              <TypeTag type={definition.outputType} />
-            </div>
-          </div>
+              <TypeTooltip type={outputType}>
+                <TypeTag type={outputType} />
+              </TypeTooltip>
+            </Box>
+          </Box>
+
+          <HorizontalLine />
 
           {/* Status Section */}
-          <div className={styles.statusSection}>
+          <Box display="flex" flexDirection="column" gap={1}>
             <Text strong>{t("status")}:</Text>
             <FunctionStatusTag functionDetail={functionDetail} />
-          </div>
-        </div>
+          </Box>
+        </Box>
       </Modal>
     </>
   );

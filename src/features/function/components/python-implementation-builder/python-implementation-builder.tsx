@@ -1,6 +1,7 @@
 import { EditableSection } from "@/components/ui/editable-section";
 import type { FunctionDetailDto } from "@/features/function/types";
 import { toSnakeCase } from "@/utils/code-utils";
+import { Box } from "@mui/material";
 import { Card, Divider, Form, Input, Select, Space, Tag } from "antd";
 import React from "react";
 
@@ -43,7 +44,7 @@ export const PythonImplementationBuilder: React.FC<
               label="Programming Language"
               name="implementation.language"
               rules={[{ required: true }]}
-              className={styles.languageSelect}
+              style={{ width: "200px", marginBottom: "16px" }}
             >
               <Select disabled={true}>
                 <Option value="python">Python</Option>
@@ -66,33 +67,50 @@ export const PythonImplementationBuilder: React.FC<
                   message: "Function code is required",
                 },
               ]}
-              className={styles.codeContainer}
+              style={{ marginBottom: "16px" }}
             >
-              <div>
+              <Box>
                 {/* Fixed function signature */}
-                <div className={styles.functionSignature}>
+                <Box
+                  bgcolor="var(--color-background-secondary)"
+                  padding="12px"
+                  fontFamily="monospace"
+                  fontSize="14px"
+                  border="1px solid var(--color-border)"
+                  borderBottom="none"
+                  borderRadius="6px 6px 0 0"
+                  color="var(--color-text-secondary)"
+                >
                   def{" "}
                   {functionName ? toSnakeCase(functionName) : "function_name"}
                   (input_data):
-                </div>
+                </Box>
 
                 {/* Editable function body */}
                 <TextArea
                   value={functionBody}
                   onChange={(e) => setFunctionBody(e.target.value)}
                   rows={18}
-                  className={styles.functionBody}
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "14px",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: "0 0 6px 6px",
+                    resize: "vertical",
+                    background: "var(--color-background-primary)",
+                    color: "var(--color-text-primary)",
+                  }}
                   placeholder="    # Write your function body here...\n    return input_data"
                   disabled={true}
                 />
-              </div>
+              </Box>
             </Form.Item>
           </EditableSection>
 
           {functionDetail &&
             functionDetail.implementation.language === "PYTHON" &&
             (functionDetail.implementation as any).packages?.length > 0 && (
-              <div>
+              <Box>
                 <Divider orientation="left">Dependencies</Divider>
                 <Space wrap>
                   {(functionDetail.implementation as any).packages.map(
@@ -103,7 +121,7 @@ export const PythonImplementationBuilder: React.FC<
                     ),
                   )}
                 </Space>
-              </div>
+              </Box>
             )}
         </>
       ) : (
@@ -113,7 +131,7 @@ export const PythonImplementationBuilder: React.FC<
             label="Programming Language"
             name="implementation.language"
             rules={[{ required: true }]}
-            className={styles.languageSelect}
+            style={{ width: "200px", marginBottom: "16px" }}
           >
             <Select>
               <Option value="python">Python</Option>
@@ -131,25 +149,42 @@ export const PythonImplementationBuilder: React.FC<
                 message: "Function code is required",
               },
             ]}
-            className={styles.codeContainer}
+            style={{ marginBottom: "16px" }}
           >
-            <div>
+            <Box>
               {/* Fixed function signature */}
-              <div className={styles.functionSignature}>
+              <Box
+                bgcolor="var(--color-background-secondary)"
+                padding="12px"
+                fontFamily="monospace"
+                fontSize="14px"
+                border="1px solid var(--color-border)"
+                borderBottom="none"
+                borderRadius="6px 6px 0 0"
+                color="var(--color-text-secondary)"
+              >
                 def {functionName ? toSnakeCase(functionName) : "function_name"}
                 (input_data):
-              </div>
+              </Box>
 
               {/* Editable function body */}
               <TextArea
                 value={functionBody}
                 onChange={(e) => setFunctionBody(e.target.value)}
                 rows={18}
-                className={styles.functionBody}
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "14px",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "0 0 6px 6px",
+                  resize: "vertical",
+                  background: "var(--color-background-primary)",
+                  color: "var(--color-text-primary)",
+                }}
                 placeholder="    # Write your function body here...\n    return input_data"
                 disabled={false}
               />
-            </div>
+            </Box>
           </Form.Item>
         </Form>
       )}

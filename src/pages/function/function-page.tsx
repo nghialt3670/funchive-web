@@ -1,9 +1,9 @@
 import { BackButton } from "@/components/ui/back-button/back-button";
-import { EditableSection } from "@/components/ui/editable-section";
 import { Loading } from "@/components/ui/loading/loading";
+import { FunctionDefinitionTab } from "@/features/function/components/function-definition-tab";
+import { FunctionImplementationTab } from "@/features/function/components/function-implementation-tab";
+import { FunctionSettingTab } from "@/features/function/components/function-setting-tab";
 import { FunctionStatusTag } from "@/features/function/components/function-status-tag";
-import { PythonImplementationBuilder } from "@/features/function/components/python-implementation-builder";
-import { TypeBuilder } from "@/features/function/components/type-builder";
 import { FunctionDetailContextProvider } from "@/features/function/contexts/function-detail-context";
 import {
   useCompileFunctionMutation,
@@ -21,41 +21,24 @@ import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { toSnakeCase } from "@/utils/code-utils.ts";
 import {
   BuildFilled,
-  DeleteFilled,
   InfoCircleFilled,
   PlayCircleFilled,
   SettingFilled,
 } from "@ant-design/icons";
 import { Retry } from "@components/ui/retry";
 import { Box } from "@mui/material";
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Space,
-  Tabs,
-  Typography,
-} from "antd";
+import { Button, Form, Modal, Space, Tabs, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-import styles from "./function-page.module.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Title, Text } = Typography;
-const { TextArea } = Input;
 
 export const FunctionPage: React.FC = () => {
   const { t } = useTranslation();
   const { t: nt } = useNamespacedTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [form] = Form.useForm();
   const [functionBody, setFunctionBody] = useState(
@@ -289,26 +272,26 @@ export const FunctionPage: React.FC = () => {
 
   // Render content function
   const renderContent = () => (
-    <div className={styles.functionPageContainer}>
+    <Box maxWidth="80rem" margin="0 auto" padding="1rem">
       {/* Header */}
-      <div className={styles.header}>
+      <Box marginBottom="24px">
         <BackButton />
         <Space>{getHeaderActions()}</Space>
 
-        <div className={styles.headerContent}>
-          <div className={styles.headerInfo}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
             <Title level={2}>{getPageTitle()}</Title>
             {id && functionDetail && (
               <Space>
                 <FunctionStatusTag functionDetail={functionDetail} />
               </Space>
             )}
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
 
       {/* Main Content */}
-      <div className={styles.tabsContainer}>
+      <Box marginTop="16px">
         <Tabs
           defaultActiveKey="definition"
           items={[
@@ -321,99 +304,13 @@ export const FunctionPage: React.FC = () => {
                 </Box>
               ),
               children: (
-                <Card className={styles.tabCard}>
-                  {id ? (
-                    // View/Edit mode with editable sections
-                    <>
-                      <EditableSection
-                        title="Basic Information"
-                        onSave={async () => {
-                          const values = await form.validateFields();
-                          await handleUpdateBasicInfo({
-                            name: values.name,
-                            description: values.description,
-                          });
-                        }}
-                        loading={updateBasicInfoMutation.isPending}
-                      >
-                        <Form form={form} layout="vertical">
-                          <Row gutter={16}>
-                            <Col span={12}>
-                              <Form.Item
-                                label="Function Name"
-                                name="name"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Function name is required",
-                                  },
-                                ]}
-                              >
-                                <Input placeholder="Enter function name" />
-                              </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                              <Form.Item label="Description" name="description">
-                                <TextArea
-                                  rows={3}
-                                  placeholder="Describe what this function does..."
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        </Form>
-                      </EditableSection>
-
-                      <EditableSection
-                        title="Input Type"
-                        disabled={true} // TODO: Implement type editing
-                      >
-                        <TypeBuilder label="Input Type" disabled={true} />
-                      </EditableSection>
-
-                      <EditableSection
-                        title="Output Type"
-                        disabled={true} // TODO: Implement type editing
-                      >
-                        <TypeBuilder label="Output Type" disabled={true} />
-                      </EditableSection>
-                    </>
-                  ) : (
-                    // Create mode
-                    <Form form={form} layout="vertical">
-                      <Row gutter={16}>
-                        <Col span={12}>
-                          <Form.Item
-                            label="Function Name"
-                            name="name"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Function name is required",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Enter function name" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={24}>
-                          <Form.Item label="Description" name="description">
-                            <TextArea
-                              rows={3}
-                              placeholder="Describe what this function does..."
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={24}>
-                          <TypeBuilder label="Input Type" disabled={false} />
-                        </Col>
-                        <Col span={24}>
-                          <TypeBuilder label="Output Type" disabled={false} />
-                        </Col>
-                      </Row>
-                    </Form>
-                  )}
-                </Card>
+                <FunctionDefinitionTab
+                  id={id}
+                  form={form}
+                  functionDetail={functionDetail}
+                  updateBasicInfoMutation={updateBasicInfoMutation}
+                  onSave={handleUpdateBasicInfo}
+                />
               ),
             },
             {
@@ -431,12 +328,12 @@ export const FunctionPage: React.FC = () => {
                 </Box>
               ),
               children: (
-                <PythonImplementationBuilder
+                <FunctionImplementationTab
+                  id={id}
                   form={form}
                   functionBody={functionBody}
                   setFunctionBody={setFunctionBody}
                   functionName={functionName}
-                  mode={id ? "view" : "create"}
                   functionDetail={functionDetail}
                 />
               ),
@@ -450,93 +347,18 @@ export const FunctionPage: React.FC = () => {
                 </Box>
               ),
               children: (
-                <Card className={styles.tabCard}>
-                  <div className={styles.settingsContent}>
-                    {/* Metadata Section */}
-                    {id && functionDetail?.createdAt && (
-                      <>
-                        <div className={styles.metadataSection}>
-                          <Title level={4}>Metadata</Title>
-                          <Row gutter={16}>
-                            <Col span={12}>
-                              <div className={styles.metadataItem}>
-                                <Text type="secondary">Created:</Text>
-                                <br />
-                                <Text>
-                                  {new Date(
-                                    functionDetail.createdAt,
-                                  ).toLocaleString()}
-                                </Text>
-                                <br />
-                                <Text type="secondary">
-                                  by {functionDetail.createdBy}
-                                </Text>
-                              </div>
-                            </Col>
-                            <Col span={12}>
-                              <div className={styles.metadataItem}>
-                                <Text type="secondary">Last Updated:</Text>
-                                <br />
-                                <Text>
-                                  {new Date(
-                                    functionDetail.updatedAt,
-                                  ).toLocaleString()}
-                                </Text>
-                                <br />
-                                <Text type="secondary">
-                                  by {functionDetail.updatedBy}
-                                </Text>
-                              </div>
-                            </Col>
-                          </Row>
-                        </div>
-                        <Divider />
-                      </>
-                    )}
-
-                    {/* Danger Zone */}
-                    {id && (
-                      <div className={styles.dangerZone}>
-                        <Title level={4} type="danger">
-                          Danger Zone
-                        </Title>
-                        <div className={styles.dangerZoneContent}>
-                          <div className={styles.dangerZoneDescription}>
-                            <Text strong>Delete Function</Text>
-                            <br />
-                            <Text type="secondary">
-                              Once you delete a function, there is no going
-                              back. Please be certain.
-                            </Text>
-                          </div>
-                          <Button
-                            danger
-                            icon={<DeleteFilled />}
-                            onClick={handleDelete}
-                            loading={deleteMutation.isPending}
-                            className={styles.deleteButton}
-                          >
-                            Delete Function
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-
-                    {!id && (
-                      <div className={styles.noSettings}>
-                        <Text type="secondary">
-                          Settings are only available in view mode.
-                        </Text>
-                      </div>
-                    )}
-                  </div>
-                </Card>
+                <FunctionSettingTab
+                  id={id}
+                  functionDetail={functionDetail}
+                  deleteMutation={deleteMutation}
+                  onDelete={handleDelete}
+                />
               ),
             },
           ]}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 
   // For create mode, render without context provider

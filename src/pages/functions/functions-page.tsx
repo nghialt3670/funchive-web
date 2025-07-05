@@ -13,12 +13,11 @@ import { ResourceEmpty } from "@components/ui/resource-empty";
 import { ResourceFilters } from "@components/ui/resource-filters";
 import { ResourcePagination } from "@components/ui/resource-pagination";
 import { Retry } from "@components/ui/retry";
+import { Box } from "@mui/material";
 import { Col, Input, Row, Select, Typography } from "antd";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
-import styles from "./functions-page.module.css";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -59,15 +58,42 @@ export const FunctionsPage = () => {
   }
 
   return (
-    <div className={styles.functionsPageContainer}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      maxWidth="80rem"
+      margin="0 auto"
+      padding="1rem"
+      paddingBottom="1rem"
+      gap="1rem"
+    >
       {/* Header */}
-      <div className={styles.functionsPageHeader}>
-        <div className={styles.headerInfo}>
-          <Title className={styles.headerTitle} level={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
+        <Box>
+          <Title
+            style={{
+              color: "var(--color-text-secondary)",
+              marginBottom: 0,
+            }}
+            level={2}
+          >
             {t("functions")}
           </Title>
-          <p>{t("manage-and-deploy-your-serverless-functions")}</p>
-        </div>
+          <Box
+            component="p"
+            style={{
+              color: "var(--color-text-secondary)",
+              margin: 0,
+              fontSize: "16px",
+            }}
+          >
+            {t("manage-and-deploy-your-serverless-functions")}
+          </Box>
+        </Box>
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -75,7 +101,7 @@ export const FunctionsPage = () => {
         >
           {t("create-function")}
         </Button>
-      </div>
+      </Box>
 
       {/* Filters using the ResourceFilters component */}
       <ResourceFilters
@@ -90,13 +116,13 @@ export const FunctionsPage = () => {
                 placeholder={t("search-functions-placeholder")}
                 defaultValue={filterState.keyword}
                 onSearch={(value) => updateFilter("keyword", value)}
-                className={styles.filterSelect}
+                style={{ width: "100%" }}
               />
             </Col>
             <Col xs={12} sm={12} md={6} lg={5} xl={5}>
               <Select
                 placeholder={t("filter-by-language-placeholder")}
-                className={styles.filterSelect}
+                style={{ width: "100%" }}
                 value={filterState.language}
                 allowClear
                 onChange={(value) => updateFilter("language", value)}
@@ -110,7 +136,7 @@ export const FunctionsPage = () => {
             <Col xs={12} sm={12} md={6} lg={5} xl={5}>
               <Select
                 placeholder={t("sort-by-placeholder")}
-                className={styles.filterSelect}
+                style={{ width: "100%" }}
                 value={sorts?.[0] ? sortToSearchParam(sorts[0]) : undefined}
                 onChange={handleSortChange}
               >
@@ -125,7 +151,16 @@ export const FunctionsPage = () => {
               </Select>
             </Col>
             <Col xs={24} sm={24} md={24} lg={3} xl={4}>
-              <div className={styles.filterCount}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-end"
+                height="32px"
+                style={{
+                  color: "var(--color-text-secondary)",
+                  fontSize: "14px",
+                }}
+              >
                 {functionsPage && (
                   <span>
                     {t("found") +
@@ -137,7 +172,7 @@ export const FunctionsPage = () => {
                         : t("function").toLowerCase())}
                   </span>
                 )}
-              </div>
+              </Box>
             </Col>
           </>
         )}
@@ -148,7 +183,7 @@ export const FunctionsPage = () => {
         <Loading />
       ) : (
         <>
-          <Row gutter={[16, 16]} className={styles.functionsGrid}>
+          <Row gutter={[16, 16]} style={{ padding: 0 }}>
             {functionsPage?.items.map((functionDetail) => (
               <Col
                 xs={24}
@@ -158,9 +193,9 @@ export const FunctionsPage = () => {
                 xl={6}
                 key={functionDetail.id}
               >
-                {/* <FunctionPopup functionDetail={functionDetail}> */}
-                <FunctionCard functionDetail={functionDetail} />
-                {/* </FunctionPopup> */}
+                <FunctionPopup functionDetail={functionDetail}>
+                  <FunctionCard functionDetail={functionDetail} />
+                </FunctionPopup>
               </Col>
             ))}
           </Row>
@@ -185,6 +220,6 @@ export const FunctionsPage = () => {
           }
         />
       )}
-    </div>
+    </Box>
   );
 };

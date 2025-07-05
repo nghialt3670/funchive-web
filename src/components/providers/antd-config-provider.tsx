@@ -21,6 +21,8 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
           colorBorderSecondary: "var(--color-border)",
           colorFillSecondary: "var(--color-background-secondary)",
           colorBgContainer: "var(--color-background-primary)",
+          colorTextDisabled: "var(--color-text-disabled)",
+          colorBgContainerDisabled: "var(--color-background-disabled)",
         },
         components: {
           Tag: {
@@ -64,6 +66,9 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             hoverBorderColor: "var(--color-border-hover)",
             activeShadow: "none",
             controlOutline: "none",
+            colorBgContainer: "var(--color-background-primary)",
+            colorBgContainerDisabled: "var(--color-background-disabled)",
+            colorTextDisabled: "var(--color-text-disabled)",
           },
           InputNumber: {
             colorText: "var(--color-text-primary)",
@@ -71,6 +76,20 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             colorBorder: "var(--color-border)",
             activeBorderColor: "var(--color-border-focus)",
             hoverBorderColor: "var(--color-border-hover)",
+            controlOutline: "none",
+            colorBgContainer: "var(--color-background-primary)",
+            colorBgContainerDisabled: "var(--color-background-disabled)",
+            colorTextDisabled: "var(--color-text-disabled)",
+          },
+          Switch: {
+            colorText: "var(--color-text-primary)",
+            colorTextPlaceholder: "var(--color-text-tertiary)",
+            colorBorder: "var(--color-border)",
+            colorPrimary: "var(--color-primary)",
+            colorPrimaryHover: "var(--color-primary-hover)",
+            colorPrimaryActive: "var(--color-primary-active)",
+            colorPrimaryBorder: "var(--color-border)",
+            colorPrimaryBorderHover: "var(--color-border-hover)",
             controlOutline: "none",
           },
           Select: {

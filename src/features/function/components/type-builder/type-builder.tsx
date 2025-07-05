@@ -1,8 +1,17 @@
-import type { ObjectType, Type, TypeName } from "@/features/function/types";
+import type {
+  BooleanType,
+  FileType,
+  NumberType,
+  ObjectType,
+  StringType,
+  Type,
+  TypeName,
+} from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Box, useMediaQuery } from "@mui/material";
-import { Card, Form, Input, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Card, Form, Input, Select, Tooltip, Typography } from "antd";
+import React, { type ChangeEventHandler } from "react";
 import { useTranslation } from "react-i18next";
 
 import { BooleanTypeBuilder } from "./boolean-type-builder";
@@ -14,69 +23,50 @@ import { StringTypeBuilder } from "./string-type-builder";
 const { TextArea } = Input;
 
 const { Option } = Select;
+const { Text } = Typography;
 interface TypeBuilderProps {
   value?: Type;
+  defaultValue?: Type;
   onChange?: (type: Type) => void;
-  label?: string;
+  removeable?: boolean;
+  onRemove?: (key: string) => void;
+  label: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
+  depth?: number;
+  maxDepth?: number;
+  onDepthChange?: (depth: number) => void;
 }
 
 export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
+  removeable,
+  onRemove,
   label,
   disabled,
   readonly,
+  depth = 0,
+  maxDepth = 5,
+  onDepthChange,
 }) => {
   const { t } = useTranslation();
-  const [typeName, setTypeName] = useState<TypeName>(value?.name || "STRING");
-  const isTablet = useMediaQuery("(max-width: 1024px)");
+  const isLaptop = useMediaQuery("(max-width: 1280px)");
 
-  useEffect(() => {
-    if (value) {
-      setTypeName(value.name);
-    }
-  }, [value]);
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
 
-  const handleTypeNameChange = (newTypeName: TypeName) => {
-    setTypeName(newTypeName);
-    // Create a new type with default values when type changes
-    let newType: Type;
-
-    switch (newTypeName) {
-      case "STRING":
-        newType = { name: "STRING" };
-        break;
-      case "NUMBER":
-        newType = { name: "NUMBER" };
-        break;
-      case "BOOLEAN":
-        newType = { name: "BOOLEAN" };
-        break;
-      case "FILE":
-        newType = { name: "FILE" };
-        break;
-      case "ARRAY":
-        newType = { name: "ARRAY", elementType: { name: "STRING" } };
-        break;
-      case "OBJECT":
-        newType = { name: "OBJECT", schema: { field1: { name: "STRING" } } };
-        break;
-      default:
-        newType = { name: "STRING" };
-    }
-
-    onChange?.(newType);
-  };
+  const shouldUseVerticalLayout = isLaptop;
 
   const renderTypeSpecificBuilder = () => {
-    switch (typeName) {
+    switch (value?.name as TypeName) {
       case "STRING":
         return (
           <StringTypeBuilder
-            value={value as any}
+            value={value as StringType}
             onChange={onChange}
             disabled={disabled}
           />
@@ -84,7 +74,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       case "NUMBER":
         return (
           <NumberTypeBuilder
-            value={value as any}
+            value={value as NumberType}
             onChange={onChange}
             disabled={disabled}
           />
@@ -92,7 +82,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       case "BOOLEAN":
         return (
           <BooleanTypeBuilder
-            value={value as any}
+            value={value as BooleanType}
             onChange={onChange}
             disabled={disabled}
           />
@@ -100,7 +90,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       case "FILE":
         return (
           <FileTypeBuilder
-            value={value as any}
+            value={value as FileType}
             onChange={onChange}
             disabled={disabled}
           />
@@ -112,6 +102,9 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             value={value as ObjectType}
             onChange={onChange}
             disabled={disabled}
+            depth={depth + 1}
+            maxDepth={maxDepth}
+            onDepthChange={onDepthChange}
           />
         );
       default:
@@ -119,92 +112,73 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     }
   };
 
-  const handleDescriptionChange = (newDescription: string) => {
-    // Create a new type with the updated description while preserving other properties
-    let newType: Type;
-
-    switch (typeName) {
-      case "STRING":
-        newType = {
-          name: "STRING",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-        };
-        break;
-      case "NUMBER":
-        newType = {
-          name: "NUMBER",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-        };
-        break;
-      case "BOOLEAN":
-        newType = {
-          name: "BOOLEAN",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-        };
-        break;
-      case "FILE":
-        newType = {
-          name: "FILE",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-          extension: (value as any)?.extension,
-        };
-        break;
-      case "ARRAY":
-        newType = {
-          name: "ARRAY",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-          elementType: (value as any)?.elementType || { name: "STRING" },
-        };
-        break;
-      case "OBJECT":
-        newType = {
-          name: "OBJECT",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-          schema: (value as any)?.schema || { field1: { name: "STRING" } },
-        };
-        break;
-      default:
-        newType = {
-          name: "STRING",
-          description: newDescription || undefined,
-          defaultValue: value?.defaultValue,
-        };
-    }
-
-    onChange?.(newType);
+  const handleTypeNameChange = (newTypeName: TypeName) => {
+    onChange?.({ ...value, name: newTypeName } as Type);
   };
+
+  const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = (
+    e,
+  ) => {
+    onChange?.({ ...value, description: e.target.value } as Type);
+  };
+
+  const handleRemoveClick = () => {
+    onRemove?.(label);
+  };
+
+  // Filter out ARRAY and OBJECT types if at max depth
+  const availableTypes =
+    depth >= maxDepth
+      ? Object.entries(TYPE_NAMES).filter(
+          ([_, value]) => value !== "ARRAY" && value !== "OBJECT",
+        )
+      : Object.entries(TYPE_NAMES);
 
   return (
     <Card size="small">
+      {removeable && (
+        <Tooltip title={t("remove-data-field")}>
+          <Button
+            onClick={handleRemoveClick}
+            icon={<DeleteOutlined />}
+            size="small"
+            style={{ position: "absolute", top: 0, right: 0 }}
+          />
+        </Tooltip>
+      )}
       <Box
         display="flex"
-        flexDirection={isTablet ? "column" : "row"}
-        alignItems="center"
-        gap={1}
+        flexDirection={shouldUseVerticalLayout ? "column" : "row"}
+        justifyContent="flex-start"
+        alignItems="flex-start"
+        gap={2}
       >
-        <Form.Item
-          label={label}
-          style={{ width: isTablet ? "100%" : "15%", marginBottom: 0 }}
+        <Box
+          display="flex"
+          justifyContent={shouldUseVerticalLayout ? "flex-start" : "center"}
+          alignItems="center"
+          width={shouldUseVerticalLayout ? "100%" : "200px"}
         >
-          <Select
-            value={typeName}
-            onChange={handleTypeNameChange}
-            disabled={disabled}
-            style={{ width: "6rem" }}
-          >
-            {Object.entries(TYPE_NAMES).map(([key, value]) => (
-              <Option key={key} value={value}>
-                {value}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+          <Card size="small" hoverable>
+            <Form.Item
+              label={<Text strong>{label}</Text>}
+              style={{ marginBottom: 0 }}
+            >
+              <Select
+                value={value?.name}
+                onChange={handleTypeNameChange}
+                disabled={disabled}
+                style={{ width: "100px" }}
+              >
+                {availableTypes.map(([key, value]) => (
+                  <Option key={key} value={value}>
+                    {value}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Card>
+        </Box>
         <Box display="flex" flexDirection="column" width="100%">
           <Form.Item
             label={t("description")}
@@ -213,10 +187,11 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             <TextArea
               placeholder={t("description-placeholder")}
               value={value?.description}
-              onChange={(e) => handleDescriptionChange(e.target.value)}
+              onChange={handleDescriptionChange}
               disabled={disabled}
               readOnly={readonly}
               autoSize={{ minRows: 1, maxRows: 5 }}
+              className={disabled ? "disabled-input-placeholder" : ""}
             />
           </Form.Item>
           {renderTypeSpecificBuilder()}

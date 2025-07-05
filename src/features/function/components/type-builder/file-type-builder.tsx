@@ -2,6 +2,7 @@ import type { FileType } from "@/features/function/types";
 import { UploadOutlined } from "@ant-design/icons";
 import { Box, useMediaQuery } from "@mui/material";
 import { Button, Form, Input, Switch, Typography, Upload, message } from "antd";
+import { omit } from "lodash";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -22,11 +23,12 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
   const extension = value?.extension || "";
   const [hasDefaultValue, setHasDefaultValue] = useState(false);
   const isTablet = useMediaQuery("(max-width: 1024px)");
+
   const handleExtensionChange = (newExtension: string) => {
     onChange?.({
       name: "FILE",
       description: value?.description,
-      extension: newExtension || undefined,
+      extension: newExtension || "",
       defaultValue: value?.defaultValue,
     });
   };
@@ -38,7 +40,7 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
         onChange?.({
           name: "FILE",
           description: value?.description,
-          extension: value?.extension,
+          extension: value?.extension || "",
           defaultValue: {
             type: "FILE",
             id: file.name,
@@ -55,6 +57,13 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
     };
     reader.readAsText(file);
     return false; // Prevent default upload behavior
+  };
+
+  const handleHasDefaultValueChange = (checked: boolean) => {
+    setHasDefaultValue(checked);
+    if (!checked) {
+      onChange?.(omit(value, "defaultValue"));
+    }
   };
 
   return (
@@ -91,26 +100,28 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
             <Switch
               size="small"
               checked={hasDefaultValue}
-              onChange={() => setHasDefaultValue(!hasDefaultValue)}
+              onChange={handleHasDefaultValueChange}
               disabled={disabled}
             />
           </Box>
         }
-        style={{ width: "100%", marginBottom: 0 }}
+        style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
       >
-        <Upload
-          beforeUpload={handleFileUpload}
-          showUploadList={false}
-          accept={extension}
-          disabled={disabled || !hasDefaultValue}
-        >
-          <Button
-            icon={<UploadOutlined />}
+        {hasDefaultValue && (
+          <Upload
+            beforeUpload={handleFileUpload}
+            showUploadList={false}
+            accept={extension}
             disabled={disabled || !hasDefaultValue}
           >
-            {t("upload-default-file")}
-          </Button>
-        </Upload>
+            <Button
+              icon={<UploadOutlined />}
+              disabled={disabled || !hasDefaultValue}
+            >
+              {t("upload-default-file")}
+            </Button>
+          </Upload>
+        )}
       </Form.Item>
     </Box>
   );

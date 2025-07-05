@@ -1,6 +1,7 @@
 import type { NumberType } from "@/features/function/types";
 import { Box } from "@mui/material";
 import { Form, InputNumber, Switch, Typography } from "antd";
+import { omit } from "lodash";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -35,6 +36,13 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
     });
   };
 
+  const handleHasDefaultValueChange = (checked: boolean) => {
+    setHasDefaultValue(checked);
+    if (!checked) {
+      onChange?.(omit(value, "defaultValue"));
+    }
+  };
+
   return (
     <Box display="flex" flexDirection="row" width="100%" gap={1}>
       <Form.Item
@@ -52,21 +60,30 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
             <Switch
               size="small"
               checked={hasDefaultValue}
-              onChange={() => setHasDefaultValue(!hasDefaultValue)}
+              onChange={handleHasDefaultValueChange}
               disabled={disabled}
             />
           </Box>
         }
-        style={{ width: "100%", maxWidth: "200px", marginBottom: 0 }}
+        style={{
+          width: "100%",
+          maxWidth: "200px",
+          marginBottom: hasDefaultValue ? 0 : -40,
+        }}
       >
-        <InputNumber
-          placeholder={t("default-value-placeholder")}
-          value={value?.defaultValue?.data as number}
-          onChange={handleDefaultValueChange}
-          disabled={disabled || !hasDefaultValue}
-          readOnly={readonly}
-          style={{ width: "100%" }}
-        />
+        {hasDefaultValue && (
+          <InputNumber
+            placeholder={t("default-value-placeholder")}
+            value={value?.defaultValue?.data as number}
+            onChange={handleDefaultValueChange}
+            disabled={disabled || !hasDefaultValue}
+            readOnly={readonly}
+            style={{ width: "100%" }}
+            className={
+              disabled || !hasDefaultValue ? "disabled-input-placeholder" : ""
+            }
+          />
+        )}
       </Form.Item>
     </Box>
   );
