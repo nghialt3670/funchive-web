@@ -184,6 +184,34 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
+      <style>
+        {`
+          /* Readonly input styling */
+          .ant-input[readonly],
+          .ant-input-number[readonly] {
+            background-color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            cursor: default !important;
+          }
+          
+          .ant-input[readonly]:hover,
+          .ant-input-number[readonly]:hover {
+            border-color: transparent !important;
+          }
+          
+          .ant-input[readonly]:focus,
+          .ant-input-number[readonly]:focus {
+            border-color: transparent !important;
+            box-shadow: none !important;
+          }
+          
+          .ant-input[readonly]::placeholder,
+          .ant-input-number[readonly]::placeholder {
+            color: var(--color-text-tertiary) !important;
+          }
+        `}
+      </style>
       {children}
     </ConfigProvider>
   );

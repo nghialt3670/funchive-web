@@ -1,7 +1,7 @@
 import { Tag } from "antd";
 import type { FC } from "react";
 
-import type { Type } from "../../function-types";
+import type { Type } from "../../types";
 import styles from "./type-tag.module.css";
 
 export interface TypeTagProps {
@@ -28,9 +28,9 @@ export const TypeTag: FC<TypeTagProps> = ({ type }) => {
     }
   };
 
-  const typeClass = getTypeClass(type.name);
+  const typeClass = getTypeClass(type?.name);
 
   return (
-    <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>{type.name}</Tag>
+    <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>{type?.name}</Tag>
   );
 };

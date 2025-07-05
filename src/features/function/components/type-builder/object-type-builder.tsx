@@ -1,14 +1,15 @@
 import type { ObjectType, Type } from "@/features/function/types";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Box } from "@mui/material";
-import { Button, Card, Form, Switch, Tooltip, Typography, Upload } from "antd";
+import { Button, Form, Tooltip, Typography, Upload } from "antd";
 import { omit } from "lodash";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { DefaultValueLabel } from "./default-value-label";
 import { TypeBuilder } from "./type-builder";
+import { useDefaultValue } from "./use-default-value";
 
-const { Text } = Typography;
+const { Paragraph } = Typography;
 
 interface ObjectTypeBuilderProps {
   value?: ObjectType;
@@ -17,6 +18,7 @@ interface ObjectTypeBuilderProps {
   maxDepth?: number;
   onDepthChange?: (depth: number) => void;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
@@ -26,9 +28,15 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
   maxDepth = 5,
   onDepthChange,
   disabled,
+  readOnly,
 }) => {
   const { t } = useTranslation();
-  const [hasDefaultValue, setHasDefaultValue] = useState(false);
+  const { hasDefaultValue, handleHasDefaultValueChange, isDisabled } =
+    useDefaultValue({
+      value,
+      onChange,
+      disabled,
+    });
 
   if (Object.keys(value?.schema || {}).length === 0) {
     onChange?.({
@@ -36,13 +44,6 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
       schema: { field_1: { name: "STRING" } },
     });
   }
-
-  const handleHasDefaultValueChange = (checked: boolean) => {
-    setHasDefaultValue(checked);
-    if (!checked) {
-      onChange?.(omit(value, "defaultValue"));
-    }
-  };
 
   const handleAddDataField = () => {
     onChange?.({
@@ -65,92 +66,63 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
 
   return (
     <Box display="flex" flexDirection="column" width="100%">
-      <Form.Item
-        label={
-          <Box
-            display="flex"
-            flexDirection="row"
-            gap={1}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
-              {t("data-fields")}
-            </Text>
-            <Tooltip title={t("add-data-field")}>
-              <Button
-                size="small"
-                icon={<PlusOutlined />}
-                onClick={handleAddDataField}
-                disabled={disabled}
-              />
-            </Tooltip>
+        <Box display="flex" flexDirection="column" gap={2}>
+          {Object.entries(value?.schema || {}).map(([k, v]) => (
+            <TypeBuilder
+              key={k}
+              value={v}
+              onChange={(type) =>
+                onChange?.({
+                  name: "OBJECT",
+                  schema: {
+                    ...value?.schema,
+                    [k]: type,
+                  } as ObjectType["schema"],
+                })
+              }
+              label={k}
+              disabled={isDisabled}
+              removable={Object.keys(value?.schema || {}).length > 1}
+              onRemove={handleRemoveDataField}
+              depth={depth + 1}
+              maxDepth={maxDepth}
+              onDepthChange={onDepthChange}
+              readOnly={readOnly}
+            />
+          ))}
+        </Box>
+
+      {readOnly ? (
+        hasDefaultValue && (
+          <Box display="flex" flexDirection="row" gap={1}>
+            <Paragraph>{value?.defaultValue?.data as string}</Paragraph>
           </Box>
-        }
-      >
-        <Card size="small">
-          <Box display="flex" flexDirection="column" gap={2}>
-            {Object.entries(value?.schema || {}).map(([k, v]) => (
-              <TypeBuilder
-                key={k}
-                value={v}
-                onChange={(type) =>
-                  onChange?.({
-                    name: "OBJECT",
-                    schema: {
-                      ...value?.schema,
-                      [k]: type,
-                    } as ObjectType["schema"],
-                  })
-                }
-                label={k}
-                disabled={disabled}
-                removeable={Object.keys(value?.schema || {}).length > 1}
-                onRemove={handleRemoveDataField}
-                depth={depth + 1}
-                maxDepth={maxDepth}
-                onDepthChange={onDepthChange}
-              />
-            ))}
-          </Box>
-        </Card>
-      </Form.Item>
-      <Form.Item
-        label={
-          <Box
-            display="flex"
-            flexDirection="row"
-            gap={1}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
-              {t("default-value")}
-            </Text>
-            <Switch
-              size="small"
+        )
+      ) : (
+        <Form.Item
+          label={
+            <DefaultValueLabel
               checked={hasDefaultValue}
               onChange={handleHasDefaultValueChange}
-              disabled={disabled}
+              disabled={isDisabled}
+              readOnly={readOnly}
             />
-          </Box>
-        }
-        style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
-      >
-        {hasDefaultValue && (
+          }
+          style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
+        >
           <Upload
             showUploadList={false}
-            disabled={disabled || !hasDefaultValue}
+            disabled={isDisabled || !hasDefaultValue}
           >
             <Button
               icon={<UploadOutlined />}
-              disabled={disabled || !hasDefaultValue}
+              disabled={isDisabled || !hasDefaultValue}
             >
               {t("upload-json-file")}
             </Button>
           </Upload>
-        )}
-      </Form.Item>
+        </Form.Item>
+      )}
     </Box>
   );
 };

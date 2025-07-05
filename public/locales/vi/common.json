@@ -38,10 +38,10 @@
   "file-extension": "Định dạng tệp",
   "upload-default-file": "Tải lên tệp mặc định",
   "file-extension-placeholder": "Ví dụ: .pdf, .jpg, .txt",
-  "data-fields": "Trường dữ liệu",
+  "fields": "Trường",
   "upload-json-file": "Tải lên tệp JSON",
   "select-type": "Chọn loại",
-  "add-data-field": "Thêm trường dữ liệu",
-  "remove-data-field": "Xóa trường dữ liệu",
+  "add-field": "Thêm trường",
+  "remove-field": "Xóa trường",
   "max-depth-reached": "Đã đạt độ sâu tối đa"
 }

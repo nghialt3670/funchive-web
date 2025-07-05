@@ -1,27 +1,34 @@
 import type { NumberType } from "@/features/function/types";
 import { Box } from "@mui/material";
-import { Form, InputNumber, Switch, Typography } from "antd";
-import { omit } from "lodash";
-import React, { useState } from "react";
+import { Form, InputNumber, Typography } from "antd";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
-const { Text } = Typography;
+import { DefaultValueLabel } from "./default-value-label";
+import { useDefaultValue } from "./use-default-value";
+
+const { Paragraph } = Typography;
 
 interface NumberTypeBuilderProps {
   value?: NumberType;
   onChange?: (type: NumberType) => void;
   disabled?: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
 }
 
 export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
   value,
   onChange,
-  disabled = false,
-  readonly = false,
+  disabled,
+  readOnly,
 }) => {
   const { t } = useTranslation();
-  const [hasDefaultValue, setHasDefaultValue] = useState(false);
+  const { hasDefaultValue, handleHasDefaultValueChange, isDisabled } =
+    useDefaultValue({
+      value,
+      onChange,
+      disabled,
+    });
 
   const handleDefaultValueChange = (newDefaultValue: number | null) => {
     onChange?.({
@@ -36,55 +43,41 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
     });
   };
 
-  const handleHasDefaultValueChange = (checked: boolean) => {
-    setHasDefaultValue(checked);
-    if (!checked) {
-      onChange?.(omit(value, "defaultValue"));
-    }
-  };
-
-  return (
-    <Box display="flex" flexDirection="row" width="100%" gap={1}>
-      <Form.Item
-        label={
-          <Box
-            display="flex"
-            flexDirection="row"
-            gap={1}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
-              {t("default-value")}
-            </Text>
-            <Switch
-              size="small"
-              checked={hasDefaultValue}
-              onChange={handleHasDefaultValueChange}
-              disabled={disabled}
-            />
-          </Box>
-        }
-        style={{
-          width: "100%",
-          maxWidth: "200px",
-          marginBottom: hasDefaultValue ? 0 : -40,
-        }}
-      >
-        {hasDefaultValue && (
-          <InputNumber
-            placeholder={t("default-value-placeholder")}
-            value={value?.defaultValue?.data as number}
-            onChange={handleDefaultValueChange}
-            disabled={disabled || !hasDefaultValue}
-            readOnly={readonly}
-            style={{ width: "100%" }}
-            className={
-              disabled || !hasDefaultValue ? "disabled-input-placeholder" : ""
-            }
-          />
-        )}
-      </Form.Item>
-    </Box>
+  return readOnly ? (
+    hasDefaultValue && (
+      <Box display="flex" flexDirection="row" gap={1}>
+        <Paragraph>{value?.defaultValue?.data as number}</Paragraph>
+      </Box>
+    )
+  ) : (
+    <Form.Item
+      label={
+        <DefaultValueLabel
+          checked={hasDefaultValue}
+          onChange={handleHasDefaultValueChange}
+          disabled={isDisabled}
+          readOnly={readOnly}
+        />
+      }
+      style={{
+        width: "100%",
+        maxWidth: "200px",
+        marginBottom: hasDefaultValue ? 0 : -40,
+      }}
+    >
+      {hasDefaultValue && (
+        <InputNumber
+          placeholder={t("default-value-placeholder")}
+          value={value?.defaultValue?.data as number}
+          onChange={handleDefaultValueChange}
+          disabled={isDisabled || !hasDefaultValue}
+          readOnly={readOnly}
+          style={{ width: "100%" }}
+          className={
+            isDisabled || !hasDefaultValue ? "disabled-input-placeholder" : ""
+          }
+        />
+      )}
+    </Form.Item>
   );
 };

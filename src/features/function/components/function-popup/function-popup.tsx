@@ -1,5 +1,6 @@
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { HorizontalLine } from "@/components/ui/line/line.tsx";
+import type { FunctionDetailDto } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { tryCloneNodeWithOnClick } from "@/utils/element-utils";
 import {
@@ -17,7 +18,6 @@ import { type FC, type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import type { FunctionDetailDto } from "@/features/function/types";
 import {
   useCompileFunctionMutation,
   useDeleteFunctionMutation,
@@ -89,7 +89,12 @@ export const FunctionPopup: FC<FunctionPopupProps> = ({
         width={800}
         centered
         footer={
-          <Box display="flex" justifyContent="space-between" alignItems="center" gap={2}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            gap={2}
+          >
             {/* Primary Action Button */}
             {canRun ? (
               <Tooltip title={tNs("execute-function")}>

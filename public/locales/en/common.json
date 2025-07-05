@@ -38,10 +38,10 @@
   "file-extension": "File extension",
   "upload-default-file": "Upload default file",
   "file-extension-placeholder": "e.g., .pdf, .jpg, .txt",
-  "data-fields": "Fields",
+  "fields": "Fields",
   "upload-json-file": "Upload JSON file",
   "select-type": "Select type",
-  "add-data-field": "Add data field",
-  "remove-data-field": "Remove data field",
+  "add-field": "Add field",
+  "remove-field": "Remove field",
   "max-depth-reached": "Maximum depth reached"
 }

@@ -1,8 +1,7 @@
 import { EditFilled, SaveFilled } from "@ant-design/icons";
+import { Box } from "@mui/material";
 import { Button, Space } from "antd";
 import React, { useState } from "react";
-
-import styles from "./editable-section.module.css";
 
 interface EditableSectionProps {
   title: string;
@@ -47,6 +46,9 @@ export const EditableSection: React.FC<EditableSectionProps> = ({
         if (!onEdit) {
           setInternalEditing(false);
         }
+      } catch (error) {
+        // If save fails (e.g., validation error), don't close editing
+        console.error("Save failed:", error);
       } finally {
         setInternalLoading(false);
       }
@@ -64,9 +66,29 @@ export const EditableSection: React.FC<EditableSectionProps> = ({
   };
 
   return (
-    <div className={styles.editableSection}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle}>{title}</h3>
+    <Box
+      border="1px solid #d9d9d9"
+      borderRadius="6px"
+      padding="16px"
+      marginBottom="16px"
+    >
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom="16px"
+        paddingBottom="8px"
+        borderBottom="1px solid #f0f0f0"
+      >
+        <Box
+          component="h3"
+          margin={0}
+          fontSize="16px"
+          fontWeight={600}
+          color="#262626"
+        >
+          {title}
+        </Box>
         <Space>
           {!editing && !disabled && (
             <Button
@@ -100,8 +122,8 @@ export const EditableSection: React.FC<EditableSectionProps> = ({
             </>
           )}
         </Space>
-      </div>
-      <div className={styles.sectionContent}>{children}</div>
-    </div>
+      </Box>
+      <Box>{children}</Box>
+    </Box>
   );
 };

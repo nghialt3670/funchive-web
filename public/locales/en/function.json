@@ -17,5 +17,6 @@
   "definition": "Definition",
   "implementation": "Implementation",
   "input-type": "Input type",
-  "output-type": "Output type"
+  "output-type": "Output type",
+  "element-type": "Element type"
 }

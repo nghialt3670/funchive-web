@@ -6,6 +6,7 @@
   align-items: center;
   margin-right: 0 !important;
   border: none !important;
+  width: fit-content;
 }
 
 /* Type-specific styles using theme-aware colors */

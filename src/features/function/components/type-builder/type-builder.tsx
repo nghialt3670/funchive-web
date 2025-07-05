@@ -1,4 +1,5 @@
 import type {
+  ArrayType,
   BooleanType,
   FileType,
   NumberType,
@@ -9,11 +10,21 @@ import type {
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Box, useMediaQuery } from "@mui/material";
-import { Button, Card, Form, Input, Select, Tooltip, Typography } from "antd";
+import { Box } from "@mui/material";
+import {
+  Button,
+  Collapse,
+  Form,
+  Input,
+  Select,
+  Tooltip,
+  Typography,
+} from "antd";
 import React, { type ChangeEventHandler } from "react";
 import { useTranslation } from "react-i18next";
 
+import { TypeTag } from "../type-tag";
+import { ArrayTypeBuilder } from "./array-type-builder";
 import { BooleanTypeBuilder } from "./boolean-type-builder";
 import { FileTypeBuilder } from "./file-type-builder";
 import { NumberTypeBuilder } from "./number-type-builder";
@@ -23,17 +34,17 @@ import { StringTypeBuilder } from "./string-type-builder";
 const { TextArea } = Input;
 
 const { Option } = Select;
-const { Text } = Typography;
+const { Paragraph } = Typography;
 interface TypeBuilderProps {
   value?: Type;
   defaultValue?: Type;
   onChange?: (type: Type) => void;
-  removeable?: boolean;
+  removable?: boolean;
   onRemove?: (key: string) => void;
   label: string;
   required?: boolean;
   disabled?: boolean;
-  readonly?: boolean;
+  readOnly?: boolean;
   depth?: number;
   maxDepth?: number;
   onDepthChange?: (depth: number) => void;
@@ -43,23 +54,20 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   value,
   defaultValue,
   onChange,
-  removeable,
+  removable,
   onRemove,
   label,
   disabled,
-  readonly,
+  readOnly,
   depth = 0,
   maxDepth = 5,
   onDepthChange,
 }) => {
   const { t } = useTranslation();
-  const isLaptop = useMediaQuery("(max-width: 1280px)");
 
   if (!value && defaultValue) {
     onChange?.(defaultValue);
   }
-
-  const shouldUseVerticalLayout = isLaptop;
 
   const renderTypeSpecificBuilder = () => {
     switch (value?.name as TypeName) {
@@ -69,6 +77,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             value={value as StringType}
             onChange={onChange}
             disabled={disabled}
+            readOnly={readOnly}
           />
         );
       case "NUMBER":
@@ -77,6 +86,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             value={value as NumberType}
             onChange={onChange}
             disabled={disabled}
+            readOnly={readOnly}
           />
         );
       case "BOOLEAN":
@@ -85,6 +95,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             value={value as BooleanType}
             onChange={onChange}
             disabled={disabled}
+            readOnly={readOnly}
           />
         );
       case "FILE":
@@ -93,9 +104,21 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             value={value as FileType}
             onChange={onChange}
             disabled={disabled}
+            readOnly={readOnly}
           />
         );
       case "ARRAY":
+        return (
+          <ArrayTypeBuilder
+            value={value as ArrayType}
+            onChange={onChange}
+            disabled={disabled}
+            depth={depth + 1}
+            maxDepth={maxDepth}
+            onDepthChange={onDepthChange}
+            readOnly={readOnly}
+          />
+        );
       case "OBJECT":
         return (
           <ObjectTypeBuilder
@@ -105,6 +128,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             depth={depth + 1}
             maxDepth={maxDepth}
             onDepthChange={onDepthChange}
+            readOnly={readOnly}
           />
         );
       default:
@@ -134,10 +158,12 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         )
       : Object.entries(TYPE_NAMES);
 
+  const hasDescription = value?.description && value?.description.trim() !== "";
+
   return (
-    <Card size="small">
-      {removeable && (
-        <Tooltip title={t("remove-data-field")}>
+    <>
+      {removable && !readOnly && (
+        <Tooltip title={t("remove-field")}>
           <Button
             onClick={handleRemoveClick}
             icon={<DeleteOutlined />}
@@ -146,57 +172,85 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
           />
         </Tooltip>
       )}
-      <Box
-        display="flex"
-        flexDirection={shouldUseVerticalLayout ? "column" : "row"}
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        gap={2}
-      >
-        <Box
-          display="flex"
-          justifyContent={shouldUseVerticalLayout ? "flex-start" : "center"}
-          alignItems="center"
-          width={shouldUseVerticalLayout ? "100%" : "200px"}
-        >
-          <Card size="small" hoverable>
-            <Form.Item
-              label={<Text strong>{label}</Text>}
-              style={{ marginBottom: 0 }}
-            >
-              <Select
-                value={value?.name}
-                onChange={handleTypeNameChange}
-                disabled={disabled}
-                style={{ width: "100px" }}
+      <Collapse
+        style={{ width: "100%", height: "fit-content" }}
+        items={[
+          {
+            key: "1",
+            label: (
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                gap={1}
               >
-                {availableTypes.map(([key, value]) => (
-                  <Option key={key} value={value}>
-                    {value}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Card>
-        </Box>
-        <Box display="flex" flexDirection="column" width="100%">
-          <Form.Item
-            label={t("description")}
-            style={{ width: "100%", marginBottom: "1rem" }}
-          >
-            <TextArea
-              placeholder={t("description-placeholder")}
-              value={value?.description}
-              onChange={handleDescriptionChange}
-              disabled={disabled}
-              readOnly={readonly}
-              autoSize={{ minRows: 1, maxRows: 5 }}
-              className={disabled ? "disabled-input-placeholder" : ""}
-            />
-          </Form.Item>
-          {renderTypeSpecificBuilder()}
-        </Box>
-      </Box>
-    </Card>
+                {readOnly ? (
+                  <>
+                    <Paragraph style={{ margin: 0 }}>{label}</Paragraph>
+                    <TypeTag type={value as Type} />
+                  </>
+                ) : (
+                  <>
+                    <Select
+                      value={value?.name}
+                      onChange={handleTypeNameChange}
+                      disabled={disabled}
+                      style={{ width: "100px" }}
+                    >
+                      {availableTypes.map(([key, value]) => (
+                        <Option key={key} value={value}>
+                          {value}
+                        </Option>
+                      ))}
+                    </Select>
+                    <Paragraph>{label}</Paragraph>
+                  </>
+                )}
+              </Box>
+            ),
+            children: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                width="100%"
+                gap={2}
+              >
+                <Box display="flex" flexDirection="column" width="100%">
+                  {readOnly ? (
+                    hasDescription && (
+                      <Paragraph>{value?.description}</Paragraph>
+                    )
+                  ) : (
+                    <Form.Item
+                      label={t("description")}
+                      style={{
+                        width: "100%",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <TextArea
+                        placeholder={
+                          readOnly ? undefined : t("description-placeholder")
+                        }
+                        value={value?.description}
+                        onChange={handleDescriptionChange}
+                        disabled={disabled}
+                        readOnly={readOnly}
+                        autoSize={{ minRows: 1, maxRows: 5 }}
+                        className={disabled ? "disabled-input-placeholder" : ""}
+                      />
+                    </Form.Item>
+                  )}
+                  {renderTypeSpecificBuilder()}
+                </Box>
+              </Box>
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
