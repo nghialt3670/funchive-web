@@ -58,6 +58,13 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             colorText: "var(--color-text-primary)",
             colorTextSecondary: "var(--color-text-secondary)",
           },
+          Collapse: {
+            colorText: "var(--color-text-primary)",
+            colorTextSecondary: "var(--color-text-secondary)",
+            colorBorder: "var(--color-border)",
+            colorBorderSecondary: "var(--color-border)",
+            colorFillSecondary: "var(--color-background-secondary)",
+          },
           Input: {
             colorText: "var(--color-text-primary)",
             colorTextPlaceholder: "var(--color-text-tertiary)",
@@ -108,6 +115,8 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             colorBgMask: "var(--color-background-primary)",
             colorBgSpotlight: "var(--color-background-primary)",
             controlOutline: "none",
+            colorIcon: "var(--color-text-secondary)",
+            colorIconHover: "var(--color-text-primary)",
           },
           Button: {
             colorText: "var(--color-text-primary)",
@@ -209,6 +218,117 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
           .ant-input[readonly]::placeholder,
           .ant-input-number[readonly]::placeholder {
             color: var(--color-text-tertiary) !important;
+          }
+          
+          /* Select arrow icon color */
+          .ant-select .ant-select-arrow {
+            color: var(--color-text-secondary) !important;
+          }
+          
+          .ant-select:hover .ant-select-arrow {
+            color: var(--color-text-primary) !important;
+          }
+          
+          .ant-select-focused .ant-select-arrow {
+            color: var(--color-text-primary) !important;
+          }
+          
+          .ant-select-open .ant-select-arrow {
+            color: var(--color-text-primary) !important;
+          }
+          
+          /* Center collapse icon vertically */
+          .ant-collapse-header {
+            display: flex !important;
+            align-items: center !important;
+            height: 3rem !important;
+          }
+          
+          .ant-collapse-header-text {
+            flex: 1 !important;
+            margin-left: 0px !important;
+          }
+          
+          /* Remove ALL focus rings and active states from inputs */
+          .ant-input,
+          .ant-input:hover,
+          .ant-input:focus,
+          .ant-input:active,
+          .ant-input-focused,
+          .ant-input:focus-within,
+          .ant-input:focus-visible {
+            border-color: var(--color-border) !important;
+            box-shadow: none !important;
+            outline: none !important;
+            outline-offset: 0 !important;
+          }
+          
+          .ant-input-number,
+          .ant-input-number:hover,
+          .ant-input-number:focus,
+          .ant-input-number:active,
+          .ant-input-number-focused,
+          .ant-input-number:focus-within,
+          .ant-input-number:focus-visible,
+          .ant-input-number .ant-input-number-input,
+          .ant-input-number .ant-input-number-input:focus,
+          .ant-input-number .ant-input-number-input:active {
+            border-color: var(--color-border) !important;
+            box-shadow: none !important;
+            outline: none !important;
+            outline-offset: 0 !important;
+          }
+          
+          .ant-select,
+          .ant-select:hover,
+          .ant-select:focus,
+          .ant-select:active,
+          .ant-select-focused,
+          .ant-select:focus-within,
+          .ant-select:focus-visible,
+          .ant-select .ant-select-selector,
+          .ant-select .ant-select-selector:hover,
+          .ant-select .ant-select-selector:focus,
+          .ant-select .ant-select-selector:active {
+            border-color: var(--color-border) !important;
+            box-shadow: none !important;
+            outline: none !important;
+            outline-offset: 0 !important;
+          }
+          
+          .ant-input-affix-wrapper,
+          .ant-input-affix-wrapper:hover,
+          .ant-input-affix-wrapper:focus,
+          .ant-input-affix-wrapper:active,
+          .ant-input-affix-wrapper-focused,
+          .ant-input-affix-wrapper:focus-within,
+          .ant-input-affix-wrapper:focus-visible {
+            border-color: var(--color-border) !important;
+            box-shadow: none !important;
+            outline: none !important;
+            outline-offset: 0 !important;
+          }
+          
+          /* Remove focus rings from textarea */
+          .ant-input[data-textarea],
+          .ant-input[data-textarea]:hover,
+          .ant-input[data-textarea]:focus,
+          .ant-input[data-textarea]:active,
+          .ant-input[data-textarea]:focus-within,
+          .ant-input[data-textarea]:focus-visible {
+            border-color: var(--color-border) !important;
+            box-shadow: none !important;
+            outline: none !important;
+            outline-offset: 0 !important;
+          }
+          
+          /* Universal focus ring removal */
+          *:focus,
+          *:focus-visible,
+          *:focus-within {
+            outline: none !important;
+            outline-offset: 0 !important;
+            box-shadow: none !important;
           }
         `}
       </style>

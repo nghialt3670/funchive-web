@@ -59,7 +59,7 @@ export const Sidebar = () => {
 
       <Sider
         className={styles.sidebar}
-        width={256}
+        width={200}
         collapsedWidth={0}
         collapsed={!isSidebarVisible}
         collapsible={true}

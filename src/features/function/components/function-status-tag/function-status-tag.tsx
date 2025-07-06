@@ -1,4 +1,4 @@
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 // import { getCompilationStatusColor } from "@/features/function/utils/color-utils";
 import { getCompilationStatusIcon } from "@/features/function/utils/icon-utils";
 import { getCompilationStatusLabel } from "@/features/function/utils/label-utils";
@@ -8,7 +8,7 @@ import { type FC } from "react";
 import styles from "./function-status-tag.module.css";
 
 export interface FunctionStatusTagProps {
-  functionDetail: FunctionDetailDto;
+  functionDetail: FunctionDetail;
 }
 
 export const FunctionStatusTag: FC<FunctionStatusTagProps> = ({

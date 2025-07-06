@@ -1,6 +1,6 @@
 import type {
-  FunctionDetailDto,
-  FunctionUpdateDto,
+  FunctionDetail,
+  FunctionUpdate,
 } from "@/features/function/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
@@ -19,9 +19,9 @@ export const useUpdateFunctionBasicInfoMutation = () => {
       data,
     }: {
       functionId: string;
-      data: FunctionUpdateDto;
+      data: FunctionUpdate;
     }) => updateFunction(functionId, data),
-    onSuccess: (updatedFunction: FunctionDetailDto, variables) => {
+    onSuccess: (updatedFunction: FunctionDetail, variables) => {
       queryClient.setQueryData(
         functionQueryKeys.detail(variables.functionId),
         updatedFunction,

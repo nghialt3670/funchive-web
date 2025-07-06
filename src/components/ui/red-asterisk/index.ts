@@ -1,0 +1,1 @@
+export { RedAsterisk } from "./red-asterisk";

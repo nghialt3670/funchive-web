@@ -4,7 +4,7 @@ import type {
 } from "./implementation-types.ts";
 import type { Type } from "./type-types.ts";
 
-export interface FunctionCreateDto {
+export interface FunctionCreate {
   name: string;
   description: string;
   inputType: Type;
@@ -12,12 +12,12 @@ export interface FunctionCreateDto {
   implementations: ImplementationCreate[];
 }
 
-export interface FunctionUpdateDto {
+export interface FunctionUpdate {
   name: string;
   description: string;
 }
 
-export interface FunctionDetailDto {
+export interface FunctionDetail {
   id: string;
   name: string;
   description: string;
@@ -33,8 +33,6 @@ export interface FunctionDetailDto {
 export interface FunctionFilter {
   keyword?: string;
   language?: string;
+  [key: string]: string | undefined;
 }
 
-export interface ExecutionTriggerDto {
-  inputData: any;
-}

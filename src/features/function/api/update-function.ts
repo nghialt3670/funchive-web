@@ -1,6 +1,6 @@
 import type {
-  FunctionDetailDto,
-  FunctionUpdateDto,
+  FunctionDetail,
+  FunctionUpdate,
 } from "@/features/function/types";
 import type { ResponseBody } from "@/types/api";
 
@@ -8,9 +8,9 @@ import { functionAxios } from "./axios-config";
 
 export const updateFunction = async (
   functionId: string,
-  data: FunctionUpdateDto,
-): Promise<FunctionDetailDto> => {
-  const response = await functionAxios.put<ResponseBody<FunctionDetailDto>>(
+  data: FunctionUpdate,
+): Promise<FunctionDetail> => {
+  const response = await functionAxios.put<ResponseBody<FunctionDetail>>(
     `/functions/${functionId}`,
     data,
   );

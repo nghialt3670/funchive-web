@@ -1,6 +1,6 @@
 import type {
-  FunctionCreateDto,
-  FunctionDetailDto,
+  FunctionCreate,
+  FunctionDetail,
 } from "@/features/function/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
@@ -14,8 +14,8 @@ export const useCreateFunctionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: FunctionCreateDto) => createFunction(data),
-    onSuccess: (functionDetail: FunctionDetailDto) => {
+    mutationFn: ({ data }: { data: FunctionCreate }) => createFunction(data),
+    onSuccess: (functionDetail: FunctionDetail) => {
       queryClient.invalidateQueries({
         queryKey: functionQueryKeys.lists(),
       });

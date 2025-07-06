@@ -1,5 +1,5 @@
 import type {
-  FunctionDetailDto,
+  FunctionDetail,
   FunctionFilter,
 } from "@/features/function/types";
 import type { PageRequest, ResponseBody, ResponsePage } from "@/types/api";
@@ -10,7 +10,7 @@ import { functionAxios } from "./axios-config";
 export const getFunctionPage = async (
   filter: FunctionFilter = {},
   pageRequest: PageRequest = {},
-): Promise<ResponsePage<FunctionDetailDto>> => {
+): Promise<ResponsePage<FunctionDetail>> => {
   const params = {
     keyword: filter.keyword || "",
     language: filter.language || "",
@@ -20,7 +20,7 @@ export const getFunctionPage = async (
   };
 
   const response = await functionAxios.get<
-    ResponseBody<ResponsePage<FunctionDetailDto>>
+    ResponseBody<ResponsePage<FunctionDetail>>
   >("/functions", { params });
   return response.data.data;
 };

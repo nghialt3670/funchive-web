@@ -1,5 +1,5 @@
 import { EditableSection } from "@/components/ui/editable-section";
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 import { toSnakeCase } from "@/utils/code-utils";
 import { Box } from "@mui/material";
 import { Card, Divider, Form, Input, Select, Space, Tag } from "antd";
@@ -16,7 +16,7 @@ interface PythonImplementationBuilderProps {
   setFunctionBody: (body: string) => void;
   functionName: string;
   mode: "create" | "view" | "edit";
-  functionDetail?: FunctionDetailDto;
+  functionDetail?: FunctionDetail;
 }
 
 export const PythonImplementationBuilder: React.FC<

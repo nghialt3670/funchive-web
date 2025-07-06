@@ -21,6 +21,8 @@
   "collapse-sidebar": "Collapse sidebar",
   "details": "Details",
   "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel",
   "clone": "Clone",
   "delete": "Delete",
   "more-options": "More options",
@@ -43,5 +45,9 @@
   "select-type": "Select type",
   "add-field": "Add field",
   "remove-field": "Remove field",
-  "max-depth-reached": "Maximum depth reached"
+  "max-depth-reached": "Maximum depth reached",
+  "back": "Back",
+  "save-changes": "Save changes",
+  "cancel-changes": "Cancel changes",
+  "enter-description-placeholder": "Enter description..."
 }

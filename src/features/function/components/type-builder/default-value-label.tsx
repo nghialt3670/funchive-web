@@ -29,7 +29,7 @@ export const DefaultValueLabel: React.FC<DefaultValueLabelProps> = ({
       display="flex"
       flexDirection="row"
       gap={1}
-      justifyContent="center"
+      justifyContent="flex-start"
       alignItems="center"
     >
       <Text style={{ width: "fit-content", textWrap: "nowrap" }}>
@@ -41,6 +41,7 @@ export const DefaultValueLabel: React.FC<DefaultValueLabelProps> = ({
           checked={checked}
           onChange={onChange}
           disabled={disabled}
+          style={{ alignItems: "baseline" }}
         />
       )}
     </Box>

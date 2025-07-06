@@ -1,6 +1,6 @@
 import type { NumberType } from "@/features/function/types";
 import { Box } from "@mui/material";
-import { Form, InputNumber, Typography } from "antd";
+import { InputNumber, Typography } from "antd";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -50,21 +50,13 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
       </Box>
     )
   ) : (
-    <Form.Item
-      label={
-        <DefaultValueLabel
-          checked={hasDefaultValue}
-          onChange={handleHasDefaultValueChange}
-          disabled={isDisabled}
-          readOnly={readOnly}
-        />
-      }
-      style={{
-        width: "100%",
-        maxWidth: "200px",
-        marginBottom: hasDefaultValue ? 0 : -40,
-      }}
-    >
+    <Box display="flex" flexDirection="column" width="100%" gap={1}>
+      <DefaultValueLabel
+        checked={hasDefaultValue}
+        onChange={handleHasDefaultValueChange}
+        disabled={isDisabled}
+        readOnly={readOnly}
+      />
       {hasDefaultValue && (
         <InputNumber
           placeholder={t("default-value-placeholder")}
@@ -78,6 +70,6 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
           }
         />
       )}
-    </Form.Item>
+    </Box>
   );
 };

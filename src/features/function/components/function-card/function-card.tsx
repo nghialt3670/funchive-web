@@ -1,8 +1,7 @@
-import { FunctionStatusTag } from "@/features/function/components/function-status-tag/function-status-tag";
 import { TypeTag } from "@/features/function/components/type-tag/type-tag";
 import { TypeTooltip } from "@/features/function/components/type-tooltip";
 import { useCompileFunctionMutation } from "@/features/function/hooks";
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import {
   ArrowRightOutlined,
@@ -26,7 +25,7 @@ import styles from "./function-card.module.css";
 const { Text, Link, Paragraph } = Typography;
 
 export interface FunctionCardProps extends CardProps {
-  functionDetail: FunctionDetailDto;
+  functionDetail: FunctionDetail;
 }
 
 export const FunctionCard: FC<FunctionCardProps> = ({
@@ -86,7 +85,6 @@ export const FunctionCard: FC<FunctionCardProps> = ({
     <Card hoverable {...cardProps} bodyStyle={{ padding: 0 }}>
       {/* Header */}
       <Box margin="0.75rem" display="flex" alignItems="center" gap={1}>
-        {/* TODO: Update ImplementationTypeIcon component to work with new structure */}
         <Link
           className={styles.functionName}
           onClick={() => navigate(`/functions/${id}`)}
@@ -117,11 +115,6 @@ export const FunctionCard: FC<FunctionCardProps> = ({
               <TypeTag type={outputType} />
             </TypeTooltip>
           </Box>
-        </Box>
-
-        <Box display="flex" flexDirection="row" gap={2}>
-          <Text type="secondary">{t("status")}:</Text>
-          <FunctionStatusTag functionDetail={functionDetail} />
         </Box>
       </Box>
 

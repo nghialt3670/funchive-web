@@ -1,5 +1,5 @@
 import { PythonImplementationBuilder } from "@/features/function/components/python-implementation-builder";
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 import React from "react";
 
 interface FunctionImplementationTabProps {
@@ -8,7 +8,7 @@ interface FunctionImplementationTabProps {
   functionBody: string;
   setFunctionBody: (body: string) => void;
   functionName: string;
-  functionDetail?: FunctionDetailDto;
+  functionDetail?: FunctionDetail;
 }
 
 export const FunctionImplementationTab: React.FC<

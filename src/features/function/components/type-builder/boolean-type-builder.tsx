@@ -1,6 +1,6 @@
 import type { BooleanType } from "@/features/function/types";
 import { Box } from "@mui/material";
-import { Form, Select } from "antd";
+import { Select } from "antd";
 import { Typography } from "antd";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -51,32 +51,26 @@ export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
       </Box>
     )
   ) : (
-    <Form.Item
-      label={
-        <DefaultValueLabel
-          checked={hasDefaultValue}
-          onChange={handleHasDefaultValueChange}
-          disabled={isDisabled}
-          readOnly={readOnly}
-        />
-      }
-      style={{
-        width: "100%",
-        maxWidth: "200px",
-        marginBottom: hasDefaultValue ? 0 : -40,
-      }}
-    >
-      <Select
-        options={[
-          { label: t("true"), value: true },
-          { label: t("false"), value: false },
-        ]}
-        value={value?.defaultValue?.data as boolean}
-        onChange={handleDefaultValueChange}
-        defaultValue={false}
-        disabled={isDisabled || !hasDefaultValue}
-        style={{ width: "100%" }}
+    <Box display="flex" flexDirection="column" width="100%" gap={1}>
+      <DefaultValueLabel
+        checked={hasDefaultValue}
+        onChange={handleHasDefaultValueChange}
+        disabled={isDisabled}
+        readOnly={readOnly}
       />
-    </Form.Item>
+      {hasDefaultValue && (
+        <Select
+          options={[
+            { label: t("true"), value: true },
+            { label: t("false"), value: false },
+          ]}
+          value={value?.defaultValue?.data as boolean}
+          onChange={handleDefaultValueChange}
+          defaultValue={false}
+          disabled={isDisabled || !hasDefaultValue}
+          style={{ width: "100%" }}
+        />
+      )}
+    </Box>
   );
 };

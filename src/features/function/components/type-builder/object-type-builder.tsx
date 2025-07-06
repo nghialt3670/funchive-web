@@ -1,7 +1,7 @@
 import type { ObjectType, Type } from "@/features/function/types";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Box } from "@mui/material";
-import { Button, Form, Tooltip, Typography, Upload } from "antd";
+import { Button, Tooltip, Typography, Upload } from "antd";
 import { omit } from "lodash";
 import { useTranslation } from "react-i18next";
 
@@ -9,7 +9,7 @@ import { DefaultValueLabel } from "./default-value-label";
 import { TypeBuilder } from "./type-builder";
 import { useDefaultValue } from "./use-default-value";
 
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
 interface ObjectTypeBuilderProps {
   value?: ObjectType;
@@ -65,32 +65,44 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
   };
 
   return (
-    <Box display="flex" flexDirection="column" width="100%">
-        <Box display="flex" flexDirection="column" gap={2}>
-          {Object.entries(value?.schema || {}).map(([k, v]) => (
-            <TypeBuilder
-              key={k}
-              value={v}
-              onChange={(type) =>
-                onChange?.({
-                  name: "OBJECT",
-                  schema: {
-                    ...value?.schema,
-                    [k]: type,
-                  } as ObjectType["schema"],
-                })
-              }
-              label={k}
-              disabled={isDisabled}
-              removable={Object.keys(value?.schema || {}).length > 1}
-              onRemove={handleRemoveDataField}
-              depth={depth + 1}
-              maxDepth={maxDepth}
-              onDepthChange={onDepthChange}
-              readOnly={readOnly}
-            />
-          ))}
-        </Box>
+    <Box display="flex" flexDirection="column" width="100%" gap={2}>
+      <Box display="flex" flexDirection="column" gap={2}>
+        {!readOnly && (
+          <Box display="flex" flexDirection="row" gap={1}>
+            <Text style={{ marginBottom: "-0.5rem" }}>{t("fields")}</Text>
+            <Tooltip title={t("add-data-field")}>
+              <Button
+                size="small"
+                icon={<PlusOutlined />}
+                onClick={handleAddDataField}
+              />
+            </Tooltip>
+          </Box>
+        )}
+        {Object.entries(value?.schema || {}).map(([k, v]) => (
+          <TypeBuilder
+            key={k}
+            value={v}
+            onChange={(type) =>
+              onChange?.({
+                name: "OBJECT",
+                schema: {
+                  ...value?.schema,
+                  [k]: type,
+                } as ObjectType["schema"],
+              })
+            }
+            label={k}
+            disabled={isDisabled}
+            removable={Object.keys(value?.schema || {}).length > 1}
+            onRemove={handleRemoveDataField}
+            depth={depth + 1}
+            maxDepth={maxDepth}
+            onDepthChange={onDepthChange}
+            readOnly={readOnly}
+          />
+        ))}
+      </Box>
 
       {readOnly ? (
         hasDefaultValue && (
@@ -99,29 +111,27 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
           </Box>
         )
       ) : (
-        <Form.Item
-          label={
-            <DefaultValueLabel
-              checked={hasDefaultValue}
-              onChange={handleHasDefaultValueChange}
-              disabled={isDisabled}
-              readOnly={readOnly}
-            />
-          }
-          style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
-        >
-          <Upload
-            showUploadList={false}
-            disabled={isDisabled || !hasDefaultValue}
-          >
-            <Button
-              icon={<UploadOutlined />}
+        <Box display="flex" flexDirection="column" width="100%" gap={1}>
+          <DefaultValueLabel
+            checked={hasDefaultValue}
+            onChange={handleHasDefaultValueChange}
+            disabled={isDisabled}
+            readOnly={readOnly}
+          />
+          {hasDefaultValue && (
+            <Upload
+              showUploadList={false}
               disabled={isDisabled || !hasDefaultValue}
             >
-              {t("upload-json-file")}
-            </Button>
-          </Upload>
-        </Form.Item>
+              <Button
+                icon={<UploadOutlined />}
+                disabled={isDisabled || !hasDefaultValue}
+              >
+                {t("upload-json-file")}
+              </Button>
+            </Upload>
+          )}
+        </Box>
       )}
     </Box>
   );

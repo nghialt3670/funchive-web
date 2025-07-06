@@ -1,5 +1,5 @@
 import { useGetFunctionPageQuery } from "@/features/function/hooks";
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 import {
   ArrowLeftOutlined,
   DragOutlined,
@@ -339,7 +339,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
         return;
       }
 
-      const func: FunctionDetailDto = JSON.parse(functionData);
+      const func: FunctionDetail = JSON.parse(functionData);
 
       if (!reactFlowWrapper.current) {
         return;
@@ -425,7 +425,7 @@ const PipelineEditorComponent: React.FC<PipelineEditorProps> = ({
     [screenToFlowPosition, setNodes, setEdges],
   );
 
-  const onDragStart = (event: React.DragEvent, func: FunctionDetailDto) => {
+  const onDragStart = (event: React.DragEvent, func: FunctionDetail) => {
     event.dataTransfer.setData("application/json", JSON.stringify(func));
     event.dataTransfer.effectAllowed = "move";
   };

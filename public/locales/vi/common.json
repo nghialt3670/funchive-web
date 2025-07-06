@@ -21,6 +21,8 @@
   "collapse-sidebar": "Thu gọn thanh bên",
   "details": "Chi tiết",
   "edit": "Chỉnh sửa",
+  "save": "Lưu",
+  "cancel": "Hủy",
   "clone": "Sao chép",
   "delete": "Xóa",
   "more-options": "Tùy chọn khác",
@@ -43,5 +45,9 @@
   "select-type": "Chọn loại",
   "add-field": "Thêm trường",
   "remove-field": "Xóa trường",
-  "max-depth-reached": "Đã đạt độ sâu tối đa"
+  "max-depth-reached": "Đã đạt độ sâu tối đa",
+  "back": "Quay lại",
+  "save-changes": "Lưu thay đổi",
+  "cancel-changes": "Hủy thay đổi",
+  "enter-description-placeholder": "Nhập mô tả..."
 }

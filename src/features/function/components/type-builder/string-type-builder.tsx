@@ -1,7 +1,7 @@
 import type { StringType } from "@/features/function/types";
 import { UploadOutlined } from "@ant-design/icons";
 import { Box, useMediaQuery } from "@mui/material";
-import { Button, Form, Input, Tooltip, Typography, Upload } from "antd";
+import { Button, Input, Tooltip, Typography, Upload } from "antd";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -50,48 +50,46 @@ export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
       </Box>
     )
   ) : (
-    <Form.Item
-      label={
-        <DefaultValueLabel
-          checked={hasDefaultValue}
-          onChange={handleHasDefaultValueChange}
-          disabled={isDisabled}
-          readOnly={readOnly}
-        />
-      }
-      style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
-    >
-      <Box display="flex" flexDirection="row" gap={1}>
-        <TextArea
-          placeholder={t("default-value-placeholder")}
-          value={value?.defaultValue?.data as string}
-          onChange={(e) => handleDefaultValueChange(e.target.value)}
-          autoSize={{ minRows: 1, maxRows: 5 }}
-          disabled={isDisabled || !hasDefaultValue}
-          readOnly={readOnly}
-        />
-        <Upload
-          disabled={isDisabled || !hasDefaultValue}
-          showUploadList={false}
-          accept=".txt"
-        >
-          {isTablet ? (
-            <Tooltip title={t("upload-text-file")}>
+    <Box display="flex" flexDirection="column" width="100%" gap={1}>
+      <DefaultValueLabel
+        checked={hasDefaultValue}
+        onChange={handleHasDefaultValueChange}
+        disabled={isDisabled}
+        readOnly={readOnly}
+      />
+      {hasDefaultValue && (
+        <Box display="flex" flexDirection="row" gap={1}>
+          <TextArea
+            placeholder={t("default-value-placeholder")}
+            value={value?.defaultValue?.data as string}
+            onChange={(e) => handleDefaultValueChange(e.target.value)}
+            autoSize={{ minRows: 1, maxRows: 5 }}
+            disabled={isDisabled || !hasDefaultValue}
+            readOnly={readOnly}
+          />
+          <Upload
+            disabled={isDisabled || !hasDefaultValue}
+            showUploadList={false}
+            accept=".txt"
+          >
+            {isTablet ? (
+              <Tooltip title={t("upload-text-file")}>
+                <Button
+                  icon={<UploadOutlined />}
+                  disabled={isDisabled || !hasDefaultValue}
+                />
+              </Tooltip>
+            ) : (
               <Button
                 icon={<UploadOutlined />}
                 disabled={isDisabled || !hasDefaultValue}
-              />
-            </Tooltip>
-          ) : (
-            <Button
-              icon={<UploadOutlined />}
-              disabled={isDisabled || !hasDefaultValue}
-            >
-              {t("upload-text-file")}
-            </Button>
-          )}
-        </Upload>
-      </Box>
-    </Form.Item>
+              >
+                {t("upload-text-file")}
+              </Button>
+            )}
+          </Upload>
+        </Box>
+      )}
+    </Box>
   );
 };

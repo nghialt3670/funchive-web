@@ -7,6 +7,7 @@ import { NamespaceProvider } from "@components/providers/namespace-provider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "./app.css";
+import { PageModeProvider } from "./components/providers/page-mode-provider";
 
 function App() {
   return (
@@ -26,7 +27,9 @@ function App() {
             path="functions/new"
             element={
               <NamespaceProvider namespace="function">
-                <FunctionPage />
+                <PageModeProvider pageMode="create">
+                  <FunctionPage />
+                </PageModeProvider>
               </NamespaceProvider>
             }
           />
@@ -34,15 +37,9 @@ function App() {
             path="functions/:id"
             element={
               <NamespaceProvider namespace="function">
-                <FunctionPage />
-              </NamespaceProvider>
-            }
-          />
-          <Route
-            path="functions/:id/edit"
-            element={
-              <NamespaceProvider namespace="function">
-                <FunctionPage />
+                <PageModeProvider pageMode="view">
+                  <FunctionPage />
+                </PageModeProvider>
               </NamespaceProvider>
             }
           />

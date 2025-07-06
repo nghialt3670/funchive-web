@@ -1,6 +1,6 @@
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { HorizontalLine } from "@/components/ui/line/line.tsx";
-import type { FunctionDetailDto } from "@/features/function/types";
+import type { FunctionDetail } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { tryCloneNodeWithOnClick } from "@/utils/element-utils";
 import {
@@ -29,7 +29,7 @@ import { TypeTooltip } from "../type-tooltip";
 const { Title, Text, Paragraph } = Typography;
 
 export interface FunctionPopupProps extends PropsWithChildren {
-  functionDetail: FunctionDetailDto;
+  functionDetail: FunctionDetail;
 }
 
 export const FunctionPopup: FC<FunctionPopupProps> = ({

@@ -1,14 +1,14 @@
 import type { FileType } from "@/features/function/types";
 import { UploadOutlined } from "@ant-design/icons";
 import { Box, useMediaQuery } from "@mui/material";
-import { Button, Form, Input, Typography, Upload, message } from "antd";
+import { Button, Input, Typography, Upload, message } from "antd";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { DefaultValueLabel } from "./default-value-label";
 import { useDefaultValue } from "./use-default-value";
 
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
 interface FileTypeBuilderProps {
   value?: FileType;
@@ -75,10 +75,8 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
       width="100%"
       gap={1}
     >
-      <Form.Item
-        label={t("file-extension")}
-        style={{ width: "100%", maxWidth: "200px", marginBottom: 0 }}
-      >
+      <Box display="flex" flexDirection="column" width="100%" gap={1}>
+        <Text>{t("file-extension")}</Text>
         <Input
           placeholder={t("file-extension-placeholder")}
           value={extension}
@@ -86,8 +84,7 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
           disabled={isDisabled}
           readOnly={readOnly}
         />
-      </Form.Item>
-
+      </Box>
       {readOnly ? (
         hasDefaultValue && (
           <Box display="flex" flexDirection="row" gap={1}>
@@ -95,16 +92,13 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
           </Box>
         )
       ) : (
-        <Form.Item
-          label={
-            <DefaultValueLabel
-              checked={hasDefaultValue}
-              onChange={handleHasDefaultValueChange}
-              disabled={isDisabled}
-            />
-          }
-          style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
-        >
+        <Box display="flex" flexDirection="column" width="100%" gap={1}>
+          <DefaultValueLabel
+            checked={hasDefaultValue}
+            onChange={handleHasDefaultValueChange}
+            disabled={isDisabled}
+            readOnly={readOnly}
+          />
           {hasDefaultValue && (
             <Upload
               beforeUpload={handleFileUpload}
@@ -120,7 +114,7 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
               </Button>
             </Upload>
           )}
-        </Form.Item>
+        </Box>
       )}
     </Box>
   );

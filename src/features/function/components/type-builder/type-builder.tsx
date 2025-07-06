@@ -10,16 +10,8 @@ import type {
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Box } from "@mui/material";
-import {
-  Button,
-  Collapse,
-  Form,
-  Input,
-  Select,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Box, useMediaQuery } from "@mui/material";
+import { Button, Collapse, Input, Select, Tooltip, Typography } from "antd";
 import React, { type ChangeEventHandler } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -30,11 +22,12 @@ import { FileTypeBuilder } from "./file-type-builder";
 import { NumberTypeBuilder } from "./number-type-builder";
 import { ObjectTypeBuilder } from "./object-type-builder";
 import { StringTypeBuilder } from "./string-type-builder";
+import { RedAsterisk } from "@components/ui/red-asterisk";
 
 const { TextArea } = Input;
 
 const { Option } = Select;
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 interface TypeBuilderProps {
   value?: Type;
   defaultValue?: Type;
@@ -57,6 +50,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   removable,
   onRemove,
   label,
+  required,
   disabled,
   readOnly,
   depth = 0,
@@ -64,6 +58,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   onDepthChange,
 }) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   if (!value && defaultValue) {
     onChange?.(defaultValue);
@@ -160,6 +155,32 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
 
   const hasDescription = value?.description && value?.description.trim() !== "";
 
+  // Helper function to create a Type object for rendering
+  const createTypeForRendering = (typeName: string): Type => {
+    switch (typeName) {
+      case "STRING":
+        return { name: "STRING" };
+      case "NUMBER":
+        return { name: "NUMBER" };
+      case "BOOLEAN":
+        return { name: "BOOLEAN" };
+      case "FILE":
+        return { name: "FILE", extension: "*" };
+      case "ARRAY":
+        return { name: "ARRAY", elementType: { name: "STRING" } };
+      case "OBJECT":
+        return { name: "OBJECT", schema: {} };
+      default:
+        return { name: "STRING" };
+    }
+  };
+
+  // Render option as TypeTag
+  const renderOption = (option: any) => {
+    const typeName = option.value;
+    return <TypeTag type={createTypeForRendering(typeName)} />;
+  };
+
   return (
     <>
       {removable && !readOnly && (
@@ -173,6 +194,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         </Tooltip>
       )}
       <Collapse
+        size={isMobile ? "small" : "middle"}
         style={{ width: "100%", height: "fit-content" }}
         items={[
           {
@@ -183,7 +205,6 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                 flexDirection="row"
                 justifyContent="space-between"
                 alignItems="center"
-                gap={1}
               >
                 {readOnly ? (
                   <>
@@ -192,19 +213,47 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                   </>
                 ) : (
                   <>
-                    <Select
-                      value={value?.name}
-                      onChange={handleTypeNameChange}
-                      disabled={disabled}
-                      style={{ width: "100px" }}
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={0.5}
                     >
-                      {availableTypes.map(([key, value]) => (
-                        <Option key={key} value={value}>
-                          {value}
-                        </Option>
-                      ))}
-                    </Select>
-                    <Paragraph>{label}</Paragraph>
+                      {required && <RedAsterisk />}
+                      <Paragraph style={{ margin: 0 }}>{label}</Paragraph>
+                    </Box>
+                    <div style={{ position: "relative" }}>
+                      <Select
+                        value={value?.name}
+                        onChange={handleTypeNameChange}
+                        disabled={disabled}
+                        style={{ width: "7rem" }}
+                        styles={{ popup: { root: { textAlign: "center" } } }}
+                        onClick={(e) => e.stopPropagation()}
+                        optionRender={renderOption}
+                      >
+                        {availableTypes.map(([key, value]) => (
+                          <Option key={key} value={value}>
+                            {key}
+                          </Option>
+                        ))}
+                      </Select>
+                      {value?.name && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "8px",
+                            transform: "translateY(-50%)",
+                            pointerEvents: "none",
+                            zIndex: 1,
+                          }}
+                        >
+                          <TypeTag type={value as Type} />
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
               </Box>
@@ -218,19 +267,19 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                 width="100%"
                 gap={2}
               >
-                <Box display="flex" flexDirection="column" width="100%">
+                <Box display="flex" flexDirection="column" width="100%" gap={2}>
                   {readOnly ? (
                     hasDescription && (
                       <Paragraph>{value?.description}</Paragraph>
                     )
                   ) : (
-                    <Form.Item
-                      label={t("description")}
-                      style={{
-                        width: "100%",
-                        marginBottom: "1rem",
-                      }}
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      width="100%"
+                      gap={1}
                     >
+                      <Text>{t("description")}</Text>
                       <TextArea
                         placeholder={
                           readOnly ? undefined : t("description-placeholder")
@@ -242,7 +291,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                         autoSize={{ minRows: 1, maxRows: 5 }}
                         className={disabled ? "disabled-input-placeholder" : ""}
                       />
-                    </Form.Item>
+                    </Box>
                   )}
                   {renderTypeSpecificBuilder()}
                 </Box>

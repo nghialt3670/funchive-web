@@ -18,5 +18,9 @@
   "implementation": "Implementation",
   "input-type": "Input type",
   "output-type": "Output type",
-  "element-type": "Element type"
+  "element-type": "Element type",
+  "function-name": "Function name",
+  "enter-function-name-placeholder": "Enter function name...",
+  "function-name-is-required": "Function name is required",
+  "function-description-is-required": "Function description is required"
 }

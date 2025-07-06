@@ -2,14 +2,14 @@ import type { ArrayType, Type } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { UploadOutlined } from "@ant-design/icons";
 import { Box } from "@mui/material";
-import { Button, Form, Typography, Upload } from "antd";
+import { Button, Typography, Upload } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { DefaultValueLabel } from "./default-value-label";
 import { TypeBuilder } from "./type-builder";
 import { useDefaultValue } from "./use-default-value";
 
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
 interface ArrayTypeBuilderProps {
   value?: ArrayType;
@@ -54,7 +54,8 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
   };
 
   return (
-    <Box display="flex" flexDirection="column" width="100%">
+    <Box display="flex" flexDirection="column" width="100%" gap={2}>
+      {readOnly ? (
         <TypeBuilder
           value={value?.elementType}
           onChange={handleElementTypeChange}
@@ -65,6 +66,21 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
           onDepthChange={onDepthChange}
           readOnly={readOnly}
         />
+      ) : (
+        <Box display="flex" flexDirection="column" gap={1}>
+          <Text>{nt("element-type")}</Text>
+          <TypeBuilder
+            value={value?.elementType}
+            onChange={handleElementTypeChange}
+            label=""
+            disabled={isDisabled}
+            depth={depth + 1}
+            maxDepth={maxDepth}
+            onDepthChange={onDepthChange}
+            readOnly={readOnly}
+          />
+        </Box>
+      )}
       {readOnly ? (
         hasDefaultValue && (
           <Box display="flex" flexDirection="row" gap={1}>
@@ -72,17 +88,14 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
           </Box>
         )
       ) : (
-        <Form.Item
-          label={
-            <DefaultValueLabel
-              checked={hasDefaultValue}
-              onChange={handleHasDefaultValueChange}
-              disabled={isDisabled}
-              readOnly={readOnly}
-            />
-          }
-          style={{ width: "100%", marginBottom: hasDefaultValue ? 0 : -40 }}
-        >
+        <Box display="flex" flexDirection="column" width="100%" gap={1}>
+          <DefaultValueLabel
+            checked={hasDefaultValue}
+            onChange={handleHasDefaultValueChange}
+            disabled={isDisabled}
+            readOnly={readOnly}
+          />
+
           {hasDefaultValue && (
             <Upload
               showUploadList={false}
@@ -96,7 +109,7 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
               </Button>
             </Upload>
           )}
-        </Form.Item>
+        </Box>
       )}
     </Box>
   );
