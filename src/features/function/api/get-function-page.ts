@@ -1,7 +1,4 @@
-import type {
-  FunctionDetail,
-  FunctionFilter,
-} from "@/features/function/types";
+import type { FunctionDetail, FunctionFilter } from "@/features/function/types";
 import type { PageRequest, ResponseBody, ResponsePage } from "@/types/api";
 import { sortToSearchParam } from "@/utils/api-utils";
 

@@ -1,5 +1,5 @@
-import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export interface FilterSearchParamsOptions<
   T extends Record<string, string | undefined>,

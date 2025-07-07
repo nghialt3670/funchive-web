@@ -2,7 +2,7 @@ import type { FileType } from "@/features/function/types";
 import { UploadOutlined } from "@ant-design/icons";
 import { Box, useMediaQuery } from "@mui/material";
 import { Button, Input, Typography, Upload, message } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { DefaultValueLabel } from "./default-value-label";
@@ -12,6 +12,7 @@ const { Paragraph, Text } = Typography;
 
 interface FileTypeBuilderProps {
   value?: FileType;
+  defaultValue?: FileType;
   onChange?: (type: FileType) => void;
   disabled?: boolean;
   readOnly?: boolean;
@@ -19,6 +20,7 @@ interface FileTypeBuilderProps {
 
 export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   disabled,
   readOnly,
@@ -32,6 +34,12 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
       disabled,
     });
   const isTablet = useMediaQuery("(max-width: 1024px)");
+
+  useEffect(() => {
+    if (defaultValue) {
+      onChange?.(defaultValue);
+    }
+  }, []);
 
   const handleExtensionChange = (newExtension: string) => {
     onChange?.({
@@ -51,13 +59,14 @@ export const FileTypeBuilder: React.FC<FileTypeBuilderProps> = ({
           description: value?.description,
           extension: value?.extension || "",
           defaultValue: {
-            type: "FILE",
+            typeName: "FILE",
             id: file.name,
             data: {
               filename: file.name,
               mimeType: file.type,
             },
           },
+          useDefaultValue: hasDefaultValue,
         });
         message.success("File uploaded successfully");
       } catch (error) {

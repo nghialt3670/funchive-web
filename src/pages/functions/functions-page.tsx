@@ -15,10 +15,10 @@ import { ResourceFilters } from "@components/ui/resource-filters";
 import { ResourcePagination } from "@components/ui/resource-pagination";
 import { Retry } from "@components/ui/retry";
 import { Box } from "@mui/material";
+import { useDebounce } from "ahooks";
 import { Col, Input, Row, Select, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useDebounce } from 'ahooks';
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -30,9 +30,10 @@ export const FunctionsPage = () => {
   const navigate = useNavigate();
   const { t: tCommon } = useTranslation();
   const { t } = useNamespacedTranslation();
-  const { filter, updateFilter, clearFilter } = useFilterSearchParams<FunctionFilter>({
-    keys: FUNCTION_FILTER_KEYS,
-  });
+  const { filter, updateFilter, clearFilter } =
+    useFilterSearchParams<FunctionFilter>({
+      keys: FUNCTION_FILTER_KEYS,
+    });
   const { page, size, sorts, setPage, setSorts } = usePageSearchParams();
 
   const debouncedKeyword = useDebounce(filter.keyword, { wait: 500 });
@@ -44,7 +45,10 @@ export const FunctionsPage = () => {
     isLoading,
     error,
     refetch,
-  } = useGetFunctionPageQuery({ keyword: debouncedKeyword }, { page, size, sorts });
+  } = useGetFunctionPageQuery(
+    { keyword: debouncedKeyword },
+    { page, size, sorts },
+  );
 
   const handleSortChange = (newSort: string) => {
     setSorts([searchParamToSort(newSort)]);
@@ -72,14 +76,8 @@ export const FunctionsPage = () => {
         alignItems="flex-start"
       >
         <Box>
-          <Title
-            level={2}
-          >
-            {t("functions")}
-          </Title>
-          <Text>
-            {t("manage-and-deploy-your-serverless-functions")}
-          </Text>
+          <Title level={2}>{t("functions")}</Title>
+          <Text>{t("manage-and-deploy-your-serverless-functions")}</Text>
         </Box>
         <Button
           type="primary"

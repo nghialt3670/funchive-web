@@ -10,6 +10,7 @@ import type {
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
 import { DeleteOutlined } from "@ant-design/icons";
+import { RedAsterisk } from "@components/ui/red-asterisk";
 import { Box, useMediaQuery } from "@mui/material";
 import { Button, Collapse, Input, Select, Tooltip, Typography } from "antd";
 import React, { type ChangeEventHandler } from "react";
@@ -22,7 +23,7 @@ import { FileTypeBuilder } from "./file-type-builder";
 import { NumberTypeBuilder } from "./number-type-builder";
 import { ObjectTypeBuilder } from "./object-type-builder";
 import { StringTypeBuilder } from "./string-type-builder";
-import { RedAsterisk } from "@components/ui/red-asterisk";
+import { usePageMode } from "@/hooks/use-page-mode";
 
 const { TextArea } = Input;
 
@@ -35,6 +36,8 @@ interface TypeBuilderProps {
   removable?: boolean;
   onRemove?: (key: string) => void;
   label: string;
+  labelEditable?: boolean;
+  onLabelChange?: ChangeEventHandler<HTMLInputElement>;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -50,6 +53,8 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   removable,
   onRemove,
   label,
+  labelEditable,
+  onLabelChange,
   required,
   disabled,
   readOnly,
@@ -58,6 +63,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   onDepthChange,
 }) => {
   const { t } = useTranslation();
+  const { pageMode } = usePageMode();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   if (!value && defaultValue) {
@@ -70,6 +76,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <StringTypeBuilder
             value={value as StringType}
+            defaultValue={defaultValue as StringType}
             onChange={onChange}
             disabled={disabled}
             readOnly={readOnly}
@@ -79,6 +86,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <NumberTypeBuilder
             value={value as NumberType}
+            defaultValue={defaultValue as NumberType}
             onChange={onChange}
             disabled={disabled}
             readOnly={readOnly}
@@ -88,6 +96,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <BooleanTypeBuilder
             value={value as BooleanType}
+            defaultValue={defaultValue as BooleanType}
             onChange={onChange}
             disabled={disabled}
             readOnly={readOnly}
@@ -97,6 +106,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <FileTypeBuilder
             value={value as FileType}
+            defaultValue={defaultValue as FileType}
             onChange={onChange}
             disabled={disabled}
             readOnly={readOnly}
@@ -106,6 +116,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <ArrayTypeBuilder
             value={value as ArrayType}
+            defaultValue={defaultValue as ArrayType}
             onChange={onChange}
             disabled={disabled}
             depth={depth + 1}
@@ -118,6 +129,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         return (
           <ObjectTypeBuilder
             value={value as ObjectType}
+            defaultValue={defaultValue as ObjectType}
             onChange={onChange}
             disabled={disabled}
             depth={depth + 1}
@@ -196,6 +208,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       <Collapse
         size={isMobile ? "small" : "middle"}
         style={{ width: "100%", height: "fit-content" }}
+        defaultActiveKey={["1"]}
         items={[
           {
             key: "1",
@@ -205,10 +218,11 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                 flexDirection="row"
                 justifyContent="space-between"
                 alignItems="center"
+                gap={1}
               >
-                {readOnly ? (
+                {readOnly || pageMode !== "create" ? (
                   <>
-                    <Paragraph style={{ margin: 0 }}>{label}</Paragraph>
+                    <Text strong>{label}</Text>
                     <TypeTag type={value as Type} />
                   </>
                 ) : (
@@ -219,9 +233,23 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
                       alignItems="center"
                       justifyContent="center"
                       gap={0.5}
+                      width="100%"
                     >
                       {required && <RedAsterisk />}
-                      <Paragraph style={{ margin: 0 }}>{label}</Paragraph>
+                      <Input
+                        value={label}
+                        onChange={onLabelChange}
+                        disabled={disabled}
+                        readOnly={readOnly || !labelEditable}
+                        onFocus={(e) => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
+                        styles={{
+                          input: {
+                            fontWeight: "600",
+                            width: "100%",
+                          },
+                        }}
+                      />
                     </Box>
                     <div style={{ position: "relative" }}>
                       <Select

@@ -4,6 +4,7 @@ export interface BaseType {
   name: string;
   description?: string;
   defaultValue?: Value;
+  useDefaultValue?: boolean;
 }
 
 export interface StringType extends BaseType {

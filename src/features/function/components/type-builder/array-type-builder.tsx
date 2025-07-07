@@ -1,7 +1,7 @@
 import type { ArrayType, Type } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { UploadOutlined } from "@ant-design/icons";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import { Button, Typography, Upload } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -13,6 +13,7 @@ const { Paragraph, Text } = Typography;
 
 interface ArrayTypeBuilderProps {
   value?: ArrayType;
+  defaultValue?: ArrayType;
   onChange?: (type: ArrayType) => void;
   depth?: number;
   maxDepth?: number;
@@ -23,6 +24,7 @@ interface ArrayTypeBuilderProps {
 
 export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   depth = 0,
   maxDepth = 5,
@@ -39,6 +41,10 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
       disabled,
     });
 
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
+
   if (!value?.elementType) {
     onChange?.({
       name: "ARRAY",
@@ -54,7 +60,7 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
   };
 
   return (
-    <Box display="flex" flexDirection="column" width="100%" gap={2}>
+    <Stack direction="column" width="100%" gap={2}>
       {readOnly ? (
         <TypeBuilder
           value={value?.elementType}
@@ -67,7 +73,7 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
           readOnly={readOnly}
         />
       ) : (
-        <Box display="flex" flexDirection="column" gap={1}>
+        <Stack direction="column" gap={1}>
           <Text>{nt("element-type")}</Text>
           <TypeBuilder
             value={value?.elementType}
@@ -79,16 +85,14 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
             onDepthChange={onDepthChange}
             readOnly={readOnly}
           />
-        </Box>
+        </Stack>
       )}
       {readOnly ? (
         hasDefaultValue && (
-          <Box display="flex" flexDirection="row" gap={1}>
-            <Paragraph>{value?.defaultValue?.data as string}</Paragraph>
-          </Box>
+          <Paragraph>{value?.defaultValue?.data as string}</Paragraph>
         )
       ) : (
-        <Box display="flex" flexDirection="column" width="100%" gap={1}>
+        <Stack direction="column" width="100%" gap={1}>
           <DefaultValueLabel
             checked={hasDefaultValue}
             onChange={handleHasDefaultValueChange}
@@ -109,8 +113,8 @@ export const ArrayTypeBuilder: React.FC<ArrayTypeBuilderProps> = ({
               </Button>
             </Upload>
           )}
-        </Box>
+        </Stack>
       )}
-    </Box>
+    </Stack>
   );
 };

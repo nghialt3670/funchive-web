@@ -12,6 +12,7 @@ const { TextArea } = Input;
 const { Paragraph } = Typography;
 interface StringTypeBuilderProps {
   value?: StringType;
+  defaultValue?: StringType;
   onChange?: (type: StringType) => void;
   disabled?: boolean;
   readOnly?: boolean;
@@ -19,27 +20,37 @@ interface StringTypeBuilderProps {
 
 export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   disabled,
   readOnly,
 }) => {
   const { t } = useTranslation();
-  const { hasDefaultValue, handleHasDefaultValueChange, isDisabled } =
-    useDefaultValue({
-      value,
-      onChange,
-      disabled,
-    });
+  const { hasDefaultValue, isDisabled } = useDefaultValue({
+    value,
+    onChange,
+    disabled,
+  });
   const isTablet = useMediaQuery("(max-width: 1024px)");
+
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
 
   const handleDefaultValueChange = (newDefaultValue: string) => {
     onChange?.({
-      name: "STRING",
-      description: value?.description,
+      ...value!,
       defaultValue: {
-        type: "STRING",
+        typeName: "STRING",
         data: newDefaultValue,
       },
+    });
+  };
+
+  const handleHasDefaultValueChange = (checked: boolean) => {
+    onChange?.({
+      ...value!,
+      useDefaultValue: checked,
     });
   };
 
@@ -52,23 +63,23 @@ export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
   ) : (
     <Box display="flex" flexDirection="column" width="100%" gap={1}>
       <DefaultValueLabel
-        checked={hasDefaultValue}
+        checked={value?.useDefaultValue ?? false}
         onChange={handleHasDefaultValueChange}
         disabled={isDisabled}
         readOnly={readOnly}
       />
-      {hasDefaultValue && (
+      {value?.useDefaultValue && (
         <Box display="flex" flexDirection="row" gap={1}>
           <TextArea
             placeholder={t("default-value-placeholder")}
             value={value?.defaultValue?.data as string}
             onChange={(e) => handleDefaultValueChange(e.target.value)}
             autoSize={{ minRows: 1, maxRows: 5 }}
-            disabled={isDisabled || !hasDefaultValue}
+            disabled={isDisabled || !value?.useDefaultValue}
             readOnly={readOnly}
           />
           <Upload
-            disabled={isDisabled || !hasDefaultValue}
+            disabled={isDisabled || !value?.useDefaultValue}
             showUploadList={false}
             accept=".txt"
           >
@@ -76,13 +87,13 @@ export const StringTypeBuilder: React.FC<StringTypeBuilderProps> = ({
               <Tooltip title={t("upload-text-file")}>
                 <Button
                   icon={<UploadOutlined />}
-                  disabled={isDisabled || !hasDefaultValue}
+                  disabled={isDisabled || !value?.useDefaultValue}
                 />
               </Tooltip>
             ) : (
               <Button
                 icon={<UploadOutlined />}
-                disabled={isDisabled || !hasDefaultValue}
+                disabled={isDisabled || !value?.useDefaultValue}
               >
                 {t("upload-text-file")}
               </Button>

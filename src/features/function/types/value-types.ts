@@ -1,5 +1,5 @@
 export interface BaseValue<T> {
-  type: string;
+  typeName: string;
   data: T;
 }
 
@@ -13,33 +13,33 @@ export interface FileMetadata {
 }
 
 export interface StringValue extends LoadableValue<string> {
-  type: "STRING";
+  typeName: "STRING";
   data: string;
 }
 
 export interface NumberValue extends BaseValue<number> {
-  type: "NUMBER";
+  typeName: "NUMBER";
   data: number;
 }
 
 export interface BooleanValue extends BaseValue<boolean> {
-  type: "BOOLEAN";
+  typeName: "BOOLEAN";
   data: boolean;
 }
 
 export interface FileValue extends LoadableValue<FileMetadata> {
-  type: "FILE";
+  typeName: "FILE";
   data: FileMetadata;
   id: string;
 }
 
 export interface ArrayValue extends LoadableValue<Value[]> {
-  type: "ARRAY";
+  typeName: "ARRAY";
   data: Value[];
 }
 
 export interface ObjectValue extends LoadableValue<Record<string, Value>> {
-  type: "OBJECT";
+  typeName: "OBJECT";
   data: Record<string, Value>;
 }
 

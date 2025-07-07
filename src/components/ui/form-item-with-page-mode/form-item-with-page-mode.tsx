@@ -16,10 +16,7 @@ export const FormItemWithPageMode: FC<FormItemProps> = ({
       {children}
     </Form.Item>
   ) : (
-    <Form.Item
-      label={<Text strong>{label}</Text>}
-      {...props}
-    >
+    <Form.Item label={<Text strong>{label}</Text>} {...props}>
       {children}
     </Form.Item>
   );

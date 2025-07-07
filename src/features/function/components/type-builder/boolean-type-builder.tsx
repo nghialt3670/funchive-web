@@ -1,5 +1,5 @@
 import type { BooleanType } from "@/features/function/types";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import { Select } from "antd";
 import { Typography } from "antd";
 import React from "react";
@@ -12,6 +12,7 @@ const { Paragraph } = Typography;
 
 interface BooleanTypeBuilderProps {
   value?: BooleanType;
+  defaultValue?: BooleanType;
   onChange?: (type: BooleanType) => void;
   disabled?: boolean;
   readOnly?: boolean;
@@ -19,6 +20,7 @@ interface BooleanTypeBuilderProps {
 
 export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   disabled,
   readOnly,
@@ -31,27 +33,30 @@ export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
       disabled,
     });
 
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
+
   const handleDefaultValueChange = (newDefaultValue: boolean) => {
     onChange?.({
       name: "BOOLEAN",
       description: value?.description,
       defaultValue: newDefaultValue
         ? {
-            type: "BOOLEAN",
+            typeName: "BOOLEAN",
             data: newDefaultValue,
           }
         : undefined,
+      useDefaultValue: hasDefaultValue,
     });
   };
 
   return readOnly ? (
     hasDefaultValue && (
-      <Box display="flex" flexDirection="row" gap={1}>
-        <Paragraph>{value?.defaultValue?.data as boolean}</Paragraph>
-      </Box>
+      <Paragraph>{value?.defaultValue?.data as boolean}</Paragraph>
     )
   ) : (
-    <Box display="flex" flexDirection="column" width="100%" gap={1}>
+    <Stack direction="column" width="100%" gap={1}>
       <DefaultValueLabel
         checked={hasDefaultValue}
         onChange={handleHasDefaultValueChange}
@@ -71,6 +76,6 @@ export const BooleanTypeBuilder: React.FC<BooleanTypeBuilderProps> = ({
           style={{ width: "100%" }}
         />
       )}
-    </Box>
+    </Stack>
   );
 };

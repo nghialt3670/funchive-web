@@ -11,6 +11,7 @@ const { Paragraph } = Typography;
 
 interface NumberTypeBuilderProps {
   value?: NumberType;
+  defaultValue?: NumberType;
   onChange?: (type: NumberType) => void;
   disabled?: boolean;
   readOnly?: boolean;
@@ -18,6 +19,7 @@ interface NumberTypeBuilderProps {
 
 export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   disabled,
   readOnly,
@@ -30,16 +32,21 @@ export const NumberTypeBuilder: React.FC<NumberTypeBuilderProps> = ({
       disabled,
     });
 
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
+
   const handleDefaultValueChange = (newDefaultValue: number | null) => {
     onChange?.({
       name: "NUMBER",
       description: value?.description,
       defaultValue: newDefaultValue
         ? {
-            type: "NUMBER",
+            typeName: "NUMBER",
             data: newDefaultValue,
           }
         : undefined,
+      useDefaultValue: hasDefaultValue,
     });
   };
 

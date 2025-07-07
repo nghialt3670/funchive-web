@@ -2,17 +2,20 @@ import type { ObjectType, Type } from "@/features/function/types";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Box } from "@mui/material";
 import { Button, Tooltip, Typography, Upload } from "antd";
-import { omit } from "lodash";
+import { omit, set } from "lodash";
+import type { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { DefaultValueLabel } from "./default-value-label";
 import { TypeBuilder } from "./type-builder";
 import { useDefaultValue } from "./use-default-value";
+import { usePageMode } from "@/hooks/use-page-mode";
 
 const { Paragraph, Text } = Typography;
 
 interface ObjectTypeBuilderProps {
   value?: ObjectType;
+  defaultValue?: ObjectType;
   onChange?: (type: Type) => void;
   depth?: number;
   maxDepth?: number;
@@ -23,6 +26,7 @@ interface ObjectTypeBuilderProps {
 
 export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
   value,
+  defaultValue,
   onChange,
   depth = 0,
   maxDepth = 5,
@@ -31,12 +35,17 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
   readOnly,
 }) => {
   const { t } = useTranslation();
+  const { pageMode } = usePageMode();
   const { hasDefaultValue, handleHasDefaultValueChange, isDisabled } =
     useDefaultValue({
       value,
       onChange,
       disabled,
     });
+
+  if (!value && defaultValue) {
+    onChange?.(defaultValue);
+  }
 
   if (Object.keys(value?.schema || {}).length === 0) {
     onChange?.({
@@ -64,24 +73,37 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
     });
   };
 
+  const handleLabelChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    k: string,
+    v: Type,
+  ) => {
+    onChange?.({
+      ...value!,
+      schema: set(omit(value?.schema, k), e.target.value, v),
+    });
+  };
+
   return (
     <Box display="flex" flexDirection="column" width="100%" gap={2}>
       <Box display="flex" flexDirection="column" gap={2}>
         {!readOnly && (
           <Box display="flex" flexDirection="row" gap={1}>
             <Text style={{ marginBottom: "-0.5rem" }}>{t("fields")}</Text>
-            <Tooltip title={t("add-data-field")}>
-              <Button
-                size="small"
-                icon={<PlusOutlined />}
-                onClick={handleAddDataField}
-              />
-            </Tooltip>
+            {pageMode === "create" && (
+              <Tooltip title={t("add-data-field")}>
+                <Button
+                  size="small"
+                  icon={<PlusOutlined />}
+                  onClick={handleAddDataField}
+                />
+              </Tooltip>
+            )}
           </Box>
         )}
-        {Object.entries(value?.schema || {}).map(([k, v]) => (
+        {Object.entries(value?.schema || {}).map(([k, v], idx) => (
           <TypeBuilder
-            key={k}
+            key={idx}
             value={v}
             onChange={(type) =>
               onChange?.({
@@ -96,6 +118,8 @@ export const ObjectTypeBuilder: React.FC<ObjectTypeBuilderProps> = ({
             disabled={isDisabled}
             removable={Object.keys(value?.schema || {}).length > 1}
             onRemove={handleRemoveDataField}
+            labelEditable={pageMode === "create"}
+            onLabelChange={(e) => handleLabelChange(e, k, v)}
             depth={depth + 1}
             maxDepth={maxDepth}
             onDepthChange={onDepthChange}

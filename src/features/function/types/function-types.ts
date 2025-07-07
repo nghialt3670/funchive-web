@@ -35,4 +35,3 @@ export interface FunctionFilter {
   language?: string;
   [key: string]: string | undefined;
 }
-

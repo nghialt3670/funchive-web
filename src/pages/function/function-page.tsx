@@ -23,7 +23,7 @@ import { Box } from "@mui/material";
 import { Button, Form, Input, Tabs, Tooltip, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -33,6 +33,14 @@ export const FunctionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
   const { pageMode, setPageMode } = usePageMode();
+  const navigate = useNavigate();
+
+  const {
+    mutate: createFunction,
+    isPending: isCreatePending,
+    isSuccess: isCreateSuccess,
+    data: createdFunctionDetail,
+  } = useCreateFunctionMutation();
 
   const {
     data: functionDetail,
@@ -46,12 +54,6 @@ export const FunctionPage: React.FC = () => {
     isPending: isUpdatePending,
     isSuccess: isUpdateSuccess,
   } = useUpdateFunctionMutation();
-
-  const {
-    mutate: createFunction,
-    isPending: isCreatePending,
-    isSuccess: isCreateSuccess,
-  } = useCreateFunctionMutation();
 
   useEffect(() => {
     if (functionDetail) {
@@ -67,6 +69,7 @@ export const FunctionPage: React.FC = () => {
 
   useEffect(() => {
     if (isCreateSuccess) {
+      navigate("/functions/" + createdFunctionDetail?.id, { replace: true });
       setPageMode("view");
     }
   }, [isCreateSuccess]);
@@ -173,7 +176,9 @@ export const FunctionPage: React.FC = () => {
                 label: (
                   <Box padding="0 0.5rem">
                     <InfoCircleFilled />
-                    <Text style={{ color: "var(--color-text-secondary)" }}>{nt("definition")}</Text>
+                    <Text style={{ color: "var(--color-text-secondary)" }}>
+                      {nt("definition")}
+                    </Text>
                   </Box>
                 ),
                 children: <FunctionDefinitionTab />,
@@ -189,7 +194,9 @@ export const FunctionPage: React.FC = () => {
                     padding="0 1rem"
                   >
                     {/* TODO: Update ImplementationTypeIcon to work with new structure */}
-                    <Text style={{ color: "var(--color-text-secondary)" }}>{nt("implementation")}</Text>
+                    <Text style={{ color: "var(--color-text-secondary)" }}>
+                      {nt("implementation")}
+                    </Text>
                   </Box>
                 ),
                 children: undefined,
@@ -199,7 +206,9 @@ export const FunctionPage: React.FC = () => {
                 label: (
                   <Box padding="0 1rem">
                     <SettingFilled />
-                    <Text style={{ color: "var(--color-text-secondary)" }}>{t("settings")}</Text>
+                    <Text style={{ color: "var(--color-text-secondary)" }}>
+                      {t("settings")}
+                    </Text>
                   </Box>
                 ),
                 children: undefined,

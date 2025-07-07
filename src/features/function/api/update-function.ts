@@ -1,7 +1,4 @@
-import type {
-  FunctionDetail,
-  FunctionUpdate,
-} from "@/features/function/types";
+import type { FunctionDetail, FunctionUpdate } from "@/features/function/types";
 import type { ResponseBody } from "@/types/api";
 
 import { functionAxios } from "./axios-config";

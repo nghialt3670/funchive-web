@@ -1,16 +1,16 @@
 import { EditableSection } from "@/components/ui/editable-section/editable-section";
 import { FormItemWithPageMode } from "@/components/ui/form-item-with-page-mode";
-import { usePageMode } from "@/hooks/use-page-mode";
 import { TypeBuilder } from "@/features/function/components/type-builder";
 import type { Type } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
+import { usePageMode } from "@/hooks/use-page-mode";
 import { Box, useMediaQuery } from "@mui/material";
 import { Input } from "antd";
 import { useTranslation } from "react-i18next";
 
 const { TextArea } = Input;
 
-const DEFAULT_TYPE = {
+const DEFAULT_TYPE: Type = {
   name: "STRING" as const,
   description: "",
   defaultValue: undefined,
@@ -28,7 +28,9 @@ export const FunctionDefinitionTab = () => {
         <FormItemWithPageMode
           name="description"
           label={t("description")}
-          rules={[{ required: true, message: nt("function-description-is-required") }]}
+          rules={[
+            { required: true, message: nt("function-description-is-required") },
+          ]}
         >
           <EditableSection>
             <TextArea

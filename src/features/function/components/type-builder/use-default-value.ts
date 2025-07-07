@@ -14,13 +14,12 @@ export const useDefaultValue = ({
   onChange,
   disabled = false,
 }: UseDefaultValueProps) => {
-  const [hasDefaultValue, setHasDefaultValue] = useState(false);
+  const [hasDefaultValue, setHasDefaultValue] = useState(
+    value?.useDefaultValue ?? false,
+  );
 
   const handleHasDefaultValueChange = (checked: boolean) => {
     setHasDefaultValue(checked);
-    if (!checked) {
-      onChange?.(omit(value, "defaultValue"));
-    }
   };
 
   const clearDefaultValue = () => {
