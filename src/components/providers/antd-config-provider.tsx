@@ -190,6 +190,20 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
             inkBarColor: "var(--color-primary)",
             cardBg: "var(--color-background-secondary)",
           },
+          Message: {
+            colorBgContainer: "var(--color-background-primary)",
+            colorText: "var(--color-text-primary)",
+            colorTextSecondary: "var(--color-text-secondary)",
+            colorBorder: "var(--color-border)",
+            colorBorderSecondary: "var(--color-border)",
+            colorBgBase: "var(--color-background-primary)",
+            colorBgElevated: "var(--color-background-primary)",
+            colorBgLayout: "var(--color-background-primary)",
+            colorBgMask: "var(--color-background-primary)",
+            colorBgSpotlight: "var(--color-background-primary)",
+            colorIcon: "var(--color-text-secondary)",
+            colorIconHover: "var(--color-text-primary)",
+          },
         },
       }}
     >

@@ -1,33 +1,56 @@
+import { PageModeCondition } from "@/components/ui/page-mode-condition/page-mode-condition";
 import type {
   ArrayType,
-  BooleanType,
+  ArrayValue,
+  BooleanValue,
   FileType,
-  NumberType,
+  FileValue,
+  NumberValue,
   ObjectType,
-  StringType,
+  ObjectValue,
+  StringValue,
   Type,
   TypeName,
+  Value,
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
+import { usePageMode } from "@/hooks/use-page-mode";
 import { DeleteOutlined } from "@ant-design/icons";
 import { RedAsterisk } from "@components/ui/red-asterisk";
-import { Box, useMediaQuery } from "@mui/material";
-import { Button, Collapse, Input, Select, Tooltip, Typography } from "antd";
-import React, { type ChangeEventHandler } from "react";
+import { Box, Stack, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Collapse,
+  Input,
+  Select,
+  Switch,
+  Tooltip,
+  Typography,
+} from "antd";
+import React, {
+  type ChangeEvent,
+  type ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { TypeTag } from "../type-tag";
-import { ArrayTypeBuilder } from "./array-type-builder";
-import { BooleanTypeBuilder } from "./boolean-type-builder";
-import { FileTypeBuilder } from "./file-type-builder";
-import { NumberTypeBuilder } from "./number-type-builder";
-import { ObjectTypeBuilder } from "./object-type-builder";
-import { StringTypeBuilder } from "./string-type-builder";
-import { usePageMode } from "@/hooks/use-page-mode";
+import {
+  ArrayDefaultValueField,
+  ArrayElementTypeField,
+} from "./array-type-fields";
+import { BooleanDefaultValueField } from "./boolean-type-fields";
+import { FileDefaultValueField, FileExtensionField } from "./file-type-fields";
+import { NumberDefaultValueField } from "./number-type-fields";
+import {
+  ObjectDefaultValueField,
+  ObjectSchemaField,
+} from "./object-type-fields";
+import { StringDefaultValueField } from "./string-type-fields";
 
 const { TextArea } = Input;
 
-const { Option } = Select;
 const { Paragraph, Text } = Typography;
 interface TypeBuilderProps {
   value?: Type;
@@ -63,61 +86,64 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   onDepthChange,
 }) => {
   const { t } = useTranslation();
-  const { pageMode } = usePageMode();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { pageMode } = usePageMode();
+  const [type, setType] = useState<Type>(
+    value || defaultValue || { name: "STRING" },
+  );
 
-  if (!value && defaultValue) {
-    onChange?.(defaultValue);
-  }
+  useEffect(() => {
+    if (value) {
+      setType(value);
+    }
+  }, [value]);
 
-  const renderTypeSpecificBuilder = () => {
-    switch (value?.name as TypeName) {
-      case "STRING":
-        return (
-          <StringTypeBuilder
-            value={value as StringType}
-            defaultValue={defaultValue as StringType}
-            onChange={onChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "NUMBER":
-        return (
-          <NumberTypeBuilder
-            value={value as NumberType}
-            defaultValue={defaultValue as NumberType}
-            onChange={onChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "BOOLEAN":
-        return (
-          <BooleanTypeBuilder
-            value={value as BooleanType}
-            defaultValue={defaultValue as BooleanType}
-            onChange={onChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "FILE":
-        return (
-          <FileTypeBuilder
-            value={value as FileType}
-            defaultValue={defaultValue as FileType}
-            onChange={onChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
+  console.log(value, defaultValue);
+
+  const showLabel = !readOnly && (pageMode === "edit" || pageMode === "create");
+
+  const handleTypeNameChange = (typeName: TypeName) => {
+    setType({ ...type, name: typeName } as Type);
+    onChange?.({ ...type, name: typeName } as Type);
+  };
+
+  const handleTypeDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setType({ ...type, description: e.target.value } as Type);
+    onChange?.({ ...type, description: e.target.value } as Type);
+  };
+
+  const handleArrayElementTypeChange = (elementType: Type) => {
+    setType({ ...type, elementType } as Type);
+    onChange?.({ ...type, elementType } as Type);
+  };
+
+  const handleFileExtensionChange = (extension: string) => {
+    setType({ ...type, extension } as Type);
+    onChange?.({ ...type, extension } as Type);
+  };
+
+  const handleObjectSchemaChange = (schema: Record<string, Type>) => {
+    setType({ ...type, schema } as Type);
+    onChange?.({ ...type, schema } as Type);
+  };
+
+  const handleUseDefaultValueChange = (useDefaultValue: boolean) => {
+    setType({ ...type, useDefaultValue } as Type);
+    onChange?.({ ...type, useDefaultValue } as Type);
+  };
+
+  const handleDefaultValueChange = (defaultValue?: Value) => {
+    setType({ ...type, defaultValue } as Type);
+    onChange?.({ ...type, defaultValue } as Type);
+  };
+
+  const renderTypeSpecificFields = () => {
+    switch (type?.name as TypeName) {
       case "ARRAY":
         return (
-          <ArrayTypeBuilder
-            value={value as ArrayType}
-            defaultValue={defaultValue as ArrayType}
-            onChange={onChange}
+          <ArrayElementTypeField
+            value={(type as ArrayType)?.elementType}
+            onChange={handleArrayElementTypeChange}
             disabled={disabled}
             depth={depth + 1}
             maxDepth={maxDepth}
@@ -125,12 +151,20 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             readOnly={readOnly}
           />
         );
+      case "FILE":
+        return (
+          <FileExtensionField
+            value={(type as FileType)?.extension}
+            onChange={handleFileExtensionChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
       case "OBJECT":
         return (
-          <ObjectTypeBuilder
-            value={value as ObjectType}
-            defaultValue={defaultValue as ObjectType}
-            onChange={onChange}
+          <ObjectSchemaField
+            value={(type as ObjectType)?.schema}
+            onChange={handleObjectSchemaChange}
             disabled={disabled}
             depth={depth + 1}
             maxDepth={maxDepth}
@@ -143,191 +177,199 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     }
   };
 
-  const handleTypeNameChange = (newTypeName: TypeName) => {
-    onChange?.({ ...value, name: newTypeName } as Type);
-  };
-
-  const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = (
-    e,
-  ) => {
-    onChange?.({ ...value, description: e.target.value } as Type);
-  };
-
-  const handleRemoveClick = () => {
-    onRemove?.(label);
-  };
-
-  // Filter out ARRAY and OBJECT types if at max depth
   const availableTypes =
     depth >= maxDepth
-      ? Object.entries(TYPE_NAMES).filter(
-          ([_, value]) => value !== "ARRAY" && value !== "OBJECT",
-        )
-      : Object.entries(TYPE_NAMES);
+      ? Object.entries(TYPE_NAMES)
+          .filter(([_, value]) => value !== "ARRAY" && value !== "OBJECT")
+          .map(([key, value]) => ({
+            label: key,
+            value,
+          }))
+      : Object.entries(TYPE_NAMES).map(([key, value]) => ({
+          label: key,
+          value,
+        }));
 
-  const hasDescription = value?.description && value?.description.trim() !== "";
+  const renderRemoveButton = () => {
+    return readOnly || !removable ? null : (
+      <Tooltip title={t("remove-field")}>
+        <Button
+          onClick={() => onRemove?.(label)}
+          icon={<DeleteOutlined />}
+          size="small"
+        />
+      </Tooltip>
+    );
+  };
 
-  // Helper function to create a Type object for rendering
-  const createTypeForRendering = (typeName: string): Type => {
-    switch (typeName) {
-      case "STRING":
-        return { name: "STRING" };
-      case "NUMBER":
-        return { name: "NUMBER" };
-      case "BOOLEAN":
-        return { name: "BOOLEAN" };
-      case "FILE":
-        return { name: "FILE", extension: "*" };
+  const renderSpecificDefaultValueField = () => {
+    switch (type?.name as TypeName) {
       case "ARRAY":
-        return { name: "ARRAY", elementType: { name: "STRING" } };
+        return (
+          <ArrayDefaultValueField
+            elementType={(type as ArrayType)?.elementType}
+            value={type?.defaultValue as ArrayValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
+      case "BOOLEAN":
+        return (
+          <BooleanDefaultValueField
+            value={type?.defaultValue as BooleanValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
+      case "FILE":
+        return (
+          <FileDefaultValueField
+            extension={(type as FileType)?.extension}
+            value={type?.defaultValue as FileValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
+      case "NUMBER":
+        return (
+          <NumberDefaultValueField
+            value={type?.defaultValue as NumberValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
       case "OBJECT":
-        return { name: "OBJECT", schema: {} };
+        return (
+          <ObjectDefaultValueField
+            schema={(type as ObjectType)?.schema}
+            value={type?.defaultValue as ObjectValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
+      case "STRING":
+        return (
+          <StringDefaultValueField
+            value={type?.defaultValue as StringValue}
+            onChange={handleDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
       default:
-        return { name: "STRING" };
+        return null;
     }
   };
 
-  // Render option as TypeTag
-  const renderOption = (option: any) => {
-    const typeName = option.value;
-    return <TypeTag type={createTypeForRendering(typeName)} />;
+  const renderCollapseLabel = () => {
+    return (
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        gap={2}
+      >
+        <Stack direction="row" alignItems="center" gap={0.5} width="100%">
+          <PageModeCondition modes={["create", "edit"]}>
+            {required && <RedAsterisk />}
+          </PageModeCondition>
+          <PageModeCondition modes={["create"]}>
+            <Input
+              value={label}
+              onChange={onLabelChange}
+              disabled={disabled}
+              readOnly={readOnly || !labelEditable}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                fontWeight: "600",
+                width: "100%",
+                marginLeft: -12,
+              }}
+            />
+          </PageModeCondition>
+          <PageModeCondition modes={["view", "edit"]}>
+            <Text strong>{label}</Text>
+          </PageModeCondition>
+        </Stack>
+        <PageModeCondition modes={["view", "edit"]}>
+          <TypeTag typeName={type?.name as TypeName} />
+        </PageModeCondition>
+        <PageModeCondition modes={["create"]}>
+          <Select
+            options={availableTypes}
+            value={type?.name}
+            onChange={handleTypeNameChange}
+            disabled={disabled}
+            style={{ width: "7rem" }}
+            onClick={(e) => e.stopPropagation()}
+            optionRender={(option) => (
+              <TypeTag typeName={option.value as TypeName} />
+            )}
+            labelRender={(label) => (
+              <TypeTag typeName={label.value as TypeName} />
+            )}
+          />
+          {renderRemoveButton()}
+        </PageModeCondition>
+      </Stack>
+    );
+  };
+
+  const renderCollapseChildren = () => {
+    return (
+      <Stack gap={2}>
+        {readOnly ? (
+          <Paragraph ellipsis={{ rows: 5, expandable: true }}>
+            {type?.description || t("no-description")}
+          </Paragraph>
+        ) : (
+          <Box display="flex" flexDirection="column" width="100%" gap={1}>
+            <Text>{t("description")}</Text>
+            <TextArea
+              placeholder={t("description-placeholder")}
+              value={type?.description}
+              onChange={handleTypeDescriptionChange}
+              disabled={disabled}
+              readOnly={readOnly}
+              autoSize={{ minRows: 1, maxRows: 5 }}
+            />
+          </Box>
+        )}
+        {renderTypeSpecificFields()}
+        <Stack direction="column" gap={1}>
+          {showLabel && (
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Text>{t("default-value")}</Text>
+              <Switch
+                size="small"
+                checked={type?.useDefaultValue}
+                onChange={handleUseDefaultValueChange}
+              />
+            </Stack>
+          )}
+          {type?.useDefaultValue && renderSpecificDefaultValueField()}
+        </Stack>
+      </Stack>
+    );
   };
 
   return (
-    <>
-      {removable && !readOnly && (
-        <Tooltip title={t("remove-field")}>
-          <Button
-            onClick={handleRemoveClick}
-            icon={<DeleteOutlined />}
-            size="small"
-            style={{ position: "absolute", top: 0, right: 0 }}
-          />
-        </Tooltip>
-      )}
-      <Collapse
-        size={isMobile ? "small" : "middle"}
-        style={{ width: "100%", height: "fit-content" }}
-        defaultActiveKey={["1"]}
-        items={[
-          {
-            key: "1",
-            label: (
-              <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-                gap={1}
-              >
-                {readOnly || pageMode !== "create" ? (
-                  <>
-                    <Text strong>{label}</Text>
-                    <TypeTag type={value as Type} />
-                  </>
-                ) : (
-                  <>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="center"
-                      gap={0.5}
-                      width="100%"
-                    >
-                      {required && <RedAsterisk />}
-                      <Input
-                        value={label}
-                        onChange={onLabelChange}
-                        disabled={disabled}
-                        readOnly={readOnly || !labelEditable}
-                        onFocus={(e) => e.stopPropagation()}
-                        onClick={(e) => e.stopPropagation()}
-                        styles={{
-                          input: {
-                            fontWeight: "600",
-                            width: "100%",
-                          },
-                        }}
-                      />
-                    </Box>
-                    <div style={{ position: "relative" }}>
-                      <Select
-                        value={value?.name}
-                        onChange={handleTypeNameChange}
-                        disabled={disabled}
-                        style={{ width: "7rem" }}
-                        styles={{ popup: { root: { textAlign: "center" } } }}
-                        onClick={(e) => e.stopPropagation()}
-                        optionRender={renderOption}
-                      >
-                        {availableTypes.map(([key, value]) => (
-                          <Option key={key} value={value}>
-                            {key}
-                          </Option>
-                        ))}
-                      </Select>
-                      {value?.name && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "8px",
-                            transform: "translateY(-50%)",
-                            pointerEvents: "none",
-                            zIndex: 1,
-                          }}
-                        >
-                          <TypeTag type={value as Type} />
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-              </Box>
-            ),
-            children: (
-              <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                width="100%"
-                gap={2}
-              >
-                <Box display="flex" flexDirection="column" width="100%" gap={2}>
-                  {readOnly ? (
-                    hasDescription && (
-                      <Paragraph>{value?.description}</Paragraph>
-                    )
-                  ) : (
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      width="100%"
-                      gap={1}
-                    >
-                      <Text>{t("description")}</Text>
-                      <TextArea
-                        placeholder={
-                          readOnly ? undefined : t("description-placeholder")
-                        }
-                        value={value?.description}
-                        onChange={handleDescriptionChange}
-                        disabled={disabled}
-                        readOnly={readOnly}
-                        autoSize={{ minRows: 1, maxRows: 5 }}
-                        className={disabled ? "disabled-input-placeholder" : ""}
-                      />
-                    </Box>
-                  )}
-                  {renderTypeSpecificBuilder()}
-                </Box>
-              </Box>
-            ),
-          },
-        ]}
-      />
-    </>
+    <Collapse
+      size={isMobile ? "small" : "middle"}
+      style={{ width: "100%", height: "fit-content" }}
+      defaultActiveKey={["1"]}
+      items={[
+        {
+          key: "1",
+          label: renderCollapseLabel(),
+          children: renderCollapseChildren(),
+        },
+      ]}
+    />
   );
 };

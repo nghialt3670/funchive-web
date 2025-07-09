@@ -22,5 +22,7 @@
   "function-name": "Function name",
   "enter-function-name-placeholder": "Enter function name...",
   "function-name-is-required": "Function name is required",
-  "function-description-is-required": "Function description is required"
+  "function-description-is-required": "Function description is required",
+  "fields": "Fields",
+  "add-field": "Add field"
 }

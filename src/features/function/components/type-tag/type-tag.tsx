@@ -1,15 +1,15 @@
 import { Tag } from "antd";
 import type { FC } from "react";
 
-import type { Type } from "../../types";
+import type { TypeName } from "../../types";
 import styles from "./type-tag.module.css";
 
 export interface TypeTagProps {
-  type: Type;
+  typeName: TypeName;
 }
 
-export const TypeTag: FC<TypeTagProps> = ({ type }) => {
-  const getTypeClass = (typeName: string) => {
+export const TypeTag: FC<TypeTagProps> = ({ typeName }) => {
+  const getTypeClass = (typeName: TypeName) => {
     switch (typeName) {
       case "STRING":
         return "string";
@@ -28,9 +28,9 @@ export const TypeTag: FC<TypeTagProps> = ({ type }) => {
     }
   };
 
-  const typeClass = getTypeClass(type?.name);
+  const typeClass = getTypeClass(typeName);
 
   return (
-    <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>{type?.name}</Tag>
+    <Tag className={`${styles.typeTag} ${styles[typeClass]}`}>{typeName}</Tag>
   );
 };

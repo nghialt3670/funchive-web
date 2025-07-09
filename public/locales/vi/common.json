@@ -41,6 +41,7 @@
   "upload-default-file": "Tải lên tệp mặc định",
   "file-extension-placeholder": "Ví dụ: .pdf, .jpg, .txt",
   "fields": "Trường",
+  "upload-file": "Tải lên tệp",
   "upload-json-file": "Tải lên tệp JSON",
   "select-type": "Chọn loại",
   "add-field": "Thêm trường",
@@ -49,5 +50,6 @@
   "back": "Quay lại",
   "save-changes": "Lưu thay đổi",
   "cancel-changes": "Hủy thay đổi",
-  "enter-description-placeholder": "Nhập mô tả..."
+  "enter-description-placeholder": "Nhập mô tả...",
+  "no-description": "Không có mô tả"
 }

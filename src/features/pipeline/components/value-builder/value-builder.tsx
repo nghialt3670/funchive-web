@@ -166,7 +166,7 @@ export const ValueBuilder: React.FC<ValueBuilderProps> = ({
           break;
         case "ARRAY":
           if (!Array.isArray(val)) {
-            setValidationError("Value must be an array");
+            setValidationError("Value must be an array-fields");
             setIsValid(false);
             return false;
           }

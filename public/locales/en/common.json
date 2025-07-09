@@ -41,6 +41,7 @@
   "upload-default-file": "Upload default file",
   "file-extension-placeholder": "e.g., .pdf, .jpg, .txt",
   "fields": "Fields",
+  "upload-file": "Upload file",
   "upload-json-file": "Upload JSON file",
   "select-type": "Select type",
   "add-field": "Add field",
@@ -49,5 +50,6 @@
   "back": "Back",
   "save-changes": "Save changes",
   "cancel-changes": "Cancel changes",
-  "enter-description-placeholder": "Enter description..."
+  "enter-description-placeholder": "Enter description...",
+  "no-description": "No description"
 }

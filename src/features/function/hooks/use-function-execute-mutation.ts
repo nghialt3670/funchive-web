@@ -1,11 +1,12 @@
+import { useMessage } from "@/hooks/use-message";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
 
 import { executeFunction } from "../api/execute-function.ts";
 import { functionQueryKeys } from "./function-query-keys";
 
 export const useFunctionExecuteMutation = () => {
   const queryClient = useQueryClient();
+  const message = useMessage();
 
   return useMutation({
     mutationFn: ({

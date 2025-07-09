@@ -22,5 +22,7 @@
   "function-name": "Tên hàm",
   "enter-function-name-placeholder": "Nhập tên hàm...",
   "function-name-is-required": "Tên hàm không được để trống",
-  "function-description-is-required": "Mô tả hàm không được để trống"
+  "function-description-is-required": "Mô tả hàm không được để trống",
+  "fields": "Trường",
+  "add-field": "Thêm trường"
 }

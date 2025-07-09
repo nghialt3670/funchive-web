@@ -1,5 +1,5 @@
+import { useMessage } from "@/hooks/use-message";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { deleteFunction } from "../api/delete-function";
@@ -8,6 +8,7 @@ import { functionQueryKeys } from "./function-query-keys";
 export const useDeleteFunctionMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const message = useMessage();
 
   return useMutation({
     mutationFn: (functionId: string) => deleteFunction(functionId),

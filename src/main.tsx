@@ -4,8 +4,9 @@ import "antd/dist/reset.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import App from "./app";
+import App from "./App";
 import { AntdConfigProvider } from "./components/providers/antd-config-provider";
+import { MessageProvider } from "./components/providers/message-provider";
 import { ThemeProvider } from "./components/providers/theme-provider";
 import "./index.css";
 import "./lib/i18n";
@@ -15,10 +16,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       <AntdConfigProvider>
-        <QueryClientProvider client={queryClient}>
-          <App />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <MessageProvider>
+          <QueryClientProvider client={queryClient}>
+            <App />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </MessageProvider>
       </AntdConfigProvider>
     </ThemeProvider>
   </StrictMode>,
