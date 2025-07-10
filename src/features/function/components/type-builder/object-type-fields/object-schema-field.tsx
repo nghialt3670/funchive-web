@@ -6,7 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Stack } from "@mui/material";
 import { Button, Collapse, Tooltip, Typography } from "antd";
 import { omit, set } from "lodash";
-import type { ChangeEvent, FC } from "react";
+import { type ChangeEvent, type FC, useEffect } from "react";
 import { useState } from "react";
 
 import { TypeBuilder } from "../type-builder.tsx";
@@ -37,6 +37,12 @@ export const ObjectSchemaField: FC<ObjectSchemaFieldProps> = ({
   const [schema, setSchema] = useState<Record<string, Type>>(
     value || { field1: { name: "STRING" } },
   );
+
+  useEffect(() => {
+    if (value !== schema) {
+      onChange?.(schema);
+    }
+  }, [schema]);
 
   const handleAddDataField = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

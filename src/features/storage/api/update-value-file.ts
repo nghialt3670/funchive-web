@@ -2,7 +2,7 @@ import type { ResponseBody } from "@/types/api";
 
 import { storageAxios } from "./axios-config";
 
-export interface ValueFileUploadResponse {
+export interface ValueFileUpdateResponse {
   id: string;
   name: string;
   contentType: string;
@@ -11,15 +11,16 @@ export interface ValueFileUploadResponse {
   checksum?: string;
 }
 
-export interface ValueFileUploadRequest {
+export interface ValueFileUpdateRequest {
+  id: string;
   file: File;
   metadata?: Record<string, any>;
   onProgress?: (progress: number) => void;
 }
 
-export const uploadValueFile = async (
-  request: ValueFileUploadRequest,
-): Promise<ValueFileUploadResponse> => {
+export const updateValueFile = async (
+  request: ValueFileUpdateRequest,
+): Promise<ValueFileUpdateResponse> => {
   const formData = new FormData();
   formData.append("file", request.file);
 
@@ -28,8 +29,8 @@ export const uploadValueFile = async (
   }
   await new Promise((resolve) => setTimeout(resolve, 3000));
   const response = await storageAxios.post<
-    ResponseBody<ValueFileUploadResponse>
-  >("/values/upload", formData, {
+    ResponseBody<ValueFileUpdateResponse>
+  >(`/values/${request.id}`, formData, {
     onUploadProgress: (progressEvent) => {
       if (request.onProgress && progressEvent.total) {
         const progress = Math.round(

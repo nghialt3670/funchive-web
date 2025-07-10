@@ -6,3 +6,13 @@ export type {
   ValueFileUploadRequest,
   ValueFileUploadResponse,
 } from "./upload-value-file";
+
+export { downloadValueFile } from "./download-value-file";
+export { getValueFileMetadata } from "./get-value-file-metadata";
+
+export { updateValueFile } from "./update-value-file";
+
+export type {
+  ValueFileUpdateRequest,
+  ValueFileUpdateResponse,
+} from "./update-value-file";

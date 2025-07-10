@@ -1,32 +1,17 @@
 import { PageModeCondition } from "@/components/ui/page-mode-condition/page-mode-condition";
 import type {
   ArrayType,
-  ArrayValue,
-  BooleanValue,
   FileType,
-  FileValue,
-  NumberValue,
   ObjectType,
-  ObjectValue,
-  StringValue,
   Type,
   TypeName,
   Value,
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
-import { usePageMode } from "@/hooks/use-page-mode";
 import { DeleteOutlined } from "@ant-design/icons";
 import { RedAsterisk } from "@components/ui/red-asterisk";
-import { Box, Stack, useMediaQuery } from "@mui/material";
-import {
-  Button,
-  Collapse,
-  Input,
-  Select,
-  Switch,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Stack, useMediaQuery } from "@mui/material";
+import { Button, Collapse, Input, Select, Tooltip, Typography } from "antd";
 import React, {
   type ChangeEvent,
   type ChangeEventHandler,
@@ -36,18 +21,10 @@ import React, {
 import { useTranslation } from "react-i18next";
 
 import { TypeTag } from "../type-tag";
-import {
-  ArrayDefaultValueField,
-  ArrayElementTypeField,
-} from "./array-type-fields";
-import { BooleanDefaultValueField } from "./boolean-type-fields";
-import { FileDefaultValueField, FileExtensionField } from "./file-type-fields";
-import { NumberDefaultValueField } from "./number-type-fields";
-import {
-  ObjectDefaultValueField,
-  ObjectSchemaField,
-} from "./object-type-fields";
-import { StringDefaultValueField } from "./string-type-fields";
+import { ValueBuilder } from "../value-builder";
+import { ArrayElementTypeField } from "./array-type-fields";
+import { FileExtensionField } from "./file-type-fields";
+import { ObjectSchemaField } from "./object-type-fields";
 
 const { TextArea } = Input;
 
@@ -87,7 +64,6 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
 }) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { pageMode } = usePageMode();
   const [type, setType] = useState<Type>(
     value || defaultValue || { name: "STRING" },
   );
@@ -97,10 +73,6 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       setType(value);
     }
   }, [value]);
-
-  console.log(value, defaultValue);
-
-  const showLabel = !readOnly && (pageMode === "edit" || pageMode === "create");
 
   const handleTypeNameChange = (typeName: TypeName) => {
     setType({ ...type, name: typeName } as Type);
@@ -127,14 +99,14 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     onChange?.({ ...type, schema } as Type);
   };
 
-  const handleUseDefaultValueChange = (useDefaultValue: boolean) => {
-    setType({ ...type, useDefaultValue } as Type);
-    onChange?.({ ...type, useDefaultValue } as Type);
-  };
-
   const handleDefaultValueChange = (defaultValue?: Value) => {
     setType({ ...type, defaultValue } as Type);
     onChange?.({ ...type, defaultValue } as Type);
+  };
+
+  const handleUseDefaultValueChange = (useDefaultValue: boolean) => {
+    setType({ ...type, useDefaultValue } as Type);
+    onChange?.({ ...type, useDefaultValue } as Type);
   };
 
   const renderTypeSpecificFields = () => {
@@ -202,70 +174,6 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     );
   };
 
-  const renderSpecificDefaultValueField = () => {
-    switch (type?.name as TypeName) {
-      case "ARRAY":
-        return (
-          <ArrayDefaultValueField
-            elementType={(type as ArrayType)?.elementType}
-            value={type?.defaultValue as ArrayValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "BOOLEAN":
-        return (
-          <BooleanDefaultValueField
-            value={type?.defaultValue as BooleanValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "FILE":
-        return (
-          <FileDefaultValueField
-            extension={(type as FileType)?.extension}
-            value={type?.defaultValue as FileValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "NUMBER":
-        return (
-          <NumberDefaultValueField
-            value={type?.defaultValue as NumberValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "OBJECT":
-        return (
-          <ObjectDefaultValueField
-            schema={(type as ObjectType)?.schema}
-            value={type?.defaultValue as ObjectValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      case "STRING":
-        return (
-          <StringDefaultValueField
-            value={type?.defaultValue as StringValue}
-            onChange={handleDefaultValueChange}
-            disabled={disabled}
-            readOnly={readOnly}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
   const renderCollapseLabel = () => {
     return (
       <Stack
@@ -279,18 +187,22 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             {required && <RedAsterisk />}
           </PageModeCondition>
           <PageModeCondition modes={["create"]}>
-            <Input
-              value={label}
-              onChange={onLabelChange}
-              disabled={disabled}
-              readOnly={readOnly || !labelEditable}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                fontWeight: "600",
-                width: "100%",
-                marginLeft: -12,
-              }}
-            />
+            {labelEditable ? (
+              <Input
+                value={label}
+                onChange={onLabelChange}
+                disabled={disabled}
+                readOnly={readOnly}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  fontWeight: "600",
+                  width: "100%",
+                  marginLeft: -12,
+                }}
+              />
+            ) : (
+              <Text strong>{label}</Text>
+            )}
           </PageModeCondition>
           <PageModeCondition modes={["view", "edit"]}>
             <Text strong>{label}</Text>
@@ -328,32 +240,27 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             {type?.description || t("no-description")}
           </Paragraph>
         ) : (
-          <Box display="flex" flexDirection="column" width="100%" gap={1}>
-            <Text>{t("description")}</Text>
-            <TextArea
-              placeholder={t("description-placeholder")}
-              value={type?.description}
-              onChange={handleTypeDescriptionChange}
-              disabled={disabled}
-              readOnly={readOnly}
-              autoSize={{ minRows: 1, maxRows: 5 }}
-            />
-          </Box>
+          <TextArea
+            placeholder={t("description-placeholder")}
+            value={type?.description}
+            onChange={handleTypeDescriptionChange}
+            disabled={disabled}
+            readOnly={readOnly}
+            autoSize={{ minRows: 1, maxRows: 5 }}
+          />
         )}
         {renderTypeSpecificFields()}
-        <Stack direction="column" gap={1}>
-          {showLabel && (
-            <Stack direction="row" alignItems="center" gap={1}>
-              <Text>{t("default-value")}</Text>
-              <Switch
-                size="small"
-                checked={type?.useDefaultValue}
-                onChange={handleUseDefaultValueChange}
-              />
-            </Stack>
-          )}
-          {type?.useDefaultValue && renderSpecificDefaultValueField()}
-        </Stack>
+        <ValueBuilder
+          type={type}
+          label={t("default-value")}
+          value={type?.defaultValue}
+          onChange={handleDefaultValueChange}
+          showEnabled={true}
+          enabled={type?.useDefaultValue}
+          onEnabledChange={handleUseDefaultValueChange}
+          disabled={disabled}
+          readOnly={readOnly}
+        />
       </Stack>
     );
   };
