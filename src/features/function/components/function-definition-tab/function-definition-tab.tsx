@@ -5,10 +5,12 @@ import type { Type } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { usePageMode } from "@/hooks/use-page-mode";
 import { Box, useMediaQuery } from "@mui/material";
-import { Input } from "antd";
+import { Form, Input } from "antd";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const { TextArea } = Input;
+const { useFormInstance } = Form;
 
 const DEFAULT_TYPE: Type = {
   name: "STRING" as const,
@@ -21,6 +23,14 @@ export const FunctionDefinitionTab = () => {
   const { t: nt } = useNamespacedTranslation();
   const isTablet = useMediaQuery("(max-width: 1024px)");
   const { pageMode } = usePageMode();
+  const form = useFormInstance();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      inputType: DEFAULT_TYPE,
+      outputType: DEFAULT_TYPE,
+    });
+  }, []);
 
   return (
     <Box>
@@ -45,11 +55,7 @@ export const FunctionDefinitionTab = () => {
             style={{ width: "100%", margin: 0 }}
           >
             <EditableSection>
-              <TypeBuilder
-                label={nt("input-type")}
-                defaultValue={DEFAULT_TYPE as Type}
-                required
-              />
+              <TypeBuilder label={nt("input-type")} required />
             </EditableSection>
           </FormItemWithPageMode>
           <FormItemWithPageMode
@@ -57,11 +63,7 @@ export const FunctionDefinitionTab = () => {
             style={{ width: "100%", margin: 0 }}
           >
             <EditableSection>
-              <TypeBuilder
-                label={nt("output-type")}
-                defaultValue={DEFAULT_TYPE as Type}
-                required
-              />
+              <TypeBuilder label={nt("output-type")} required />
             </EditableSection>
           </FormItemWithPageMode>
         </Box>

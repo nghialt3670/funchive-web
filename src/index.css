@@ -41,20 +41,20 @@
   --color-background-disabled: #f8fafc;
 
   /* Tag-specific colors for light theme */
-  --tag-string-bg: #e6f4ff;
-  --tag-string-color: #0958d9;
-  --tag-number-bg: #f6ffed;
-  --tag-number-color: #389e0d;
-  --tag-boolean-bg: #fff2e8;
-  --tag-boolean-color: #d46b08;
-  --tag-file-bg: #f9f0ff;
-  --tag-file-color: #722ed1;
-  --tag-array-bg: #fff1f0;
-  --tag-array-color: #cf1322;
-  --tag-object-bg: #e6f4ff;
-  --tag-object-color: #1677ff;
-  --tag-default-bg: #fafafa;
-  --tag-default-color: #262626;
+  --tag-string-bg: #ede0d4;
+  --tag-string-color: #9c6644;
+  --tag-number-bg: #caf0f8;
+  --tag-number-color: #0077b6;
+  --tag-boolean-bg: #d8f3dc;
+  --tag-boolean-color: #2d6a4f;
+  --tag-file-bg: #dec9e9;
+  --tag-file-color: #6247aa;
+  --tag-array-bg: #fae1dd;
+  --tag-array-color: #865f67;
+  --tag-object-bg: #e9ecef;
+  --tag-object-color: #495057;
+  --tag-default-bg: #e9ecef;
+  --tag-default-color: #495057;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md:
@@ -105,20 +105,20 @@
   --color-background-disabled: #1e293b;
 
   /* Tag-specific colors for dark theme */
-  --tag-string-bg: #1d39c4;
-  --tag-string-color: #91caff;
-  --tag-number-bg: #1b5e20;
-  --tag-number-color: #95de64;
-  --tag-boolean-bg: #d48806;
-  --tag-boolean-color: #ffd591;
-  --tag-file-bg: #531dab;
-  --tag-file-color: #d3adf7;
-  --tag-array-bg: #a8071a;
-  --tag-array-color: #ff7875;
-  --tag-object-bg: #003eb3;
-  --tag-object-color: #69b1ff;
-  --tag-default-bg: #262626;
-  --tag-default-color: #d9d9d9;
+  --tag-string-bg: #9c6644;
+  --tag-string-color: #ede0d4;
+  --tag-number-bg: #0077b6;
+  --tag-number-color: #caf0f8;
+  --tag-boolean-bg: #2d6a4f;
+  --tag-boolean-color: #d8f3dc;
+  --tag-file-bg: #6247aa;
+  --tag-file-color: #dec9e9;
+  --tag-array-bg: #865f67;
+  --tag-array-color: #fae1dd;
+  --tag-object-bg: #495057;
+  --tag-object-color: #e9ecef;
+  --tag-default-bg: #495057;
+  --tag-default-color: #e9ecef;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md:

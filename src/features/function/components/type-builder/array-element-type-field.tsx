@@ -1,9 +1,11 @@
 import type { Type } from "@/features/function/types";
 import { useNamespacedTranslation } from "@/hooks/use-namespaced-translation";
 import { Stack } from "@mui/material";
-import { type FC, useEffect, useState } from "react";
+import { type FC } from "react";
 
-import { TypeBuilder } from "..";
+import { TypeBuilder } from ".";
+
+const DEFAULT_ELEMENT_TYPE: Type = { name: "STRING" };
 
 interface ArrayElementTypeFieldProps {
   value?: Type;
@@ -25,18 +27,10 @@ export const ArrayElementTypeField: FC<ArrayElementTypeFieldProps> = ({
   disabled,
 }) => {
   const { t: nt } = useNamespacedTranslation();
-  const [elementType, setElementType] = useState<Type>(
-    value || { name: "STRING" },
-  );
 
-  useEffect(() => {
-    if (value !== elementType) {
-      onChange?.(elementType);
-    }
-  }, [elementType]);
+  const elementType = value || DEFAULT_ELEMENT_TYPE;
 
   const handleChange = (type: Type) => {
-    setElementType(type);
     onChange?.(type);
   };
 

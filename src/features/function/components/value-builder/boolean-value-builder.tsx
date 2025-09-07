@@ -1,5 +1,6 @@
 import { Select, Typography } from "antd";
 import { type FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { BooleanValue } from "../../types";
 
@@ -18,6 +19,7 @@ export const BooleanValueBuilder: FC<BooleanValueBuilderProps> = ({
   disabled,
   readOnly,
 }) => {
+  const { t } = useTranslation();
   const [booleanValue, setBooleanValue] = useState<BooleanValue>(
     value ?? { typeName: "BOOLEAN", data: true },
   );
@@ -42,8 +44,8 @@ export const BooleanValueBuilder: FC<BooleanValueBuilderProps> = ({
   ) : (
     <Select
       options={[
-        { label: "true", value: true },
-        { label: "false", value: false },
+        { label: t("true"), value: true },
+        { label: t("false"), value: false },
       ]}
       value={booleanValue?.data as boolean}
       defaultValue={true}

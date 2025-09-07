@@ -1,3 +1,5 @@
+import { LoginCallbackPage } from "@/features/auth/pages/login-callback-page/login-callback.page.tsx";
+import { LogoutCallbackPage } from "@/features/auth/pages/logout-callback-page";
 import { FunctionPage } from "@/pages/function";
 import { FunctionsPage } from "@/pages/functions";
 import { PipelinePage } from "@/pages/pipeline";
@@ -13,6 +15,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login/callback" element={<LoginCallbackPage />} />
+        <Route path="/logout/callback" element={<LogoutCallbackPage />} />
         <Route path="/" element={<RootLayout />}>
           <Route index element={<div>Home</div>} />
           <Route

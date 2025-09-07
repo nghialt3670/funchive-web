@@ -13,7 +13,7 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
       theme={{
         token: {
           colorPrimary: "#2563eb",
-          borderRadius: 4,
+          borderRadius: 6,
           colorText: "var(--color-text-primary)",
           colorTextSecondary: "var(--color-text-secondary)",
           colorTextTertiary: "var(--color-text-tertiary)",
@@ -249,13 +249,6 @@ export const AntdConfigProvider: FC<PropsWithChildren> = ({ children }) => {
           
           .ant-select-open .ant-select-arrow {
             color: var(--color-text-primary) !important;
-          }
-          
-          /* Center collapse icon vertically */
-          .ant-collapse-header {
-            display: flex !important;
-            align-items: center !important;
-            height: 3rem !important;
           }
           
           .ant-collapse-header-text {

@@ -24,5 +24,7 @@
   "function-name-is-required": "Tên hàm không được để trống",
   "function-description-is-required": "Mô tả hàm không được để trống",
   "fields": "Trường",
-  "add-field": "Thêm trường"
+  "add-field": "Thêm trường",
+  "file-type-placeholder": "Chọn kiểu tệp...",
+  "upload-text-file": "Tải lên tệp văn bản"
 }

@@ -24,5 +24,7 @@
   "function-name-is-required": "Function name is required",
   "function-description-is-required": "Function description is required",
   "fields": "Fields",
-  "add-field": "Add field"
+  "add-field": "Add field",
+  "file-type-placeholder": "Select file type...",
+  "upload-text-file": "Upload text file"
 }

@@ -5,13 +5,16 @@ import { usePageMode } from "@/hooks/use-page-mode";
 import { PlusOutlined } from "@ant-design/icons";
 import { Stack } from "@mui/material";
 import { Button, Collapse, Tooltip, Typography } from "antd";
-import { omit, set } from "lodash";
-import { type ChangeEvent, type FC, useEffect } from "react";
-import { useState } from "react";
+import { type ChangeEvent, type FC, useState } from "react";
 
-import { TypeBuilder } from "../type-builder.tsx";
+import { TypeBuilder } from "./type-builder.tsx";
 
 const { Text } = Typography;
+
+interface Field {
+  key: string;
+  value: Type;
+}
 
 interface ObjectSchemaFieldProps {
   value?: Record<string, Type>;
@@ -22,6 +25,8 @@ interface ObjectSchemaFieldProps {
   maxDepth?: number;
   onDepthChange?: (depth: number) => void;
 }
+
+const DEFAULT_FIELDS: Field[] = [{ key: "", value: { name: "STRING" } }];
 
 export const ObjectSchemaField: FC<ObjectSchemaFieldProps> = ({
   value,
@@ -34,60 +39,35 @@ export const ObjectSchemaField: FC<ObjectSchemaFieldProps> = ({
 }) => {
   const { t: nt } = useNamespacedTranslation();
   const { pageMode } = usePageMode();
-  const [schema, setSchema] = useState<Record<string, Type>>(
-    value || { field1: { name: "STRING" } },
-  );
-
-  useEffect(() => {
-    if (value !== schema) {
-      onChange?.(schema);
-    }
-  }, [schema]);
+  const [fields, setFields] = useState<Field[]>(DEFAULT_FIELDS);
 
   const handleAddDataField = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
+    const newField: Field = { key: "", value: { name: "STRING" } };
 
-    const newSchema = {
-      ...schema,
-      [`field${Object.keys(schema).length + 1}`]: {
-        name: "STRING",
-      },
-    } as Record<string, Type>;
-    setSchema(newSchema);
-    onChange?.(newSchema);
+    setFields([...fields, newField]);
   };
 
   const handleRemoveDataField = (key: string) => {
-    const newSchema = omit(schema, key);
-    setSchema(newSchema);
-    onChange?.(newSchema);
+    setFields(fields.filter((field) => field.key !== key));
   };
 
   const handleTypeChange = (key: string, type: Type) => {
-    const newSchema = set(schema, key, type);
-    setSchema(newSchema);
-    onChange?.(newSchema);
+    setFields(
+      fields.map((field) =>
+        field.key === key ? { ...field, value: type } : field,
+      ),
+    );
   };
 
   const handleLabelChange = (
     e: ChangeEvent<HTMLInputElement>,
-    k: string,
-    v: Type,
+    index: number,
   ) => {
-    const newKey = e.target.value;
-    const newSchema: Record<string, Type> = {};
-
-    for (const key of Object.keys(schema)) {
-      if (key === k) {
-        newSchema[newKey] = v;
-      } else {
-        newSchema[key] = schema[key];
-      }
-    }
-
-    setSchema(newSchema);
-    onChange?.(newSchema);
+    const newFields = [...fields];
+    newFields[index] = { ...newFields[index], key: e.target.value };
+    setFields(newFields);
   };
 
   const renderCollapseLabel = () => {
@@ -110,17 +90,17 @@ export const ObjectSchemaField: FC<ObjectSchemaFieldProps> = ({
   const renderCollapseChildren = () => {
     return (
       <Stack gap={2}>
-        {Object.entries(schema).map(([k, v], idx) => (
+        {fields.map((field, idx) => (
           <TypeBuilder
             key={idx}
-            value={v}
-            onChange={(type) => handleTypeChange(k, type)}
-            label={k}
+            value={field.value}
+            onChange={(type) => handleTypeChange(field.key, type)}
+            label={field.key}
             disabled={disabled}
-            removable={Object.keys(schema).length > 1}
+            removable={fields.length > 1}
             onRemove={handleRemoveDataField}
             labelEditable={pageMode === "create"}
-            onLabelChange={(e) => handleLabelChange(e, k, v)}
+            onLabelChange={(e) => handleLabelChange(e, idx)}
             depth={depth + 1}
             maxDepth={maxDepth}
             onDepthChange={onDepthChange}

@@ -1,34 +1,49 @@
 import { PageModeCondition } from "@/components/ui/page-mode-condition/page-mode-condition";
 import type {
   ArrayType,
-  FileType,
   ObjectType,
   Type,
   TypeName,
   Value,
 } from "@/features/function/types";
 import { TYPE_NAMES } from "@/features/function/types";
-import { DeleteOutlined } from "@ant-design/icons";
+import { usePageMode } from "@/hooks/use-page-mode";
+import { DeleteFilled } from "@ant-design/icons";
 import { RedAsterisk } from "@components/ui/red-asterisk";
 import { Stack, useMediaQuery } from "@mui/material";
-import { Button, Collapse, Input, Select, Tooltip, Typography } from "antd";
+import {
+  Button,
+  Collapse,
+  Form,
+  Input,
+  type InputRef,
+  Select,
+  Tooltip,
+  Typography,
+} from "antd";
 import React, {
   type ChangeEvent,
   type ChangeEventHandler,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TypeTag } from "../type-tag";
 import { ValueBuilder } from "../value-builder";
-import { ArrayElementTypeField } from "./array-type-fields";
-import { FileExtensionField } from "./file-type-fields";
-import { ObjectSchemaField } from "./object-type-fields";
+import { ArrayElementTypeField } from "./array-element-type-field";
+import { ObjectSchemaField } from "./object-schema-field";
 
 const { TextArea } = Input;
-
 const { Paragraph, Text } = Typography;
+
+const DEFAULT_TYPE: Type = { name: "STRING" };
+const TYPE_OPTIONS = Object.entries(TYPE_NAMES).map(([key, value]) => ({
+  label: key,
+  value,
+}));
+
 interface TypeBuilderProps {
   value?: Type;
   defaultValue?: Type;
@@ -62,50 +77,59 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
   maxDepth = 5,
   onDepthChange,
 }) => {
+  const { pageMode } = usePageMode();
   const { t } = useTranslation();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [type, setType] = useState<Type>(
-    value || defaultValue || { name: "STRING" },
-  );
+  const type = value || defaultValue || DEFAULT_TYPE;
+  const labelRef = useRef<InputRef>(null);
+  const [labelMessage, setLabelMessage] = useState<string>("");
 
   useEffect(() => {
-    if (value) {
-      setType(value);
+    labelRef.current?.focus();
+  }, []);
+
+  const hasDefaultValue =
+    type.name === "STRING" ||
+    type.name === "NUMBER" ||
+    type.name === "BOOLEAN" ||
+    type.name === "FILE";
+
+  const availableTypeOptions =
+    depth >= maxDepth
+      ? TYPE_OPTIONS.filter(
+          ({ value }) =>
+            value !== TYPE_NAMES.ARRAY && value !== TYPE_NAMES.OBJECT,
+        )
+      : TYPE_OPTIONS;
+
+  const handleLabelBlur = () => {
+    if (label === "") {
+      setLabelMessage(t("label-required"));
+      labelRef.current?.focus();
     }
-  }, [value]);
+  };
 
   const handleTypeNameChange = (typeName: TypeName) => {
-    setType({ ...type, name: typeName } as Type);
     onChange?.({ ...type, name: typeName } as Type);
   };
 
   const handleTypeDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setType({ ...type, description: e.target.value } as Type);
     onChange?.({ ...type, description: e.target.value } as Type);
   };
 
   const handleArrayElementTypeChange = (elementType: Type) => {
-    setType({ ...type, elementType } as Type);
     onChange?.({ ...type, elementType } as Type);
   };
 
-  const handleFileExtensionChange = (extension: string) => {
-    setType({ ...type, extension } as Type);
-    onChange?.({ ...type, extension } as Type);
-  };
-
   const handleObjectSchemaChange = (schema: Record<string, Type>) => {
-    setType({ ...type, schema } as Type);
     onChange?.({ ...type, schema } as Type);
   };
 
   const handleDefaultValueChange = (defaultValue?: Value) => {
-    setType({ ...type, defaultValue } as Type);
     onChange?.({ ...type, defaultValue } as Type);
   };
 
   const handleUseDefaultValueChange = (useDefaultValue: boolean) => {
-    setType({ ...type, useDefaultValue } as Type);
     onChange?.({ ...type, useDefaultValue } as Type);
   };
 
@@ -120,15 +144,6 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
             depth={depth + 1}
             maxDepth={maxDepth}
             onDepthChange={onDepthChange}
-            readOnly={readOnly}
-          />
-        );
-      case "FILE":
-        return (
-          <FileExtensionField
-            value={(type as FileType)?.extension}
-            onChange={handleFileExtensionChange}
-            disabled={disabled}
             readOnly={readOnly}
           />
         );
@@ -149,25 +164,12 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
     }
   };
 
-  const availableTypes =
-    depth >= maxDepth
-      ? Object.entries(TYPE_NAMES)
-          .filter(([_, value]) => value !== "ARRAY" && value !== "OBJECT")
-          .map(([key, value]) => ({
-            label: key,
-            value,
-          }))
-      : Object.entries(TYPE_NAMES).map(([key, value]) => ({
-          label: key,
-          value,
-        }));
-
   const renderRemoveButton = () => {
     return readOnly || !removable ? null : (
       <Tooltip title={t("remove-field")}>
         <Button
           onClick={() => onRemove?.(label)}
-          icon={<DeleteOutlined />}
+          icon={<DeleteFilled />}
           size="small"
         />
       </Tooltip>
@@ -179,7 +181,7 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
       <Stack
         direction="row"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-start"
         gap={2}
       >
         <Stack direction="row" alignItems="center" gap={0.5} width="100%">
@@ -188,18 +190,26 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
           </PageModeCondition>
           <PageModeCondition modes={["create"]}>
             {labelEditable ? (
-              <Input
-                value={label}
-                onChange={onLabelChange}
-                disabled={disabled}
-                readOnly={readOnly}
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  fontWeight: "600",
-                  width: "100%",
-                  marginLeft: -12,
-                }}
-              />
+              <Stack direction="column" gap={1}>
+                <Form.Item
+                  required
+                  rules={[{ required: true, message: t("label-required") }]}
+                >
+                  <Input
+                    value={label}
+                    onChange={onLabelChange}
+                    onBlur={handleLabelBlur}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    onClick={(e) => e.stopPropagation()}
+                    ref={labelRef}
+                    style={{
+                      fontWeight: "600",
+                      width: "100%",
+                    }}
+                  />
+                </Form.Item>
+              </Stack>
             ) : (
               <Text strong>{label}</Text>
             )}
@@ -213,17 +223,17 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
         </PageModeCondition>
         <PageModeCondition modes={["create"]}>
           <Select
-            options={availableTypes}
+            options={availableTypeOptions}
             value={type?.name}
             onChange={handleTypeNameChange}
             disabled={disabled}
-            style={{ width: "7rem" }}
             onClick={(e) => e.stopPropagation()}
+            style={{ width: "130px" }}
             optionRender={(option) => (
-              <TypeTag typeName={option.value as TypeName} />
+              <TypeTag typeName={option.label as TypeName} />
             )}
             labelRender={(label) => (
-              <TypeTag typeName={label.value as TypeName} />
+              <TypeTag typeName={label.label as TypeName} />
             )}
           />
           {renderRemoveButton()}
@@ -250,17 +260,19 @@ export const TypeBuilder: React.FC<TypeBuilderProps> = ({
           />
         )}
         {renderTypeSpecificFields()}
-        <ValueBuilder
-          type={type}
-          label={t("default-value")}
-          value={type?.defaultValue}
-          onChange={handleDefaultValueChange}
-          showEnabled={true}
-          enabled={type?.useDefaultValue}
-          onEnabledChange={handleUseDefaultValueChange}
-          disabled={disabled}
-          readOnly={readOnly}
-        />
+        {hasDefaultValue && (
+          <ValueBuilder
+            type={type}
+            label={t("default-value")}
+            value={type?.defaultValue}
+            onChange={handleDefaultValueChange}
+            showEnabled={pageMode === "create"}
+            enabled={type?.useDefaultValue}
+            onEnabledChange={handleUseDefaultValueChange}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        )}
       </Stack>
     );
   };
